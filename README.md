@@ -7,6 +7,8 @@ Vue 3 + TypeScript 前端、Python 後端、SQLite 本機資料庫。初始追�
 
 ## 開啟與停止
 
+雲端串流版使用獨立GitHub clone、Google Drive資料及本機工作暫存，網址固定 **http://localhost:3001**，詳見[雲端版操作](docs/CLOUD_RUNTIME.md)。一般本機版仍使用下面8765入口。
+
 1. 雙擊 **啟動監控.command**。
 2. 瀏覽器開啟 **http://127.0.0.1:8765**；已運行時不會重複啟動。
 3. 雙擊 **停止監控.command** 結束背景服務。只關閉網頁，服務仍會運行。

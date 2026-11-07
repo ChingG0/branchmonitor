@@ -21,3 +21,5 @@
 - **Google Drive包5**：對話手動更新V3／V6／V10／V11後，依`docs/GOOGLE_DRIVE_BACKUP.md`執行一次增量備份與Drive讀回校驗；CLI成功只排待備份，不能宣稱已上雲。前台、排程、GET不觸發。直接呼叫publish的人工批次須自行收尾；備份不再publish策略。包6還原通過前不刪原資料、基底或舊版；不足空間／配額要保留待處理並說明。
 
 - **雲端版網址**：GitHub clone＋Drive串流版固定`http://localhost:3001`；原本本機版保留`http://127.0.0.1:8765`。啟動、停止、health與依賴安裝重啟皆須沿用所選port，不得開到另一份目錄。雲端資料接通前不能以改port冒充遷移完成，見`docs/CLOUD_RUNTIME.md`。
+
+- **Drive桌面串流接入後**：正式雲端程式在`/Users/ching/Desktop/branch-monitor-cloud`，網址localhost:3001；舊本機資料仍保留。若該clone有`cloud-runtime.local.json`，後續手動更新在此clone執行，資料及帳本在其獨立工作暫存。只更新程式碼不改資料來源。讀`docs/CLOUD_RUNTIME.md`，批次發布後使用`cloud_runtime.py prepare-sync`及Drive實際讀回／confirm；不得對稀疏快取執行舊包5掃描並把未下載冷檔視為刪除。未驗證同步成功不能清工作快取。

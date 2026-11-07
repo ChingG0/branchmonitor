@@ -38,6 +38,12 @@ class Handler(BaseHTTPRequestHandler):
         if not self.local_request():
             return self.send({'error':'僅接受本機請求'},403)
         parsed = urlparse(self.path)
+        if os.environ.get('BRANCH_MONITOR_CLOUD')=='1':
+            try:
+                from scripts.cloud_runtime import instance
+                instance().route(parsed.path)
+            except (OSError,ValueError) as error:
+                return self.send({'error':'雲端資料讀取失敗：'+str(error)},503)
         query = {k:v[0] for k,v in parse_qs(parsed.query).items()}
         try:
             if parsed.path == '/api/margin-statistics/risk':
@@ -59,7 +65,7 @@ class Handler(BaseHTTPRequestHandler):
             if parsed.path == '/api/alpha-beta':
                 return self.send(alpha_beta.report())
             if parsed.path == '/api/health':
-                return self.send({'status':'ok','app':'branch-monitor','version':'1.0.0','pid':os.getpid(),'directory':str(db.ROOT)})
+                return self.send({'status':'ok','app':'branch-monitor','version':'1.0.0','pid':os.getpid(),'directory':str(db.ROOT),'data_directory':str(db.DATA.resolve()),'storage':__import__('scripts.cloud_runtime',fromlist=['instance']).instance().status() if os.environ.get('BRANCH_MONITOR_CLOUD')=='1' else {'mode':'local'}})
             if parsed.path == '/api/update-all':
                 return self.send(full_update.status())
             if parsed.path == '/api/block-trades':
@@ -273,11 +279,14 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--port',type=int,default=8765)
     parser.add_argument('--sync',action='store_true',help='開啟時立即同步')
+    parser.add_argument('--no-scheduler',action='store_true',help='只讀啟動，不執行背景行情排程')
     args=parser.parse_args()
+    if (db.ROOT/'cloud-runtime.local.json').is_file() and os.environ.get('BRANCH_MONITOR_CLOUD')!='1':
+        raise SystemExit('請使用啟動雲端監控.command，先驗證Drive資料再啟動3001')
     db.initialize()
     strategies.initialize()
     server=ThreadingHTTPServer(('127.0.0.1',args.port),Handler)
-    threading.Thread(target=service.scheduler,daemon=True).start()
+    if not args.no_scheduler:threading.Thread(target=service.scheduler,daemon=True).start()
     if args.sync:
         service.sync()
     print(f'分點觀測站 http://127.0.0.1:{args.port}  (Ctrl+C 停止)',flush=True)

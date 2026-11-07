@@ -36,3 +36,14 @@ __pycache__/
 credentials.json
 service-account*.json
 service_account*.json
+
+# Per-device Drive paths (no credentials)
+/cloud-runtime.local.json
+
+# Runtime cache links are not repository data
+/data
+/research
+/prototype/*.json
+/prototype/*.json.gz
+/prototype/*.csv
+/prototype/*.html

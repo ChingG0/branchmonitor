@@ -29,9 +29,12 @@ def main(argv=None):
     parser=argparse.ArgumentParser(description='啟動指定資料夾的本機服務')
     parser.add_argument('--port',type=int,default=8765)
     parser.add_argument('--browser-host',choices=['localhost','127.0.0.1'],default='127.0.0.1')
+    parser.add_argument('--no-scheduler',action='store_true')
     args=parser.parse_args(argv)
     if not 1<=args.port<=65535:parser.error('port必須介於1與65535')
     URL=f'http://{args.browser_host}:{args.port}'
+    if (ROOT/'cloud-runtime.local.json').is_file() and os.environ.get('BRANCH_MONITOR_CLOUD')!='1':
+        os.execv(sys.executable,[sys.executable,str(ROOT/'scripts/cloud_runtime.py'),'launch'])
     if sys.version_info<(3,10):
         raise SystemExit('需要 Python 3.10 或更新版本。')
     existing=health()
@@ -46,14 +49,14 @@ def main(argv=None):
         if not python.exists():
             subprocess.run([sys.executable,'-m','venv',str(ROOT/'.venv')],check=True)
         subprocess.run([str(python),'-m','pip','install','-r',str(ROOT/'requirements.txt')],check=True)
-        os.execv(str(python),[str(python),str(Path(__file__).resolve()),'--port',str(args.port),'--browser-host',args.browser_host])
+        os.execv(str(python),[str(python),str(Path(__file__).resolve()),'--port',str(args.port),'--browser-host',args.browser_host]+(['--no-scheduler'] if args.no_scheduler else []))
     if not (ROOT/'dist/index.html').exists():
         print('正在建立前端，需要已安裝 Node.js。')
         subprocess.run(['npm','ci'],check=True)
         subprocess.run(['npm','run','build'],check=True)
     (ROOT/'data').mkdir(exist_ok=True)
     with (ROOT/'data/server.log').open('a') as log:
-        process=subprocess.Popen([sys.executable,'-m','backend.server','--port',str(args.port)],cwd=ROOT,
+        process=subprocess.Popen([sys.executable,'-m','backend.server','--port',str(args.port)]+(['--no-scheduler'] if args.no_scheduler else []),cwd=ROOT,
             stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
     for _ in range(50):
         if process.poll() is not None:

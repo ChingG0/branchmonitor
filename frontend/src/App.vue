@@ -30,6 +30,8 @@ import TrendChart from './TrendChart.vue'
 import CandleChart from './CandleChart.vue'
 import type {Dashboard,Job,Branch,Detail,Settings,Flow,Position,Closed,Signal,Cycle,StockStats,BuyPattern} from './types'
 
+const cloudRuntime=ref(false)
+onMounted(()=>{localFetch('/api/health').then(readJson).then(info=>{cloudRuntime.value=info.storage?.mode==='google_drive_stream'}).catch(()=>{})})
 const d=ref<Dashboard|null>(null),job=ref<Job|null>(null),error=ref(''),toast=ref('')
 const loading=ref(true),selectedBranch=ref('9300:9339'),selectedDate=ref(''),view=ref('home')
 type NavItem={id:string;label:string;icon:string}
@@ -208,7 +210,7 @@ onUnmounted(()=>{window.clearInterval(poll);window.clearTimeout(toastTimer);life
 <template>
  <div class="app-shell">
   <aside class="sidebar">
-   <a class="brand" href="/" aria-label="分點觀測站首頁" @click.prevent="nav('home')"><div class="brand-mark"><i></i><i></i><i></i></div><div>分點觀測站<small>BRANCH MONITOR</small></div></a>
+   <a class="brand" href="/" aria-label="分點觀測站首頁" @click.prevent="nav('home')"><div class="brand-mark"><i></i><i></i><i></i></div><div>分點觀測站<small>{{ cloudRuntime ? '雲端資料 · localhost:3001' : 'BRANCH MONITOR' }}</small></div></a>
    <div class="workspace-label"><span class="workspace-name">WORKSPACE</span><button class="nav-edit-button" :aria-pressed="editingNav" @click="editingNav=!editingNav;endNavDrag()">{{editingNav?'完成':'排序'}}</button></div>
    <nav aria-label="主選單" :class="{'nav-editing':editingNav}">
     <div v-for="(item,index) in navItems" :key="item.id" class="nav-row" :class="{dragging:draggedNav===item.id,'drop-target':dropNav===item.id}" @dragover="overNav($event,item.id)" @drop="dropOnNav($event,item.id)">
