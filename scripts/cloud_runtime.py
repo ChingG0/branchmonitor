@@ -189,8 +189,14 @@ class Runtime:
   return self.ensure([p for p in self.rows if chosen(p)])
 
  def route(self,path):
-  if path.startswith('/api/margin-statistics'):
-   self.ensure([p for p in self.rows if p.startswith('research/margin')])
+  # Display uses already saved artifacts, not the large frozen rebuild inputs.
+  names={'/api/margin-statistics':'sources.sqlite3',
+         '/api/margin-statistics/overview':'sources.sqlite3',
+         '/api/margin-statistics/risk':'observations.sqlite3',
+         '/api/margin-statistics/checker':'checker.json.gz',
+         '/api/margin-statistics/events':'events.json.gz',
+         '/api/margin-statistics/analytics':'analytics.json.gz'}
+  if path in names:self.ensure(['data/margin_statistics/'+names[path]])
 
  def link(self):
   for rel in ('data','research'):

@@ -101,5 +101,10 @@ class Cloud(unittest.TestCase):
   self.assertEqual(len(list((self.cache/'control/queue').glob('*.json'))),1)
   self.assertEqual((self.drive/'CURRENT.json').read_bytes(),head)
 
+ def test_display_does_not_hydrate_frozen_rebuild_inputs(self):
+  with patch.object(self.runtime,'ensure') as ensure:
+   self.runtime.route('/api/margin-statistics/overview')
+   ensure.assert_called_once_with(['data/margin_statistics/sources.sqlite3'])
+
 
 if __name__=='__main__':unittest.main(verbosity=2)
