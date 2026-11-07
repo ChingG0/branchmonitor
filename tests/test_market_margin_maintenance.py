@@ -63,7 +63,7 @@ class MarketMarginMaintenanceTest(unittest.TestCase):
             raise ConnectionError('offline')
         with tempfile.TemporaryDirectory() as folder, patch.object(db, 'DATA', Path(folder)):
             result = m.refresh(blocked, ['2026-10-07', '2026-10-08', DAY])
-            self.assertEqual(len(calls), 2)
+            self.assertEqual(len(calls), 1)
             self.assertFalse(result['days'])
 
 

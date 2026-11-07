@@ -121,6 +121,8 @@ def report():
 
 
 def refresh(fetch):
+    # Credit data must still update when PE/monthly or day-trade sources fail.
+    financing=liquidity_river.refresh_financing(fetch)
     with _lock:
         state = cached()
         today = datetime.now(TZ).date()
@@ -173,7 +175,7 @@ def refresh(fetch):
         tmp.write_text(json.dumps(state, ensure_ascii=False, allow_nan=False))
         tmp.replace(path)
         try:
-            result['liquidity'] = liquidity_river.refresh(fetch)
+            result['liquidity'] = liquidity_river.refresh(fetch,financing=financing)
         except ValueError as exc:
             result['liquidity'] = liquidity_river.report()
             result['liquidity']['warning'] = str(exc)

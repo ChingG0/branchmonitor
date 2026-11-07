@@ -40,7 +40,7 @@ FED='https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm'
 HISTORY_KEYS={'fear','twse','tpex','volume','retail','gold','futures',*QUOTES}
 VALUE_KEYS=HISTORY_KEYS-{'twse','tpex','futures'}
 _lock=threading.Lock()
-_job={'running':False,'done':0,'total':0,'message':'讀取本機保存資料'}
+_job={'status':'idle','running':False,'done':0,'total':0,'message':'讀取本機保存資料'}
 
 def now():return datetime.now(TZ).isoformat(timespec='seconds')
 def num(value):
@@ -395,6 +395,11 @@ def update_one(key):
     try:
         result=load_card(key);stamp=now()
         warning=result.get('warning','') if key in ('pe_river','credit') else ''
+        if key=='pe_river':
+            liq=result.get('liquidity') or {}
+            warning='；'.join(dict.fromkeys(x for x in [warning,liq.get('warning',''),liq.get('margin_warning',''),liq.get('maintenance_warning','')] if x))
+            tail=(liq.get('points') or [None])[-1]
+            if tail and any(tail.get(k) is None for k in ('financing_units','short_units','maintenance_pct')):warning+='；'+tail['date']+'融資融券或維持率未齊，請手動更新'
         with db.connect() as c:
             if key in HISTORY_KEYS:
                 old=c.execute('SELECT payload FROM market_observations WHERE key=?',(key,)).fetchone()
@@ -415,7 +420,7 @@ def refresh(key=None):
     if key is not None and (not isinstance(key,str) or key not in CATALOG):raise ValueError('無效市場卡片')
     if not _lock.acquire(blocking=False):return dict(_job)
     keys=[key] if key else list(CATALOG)
-    _job.update(running=True,done=0,total=len(keys),message='正在更新市場資料')
+    _job.update(status='running',running=True,done=0,total=len(keys),message='正在更新市場資料')
     def worker():
         failed=0
         try:
@@ -423,9 +428,11 @@ def refresh(key=None):
                 for task in as_completed([pool.submit(update_one,k) for k in keys]):
                     if not task.result():failed+=1
                     _job['done']+=1
-            _job['message']=f'更新結束 · {len(keys)-failed}/{len(keys)} 張成功'+(f'，{failed} 張來源暫不可用' if failed else '')
+            _job['status']='partial' if failed else 'complete'
+            _job['message']=f'更新結束 · {len(keys)-failed}/{len(keys)} 張成功'+(f'，{failed} 張來源未齊，請手動更新' if failed else '')
         except Exception:
-            _job['message']='更新未完成，已保留成功資料，請稍後重試'
+            _job['status']='failed'
+            _job['message']='更新未完成，已保留成功資料，請手動更新'
         finally:_job['running']=False;_lock.release()
     try:threading.Thread(target=worker,daemon=True).start()
     except Exception:_job['running']=False;_lock.release();raise

@@ -2,16 +2,18 @@
 from __future__ import annotations
 
 import json
+import threading
 from datetime import date, datetime
 from zoneinfo import ZoneInfo
 
-from . import db
+from . import db, market_margin_sources
 
 
 TZ = ZoneInfo('Asia/Taipei')
 SOURCE = 'https://www.twse.com.tw/IIH2/zh/market/margin.html'
 API = 'https://www.twse.com.tw/rwd/zh/IIH/market/margin?start={start}&end={end}'
 FILE = 'market_margin_cache.json'
+_lock=threading.Lock()
 
 
 def parse_range(raw, first, last):
@@ -54,22 +56,31 @@ def cached():
 
 
 def refresh(fetch, dates):
+    with _lock:return _refresh(fetch, dates)
+
+def _refresh(fetch, dates):
     state = cached()
     dates = sorted(set(dates))
     if not dates:
         return state
-    # One official range request replaces hundreds of per-day historical calls.
-    # Revisit on each explicit river update so the newest balance can be corrected.
-    first, last = dates[0], dates[-1]
-    try:
-        days = parse_range(fetch(API.format(start=first.replace('-', ''), end=last.replace('-', ''))), first, last)
-        state['days'].update(days)
-        state['as_of'] = max(state['days'])
-        state['checked_at'] = datetime.now(TZ).isoformat(timespec='seconds')
-        state['warning'] = ''
-    except Exception as exc:
-        state['warning'] = f'融資融券餘額來源暫不可用：{type(exc).__name__}'
-        state['checked_at'] = datetime.now(TZ).isoformat(timespec='seconds')
+    # Share normalized official financing sources instead of maintaining an
+    # unrelated stale cache when the range endpoint is delayed or unavailable.
+    local=market_margin_sources.read_saved(dates)
+    for day,item in local.items():
+        m=item['margin']
+        state['days'][day]={'financing_units':m['total_units'],'short_units':m['short_units'],'loan_thousand':m['loan_thousand'],'source_snapshot_id':item['credit_snapshot_id'],'source_retrieved_at':item['credit_retrieved_at']}
+    first,last=dates[0],dates[-1]
+    if last not in local:
+        try:
+            if fetch is None:raise ValueError('本機尚無同日官方融資資料')
+            days=parse_range(fetch(API.format(start=first.replace('-',''),end=last.replace('-',''))),first,last)
+            if last not in days:raise ValueError(f'區間來源尚未包含{last}')
+            state['days'].update(days);state['warning']=''
+        except Exception as exc:
+            state['warning']=f'融資融券餘額來源暫不可用：{str(exc)[:100]}；請手動更新'
+    else:state['warning']=''
+    state['as_of']=max(state['days'],default=None)
+    state['checked_at']=datetime.now(TZ).isoformat(timespec='seconds')
     db.DATA.mkdir(parents=True, exist_ok=True)
     path = db.DATA / FILE
     temp = path.with_suffix('.tmp')

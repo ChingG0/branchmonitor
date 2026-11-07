@@ -2,14 +2,16 @@
 from __future__ import annotations
 
 import json
+import threading
 import math
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
-from . import db
+from . import db, market_margin_sources
 
 TZ = ZoneInfo('Asia/Taipei')
 FILE = 'market_margin_maintenance_cache.json'
+_lock=threading.Lock()
 SOURCE = 'https://www.twse.com.tw/zh/trading/margin/mi-margn.html'
 PRICE_SOURCE = 'https://www.twse.com.tw/zh/trading/exchange/mi-index.html'
 REFERENCE_SOURCE = 'https://www.istock.tw/post/twmarginrequirement_more'
@@ -135,29 +137,40 @@ def _save(state):
 
 
 def refresh(fetch, dates, max_days=3):
+    with _lock:return _refresh(fetch, dates, max_days)
+
+def _refresh(fetch, dates, max_days=3):
     state = cached()
     dates = sorted(set(dates))
     if not dates:
         return state
-    missing = [day for day in dates if day not in state['days']]
-    recent = dates[-2:]
-    targets = list(dict.fromkeys(recent + missing[:max(0, max_days - len(recent))]))
-    errors = []
+    # Latest first; a failed current source never fans out into old requests.
+    recent=dates[-2:]
+    missing=[day for day in reversed(dates) if day not in state['days'] and day not in recent]
+    targets=list(reversed(recent))+missing[:max(0,max_days-len(recent))]
+    local=market_margin_sources.read_saved(targets,prices=True)
+    errors=[]
+    previous_prices=dict(state['last_prices'])
     for day in targets:
-        # Avoid historical requests while the current official source is unavailable.
-        if day not in recent and errors:
-            break
+        if errors:break
         try:
-            key = day.replace('-', '')
-            margin = parse_margin(fetch(MARGIN_API.format(day=key)), day)
-            prices = parse_prices(fetch(PRICE_API.format(day=key)), day)
-            state['days'][day] = calculate(margin, prices, state['last_prices'], day)
-            for symbol, close in prices.items():
-                previous = state['last_prices'].get(symbol)
-                if not previous or previous['date'] <= day:
-                    state['last_prices'][symbol] = {'date': day, 'close': close}
-        except Exception as exc:
-            errors.append(f'{day} {type(exc).__name__}')
+            if day in local:
+                item=local[day];margin=item['margin'];prices=item['prices']
+            else:
+                if fetch is None:raise ValueError('本機尚無同日官方融資與收盤資料')
+                key=day.replace('-','')
+                margin=parse_margin(fetch(MARGIN_API.format(day=key)),day)
+                prices=parse_prices(fetch(PRICE_API.format(day=key)),day)
+            prior={s:v for s,v in previous_prices.items() if v['date']<=day}
+            for old_day in sorted(d for d in local if d<=day):
+                for symbol,close in local[old_day]['prices'].items():prior[symbol]={'date':old_day,'close':close}
+            value=calculate(margin,prices,prior,day)
+            if day in local:value.update(source_snapshot_id=item['credit_snapshot_id'],price_snapshot_id=item['price_snapshot_id'],source_retrieved_at=item['credit_retrieved_at'])
+            state['days'][day]=value
+            for symbol,close in prices.items():
+                previous=state['last_prices'].get(symbol)
+                if not previous or previous['date']<=day:state['last_prices'][symbol]={'date':day,'close':close}
+        except Exception as exc:errors.append(f'{day} {str(exc)[:120]}；請手動更新')
     state['as_of'] = max(state['days'], default=None)
     state['checked_at'] = datetime.now(TZ).isoformat(timespec='seconds')
     state['warning'] = '；'.join(errors)

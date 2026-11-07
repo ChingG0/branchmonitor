@@ -5,7 +5,7 @@ import json
 import math
 import statistics
 import threading
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 from . import db, margin_balance, market_margin_maintenance
@@ -194,7 +194,7 @@ def report():
     return build(cached())
 
 
-def refresh(fetch):
+def refresh(fetch,*,financing=None):
     with _lock:
         state = cached()
         now = datetime.now(TZ)
@@ -234,11 +234,21 @@ def refresh(fetch):
         tmp = path.with_suffix('.tmp')
         tmp.write_text(json.dumps(state, ensure_ascii=False, allow_nan=False))
         tmp.replace(path)
-        try:
-            dates = [row['date'] for row in result['points']]
-            margin = margin_balance.refresh(fetch, dates)
-            maintenance = market_margin_maintenance.refresh(fetch, dates)
-            return build(state, today, margin, maintenance)
-        except Exception as exc:
-            result['margin_warning'] = f'融資資料暫不可用：{type(exc).__name__}'
-            return result
+        latest=result['points'][-1]['date']
+        if financing is None or latest not in financing.get('requested_dates',[]):financing=refresh_financing(fetch,[row['date'] for row in result['points']])
+        return build(state,today,financing['margin'],financing['maintenance'])
+
+def refresh_financing(fetch,dates=None):
+    if dates is None:
+        cutoff=datetime.now(TZ)
+        complete_day=(cutoff.date() if cutoff.strftime('%H:%M')>='13:45' else cutoff.date()-timedelta(days=1)).isoformat()
+        dates=[r['date'] for r in report().get('points',[]) if r['date']<=complete_day]
+        with db.connect() as c:
+            row=c.execute("SELECT MAX(date) FROM prices WHERE symbol='TAIEX' AND close>0 AND date<=?",(complete_day,)).fetchone()
+        if row and row[0] and (row[0]<complete_day or cutoff.strftime('%H:%M')>='13:45'):dates.append(row[0])
+    dates=sorted(set(dates))
+    result={'requested_dates':dates}
+    for key,module in (('margin',margin_balance),('maintenance',market_margin_maintenance)):
+        try:result[key]=module.refresh(fetch,dates)
+        except Exception as exc:result[key]={**module.cached(),'warning':f'資料尚未齊全：{str(exc)[:100]}；請手動更新'}
+    return result

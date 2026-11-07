@@ -89,6 +89,8 @@ def refresh_sync():
    for row in monitor.execute('SELECT date,payload,fetched_at FROM rs_days WHERE date<=?',(end,)):
     if json.loads(row['payload']).get('as_of')==row['date']:
      out.execute('INSERT OR REPLACE INTO rs VALUES(?,?,?)',(row['date'],gzip.compress(row['payload'].encode(),mtime=0),row['fetched_at']))
+ from . import liquidity_river
+ liquidity_river.refresh_financing(None,[target])
  latest=latest_date();complete=latest==target and collected['status']=='complete'
  return {'status':'complete' if complete else 'partial', 'as_of':latest,
          'message':f'融資統計已核對至 {latest or "尚無完整日期"}；'+('上市／上櫃、ETF、分布與子集已更新' if complete else ('歷史來源仍有缺漏，請查看品質清單' if latest==target else f'目標 {target}，部分官方來源尚未發布或缺漏，保留原值')),
