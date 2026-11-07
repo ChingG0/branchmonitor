@@ -283,5 +283,8 @@ def main():
     p=argparse.ArgumentParser(description='對話專用18/22機率與點數；盤外仍計算M0並另標非合格')
     p.add_argument('action',choices=['publish','report','export']);p.add_argument('--minute-bars',type=Path);p.add_argument('--feature-history',type=Path);args=p.parse_args()
     result=manual_update(minute_bars=args.minute_bars,feature_history=args.feature_history) if args.action=='publish' else export() if args.action=='export' else report()
+    if args.action=='publish':
+        from .manual_backup import notify
+        notify('v6')
     print(json.dumps({k:v for k,v in result.items() if k not in ('history','liveContext')},ensure_ascii=False,indent=2))
 if __name__=='__main__':main()

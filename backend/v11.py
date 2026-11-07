@@ -249,6 +249,9 @@ def main():
     if args.command=='publish':
         if not args.decision:p.error('publish 需提供 --decision')
         result=publish(json.loads(args.decision.read_text()),inputs_path=args.inputs,store=args.store)
+        if not args.store:
+            from .manual_backup import notify
+            notify('v11')
     else:result=report(args.store)
     print(json.dumps(result,ensure_ascii=False,allow_nan=False))
 if __name__=='__main__':main()

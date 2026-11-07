@@ -121,6 +121,9 @@ def main():
     if args.command == 'publish':
         if not args.decision:parser.error('publish 必須提供 --decision')
         result = publish(json.loads(args.decision.read_text()), source=args.source, store=args.store)
+        if not args.store and not args.source:
+            from .manual_backup import notify
+            notify('v10')
     else:result = report(args.store)
     print(json.dumps(result, ensure_ascii=False, allow_nan=False))
 

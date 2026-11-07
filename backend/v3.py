@@ -346,6 +346,9 @@ def main():
         ctx=market_context(args.source);ctx.pop('stock_stats',None)
         result=initialize(ctx,decision['analysis'],args.account)
     else:result=apply_review(decision,args.source,args.account)
+    if not args.account and not args.source:
+        from .manual_backup import notify
+        notify('v3')
     print(json.dumps(dict(revision=result['revision'],as_of=result['as_of'],cash=result['cash'],holdings=len(result['holdings']),pending_orders=len(result['pending_orders'])),ensure_ascii=False))
 
 if __name__=='__main__':main()

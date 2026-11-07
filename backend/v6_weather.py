@@ -289,4 +289,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Save a chat-reviewed V6 weather report')
     parser.add_argument('draft', type=Path, help='UTF-8 JSON research draft with cited sources')
     args = parser.parse_args()
-    print(json.dumps(publish(json.loads(args.draft.read_text(encoding='utf-8'))), ensure_ascii=False))
+    result = publish(json.loads(args.draft.read_text(encoding='utf-8')))
+    from .manual_backup import notify
+    notify('v6')
+    print(json.dumps(result, ensure_ascii=False))
