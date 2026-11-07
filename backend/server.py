@@ -100,6 +100,9 @@ class Handler(BaseHTTPRequestHandler):
                 return self.send(v6_comparison.report(query.get('id')))
             if parsed.path == '/api/v6-weather':
                 return self.send(v6_weather.report(query.get('id')))
+            if parsed.path == '/api/v6-allocation-study':
+                from . import v6_allocation
+                return self.send(v6_allocation.read_study())
             if parsed.path == '/api/strategies':
                 return self.send(strategies.report(query.get('id')))
             if parsed.path == '/api/status':
@@ -184,7 +187,7 @@ class Handler(BaseHTTPRequestHandler):
             if not isinstance(values,dict):
                 raise ValueError('請求需為 JSON 物件')
             if self.path=='/api/strategies/refresh':
-                return self.send(strategies.refresh(values.get('date'),force=values.get('force',False)),202)
+                return self.send({'status':'retired','message':'ETF滾動存股規劃已停止更新；股票配置改隨V6對話更新。'},410)
             if self.path=='/api/daily-follow/generate':
                 if values.get('all'):
                     daily_follow.generate_all()
@@ -214,7 +217,7 @@ class Handler(BaseHTTPRequestHandler):
             if self.path=='/api/warrants/enrich':
                 return self.send(warrants.enrich_stock(values.get('query'), values.get('limit',20)),200)
             if self.path=='/api/strategies/settings':
-                return self.send(strategies.configure(values))
+                return self.send({'status':'retired','message':'ETF滾動存股規劃已停用。'},410)
             if self.path=='/api/main-watch/refresh':
                 return self.send(major.start_refresh(),202)
             if self.path=='/api/broker-focus/refresh':
@@ -284,7 +287,6 @@ def main():
     if (db.ROOT/'cloud-runtime.local.json').is_file() and os.environ.get('BRANCH_MONITOR_CLOUD')!='1':
         raise SystemExit('請使用啟動雲端監控.command，先驗證Drive資料再啟動3001')
     db.initialize()
-    strategies.initialize()
     server=ThreadingHTTPServer(('127.0.0.1',args.port),Handler)
     if not args.no_scheduler:threading.Thread(target=service.scheduler,daemon=True).start()
     if args.sync:

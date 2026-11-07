@@ -409,24 +409,17 @@ def etf_metrics(data,target,cfg,benchmark=None,plan_count=None):
     return {'as_of':rows[-1]['date'],'start':period[0]['date'],'sample':len(current),'ytd_total':ytd,'price_return':(period[-1]['close']/period[0]['close']-1)*100 if prior else None,'excess_0050':excess,'drawdown':drawdown,'volatility':float(np.std(returns,ddof=1)*np.sqrt(252)*100) if len(returns)>1 else None,'position_pct':position,'position_label':position_label,'market_price':market_price,'support_1':support_1,'support_2':support_2,'resistance_1':resistance_1,'resistance_2':resistance_2,'distance_support_pct':distance_support,'distance_resistance_pct':distance_resistance,'swing_action':swing_action,'nav':None,'nav_as_of':None,'premium_pct':None,'nav_note':'官方當日淨值尚未取得；市價不代替淨值','dividends':[e for e in data['dividends'] if e['date']>=target[:4]+'-01-01'],'curve':curve,'source':data['source'],'stale':rows[-1]['date']!=target,'limitations':'含息績效與位階使用供應商還原價格；波段支撐壓力為近20／60個有效交易日高低區間，不保證價格一定反轉。當日官方淨值缺值時保留空白，不以市價代替。管理費已反映於基金價格，未再次扣除；持股重疊與完整費用率待補。'}
 
 def allocation_evidence(target):
-    """Read only the portfolio-level allocation without touching legacy pair state."""
-    with research.store() as c:
-        init(c);row=c.execute('SELECT payload FROM strategy_snapshots WHERE date<=? ORDER BY date DESC,created_at DESC,id DESC LIMIT 1',(target,)).fetchone()
-    if not row:return {'date':None,'snapshot_id':None,'created_at':None,'risk':None,'warnings':['ETF 每日規劃尚未建立；不可捏造股票配置比例。']}
-    snapshot=json.loads(row[0]);warnings_=list(snapshot.get('warnings') or [])
-    if snapshot.get('date')!=target:warnings_.append('ETF 配置快照不是研究日同日資料，沿用最近一次已保存比例。')
-    return {'date':snapshot.get('date'),'snapshot_id':snapshot.get('id'),'created_at':snapshot.get('created_at'),'risk':snapshot.get('risk'),'warnings':warnings_}
+    """Read saved V6 exposure only; never resurrect the retired ETF generator."""
+    from . import v6_evening_forecast as evening
+    rows=[e['payload'] for e in evening.read() if e['kind']=='forecast' and e['payload']['anchorDate']<=target and e['payload'].get('allocation')]
+    if not rows:return {'date':None,'risk':None,'warnings':['V6配置尚未隨新機率保存；舊ETF規劃已停止更新。']}
+    f=rows[-1];a=f['allocation']
+    return {'date':f['anchorDate'],'snapshot_id':f['id'],'created_at':f['savedAt'],'risk':{'target_equity_pct':a['equityPct'],'status':a['action']},'warnings':[a['note']]}
 
 def allocation_appendix(evidence):
-    """Expose only the portfolio-level allocation to the closing report."""
     s=evidence.get('strategies',{});risk=s.get('risk') or {}
-    lines=['\n\n## 建議股票配置比例 · 本機風控\n']
-    if risk:
-        lines.append(f"建議股票配置 {risk.get('target_equity_pct','—')}%，目前股票比例 {risk.get('current_equity_pct','—')}%；風控分數 {risk.get('score','—')}，資料覆蓋 {risk.get('coverage','—')}%。\n")
-        lines.append(f"狀態：{risk.get('status') or '待確認'}。詳細 ETF 名單、位階與金額請至 ETF 滾動存股規劃查看。\n")
-    else:lines.append('尚無可引用的股票配置比例；請先在 ETF 滾動存股規劃建立每日分析。\n')
-    lines.append('資料日期：'+str(s.get('date') or '待更新')+'。\n')
-    return ''.join(lines)
+    return '\n\n## V6股票曝險上限\n'+(f"建議股票上限 {risk['target_equity_pct']}%，{risk['status']}。詳見V6，非實際持倉。\n" if risk else '尚無隨新機率保存的V6配置；舊ETF規劃已停止更新。\n')
+
 
 def risk_history():
     """Align saved allocation decisions with actual TAIEX candles and rolling trend."""
@@ -517,6 +510,9 @@ def ensure_daily_snapshot(snapshot):
     return snapshot
 
 def refresh(target=None,wait=False,force=False):
+    return {'status':'retired','message':'ETF滾動存股規劃已停止更新；股票配置改隨V6對話更新。'}
+
+def _archived_refresh(target=None,wait=False,force=False):
     if not isinstance(force,bool):raise ValueError('重新分析設定需為布林值')
     if not _lock.acquire(False):return {'status':'running','message':'策略更新中'}
     try:

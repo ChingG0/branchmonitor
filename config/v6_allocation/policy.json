@@ -1,0 +1,15 @@
+{
+  "version": "v6-equity-risk-cap-1",
+  "maxEquityPct": 80,
+  "initialEquityPct": 40,
+  "maxDailyAddPp": 5,
+  "targetAnnualVolPct": 12,
+  "tailBudgetPct": 2,
+  "overheatAtrCaps": [[2, 50], [3, 35]],
+  "drawdownCaps": [[-5, 50], [-10, 30], [-15, 20], [-20, 10]],
+  "downProbabilityCaps": [[0.65, 40], [0.8, 20]],
+  "buyCostBps": 19.25,
+  "sellCostBps": 49.25,
+  "status": "fixed_rules_observation_not_optimized",
+  "reference": "https://www.nber.org/papers/w22208"
+}

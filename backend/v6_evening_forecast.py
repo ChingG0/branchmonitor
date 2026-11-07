@@ -213,6 +213,9 @@ def publish(prices,sessions,*,live=None,calendar_proof=None,store=None,at=None,b
                     'features':artifact['model']['features'] if artifact and artifact.get('model') else [],
                     'coverage80':artifact['validation']['candidate']['coverage80'] if artifact else None})
             slot_studies.append({'slot':family,'horizons':studies})
+        from . import v6_allocation as Allocation
+        prior_allocation=next((old['allocation'] for old in reversed(forecasts) if old.get('allocation')),None)
+        allocation=Allocation.calculate(f,targets,prior_allocation)
         # Recheck the real save clock AFTER observation/candidate computation.
         # A computation crossing18:30/22:30 is not retrospectively qualified.
         saved=stamp(at or clock());policy=classify(forecasts,anchor,start,saved)
@@ -220,7 +223,7 @@ def publish(prices,sessions,*,live=None,calendar_proof=None,store=None,at=None,b
             policy['countsObservation']=policy['countsFormal'];policy['countsFormal']=False
         identity=saved.strftime('%Y%m%dT%H%M%S')+'-'+uuid.uuid4().hex[:8]
         payload={'id':identity,'version':VERSION,'anchorDate':anchor,'anchorClose':float(f.close.iloc[-1]),
-            'informationCutoff':start.isoformat(),'savedAt':saved.isoformat(),**policy,
+            'informationCutoff':start.isoformat(),'savedAt':saved.isoformat(),'allocation':dict(allocation,forecastId=identity,informationCutoff=start.isoformat(),savedAt=saved.isoformat()),**policy,
             'roleLabel':ROLE_LABELS[policy['role']],'formalParentId':primary['id'] if primary else None,
             'usTimeRegime':ny.tzname(),'usTime':ny.isoformat(),'sameClockNightTrainingAvailable':candidate_ready,
             'observation':observation,'forecastMode':'observation' if observation else 'validated_or_baseline','targets':targets,'backtestBySlot':slot_studies,'calendarProof':calendar_proof,'sourcePricesSha256':study['pricesSha256'],
@@ -255,6 +258,7 @@ def report(*,store=None):
     history=[]
     for f in forecasts[-180:]:
         history.append({k:copy.deepcopy(f[k]) for k in ('id','anchorDate','anchorClose','informationCutoff','savedAt','slot','role','roleLabel','qualified','countsFormal','usTimeRegime','targets')})
+        history[-1]['allocation']=copy.deepcopy(f.get('allocation'))
         for t in history[-1]['targets']:t['outcome']=outcomes.get((f['id'],t['horizon']))
     return {'version':VERSION,'status':'ready','readOnly':True,'latest':forecasts[-1],
         'progress':progress,'history':history,'ledgerHeadSha256':digest(encode(events[-1])),

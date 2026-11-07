@@ -8,12 +8,12 @@ import time
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
-from . import alpha_beta, active_etf, block_trades, broker_focus, daily_follow, db, dividend_yields, etf_rs, insider_changes, leaders, major, market_monitor, rs, sector_flow, service, strategies, v9_tx, warrants, monthly_statistics, margin_refresh
+from . import alpha_beta, active_etf, block_trades, broker_focus, daily_follow, db, dividend_yields, etf_rs, insider_changes, leaders, major, market_monitor, rs, sector_flow, service, v9_tx, warrants, monthly_statistics, margin_refresh
 
 TZ = ZoneInfo('Asia/Taipei')
 _lock = threading.Lock()
 _state_lock = threading.Lock()
-NAMES = ['追蹤分點', '全市場主力', '券商關注', '個股 RS', '每日跟單', 'ETF RS', 'Alpha／Beta 排行', '主動 ETF 動向', '內部人持股異動', '殖利率排行', '市場觀測', '族群流向', '每日鉅額交易', '權證分析', '券商風雲榜', 'V9 台指期', 'ETF 滾動配置', '月份漲跌統計', '融資維持率統計']
+NAMES = ['追蹤分點', '全市場主力', '券商關注', '個股 RS', '每日跟單', 'ETF RS', 'Alpha／Beta 排行', '主動 ETF 動向', '內部人持股異動', '殖利率排行', '市場觀測', '族群流向', '每日鉅額交易', '權證分析', '券商風雲榜', 'V9 台指期', '月份漲跌統計', '融資維持率統計']
 _job = {
     'status': 'idle',
     'message': '尚未執行全部更新',
@@ -131,7 +131,6 @@ def _local_status():
         '權證分析': _main_value('SELECT MAX(date) FROM warrant_lookup_days'),
         '券商風雲榜': _main_value('SELECT MAX(date) FROM leader_reports'),
         'V9 台指期': v9_tx.latest_date(),
-        'ETF 滾動配置': _research_value('SELECT MAX(date) FROM strategy_snapshots'),
     }
     try:
         sector = sector_flow.status()
@@ -299,13 +298,6 @@ def _run_one(name):
         except Exception as error:
             _module(name, 'failed', str(error)[:180] or 'V9 台指期更新失敗')
             return 'failed'
-    if name == 'ETF 滾動配置':
-        _module(name, 'running', '建立最新 ETF 滾動配置快照')
-        try:
-            strategies.refresh(wait=True,force=False);value = strategies.report().get('job', {})
-            result = 'complete' if value.get('status') == 'complete' else 'partial' if value.get('status') == 'partial' else 'failed'
-            _module(name, result, value.get('message') or '策略更新完成');return result
-        except Exception as error:_module(name, 'failed', str(error)[:180] or '策略更新失敗');return 'failed'
     raise ValueError('找不到可更新的資料項目')
 
 

@@ -7,6 +7,7 @@ import V6Comparison from './V6Comparison.vue'
 import V6ConditionalResearch from './V6ConditionalResearch.vue'
 import V6ConditionalStatus from './V6ConditionalStatus.vue'
 import V6EveningForecast from './V6EveningForecast.vue'
+import V6Allocation from './V6Allocation.vue'
 import V6ProbabilityHistory from './V6ProbabilityHistory.vue'
 import type {ComparisonReport} from './v6ComparisonTypes'
 import type {LiveContext} from './v6LiveTypes'
@@ -53,6 +54,7 @@ onMounted(()=>load())
   <header class="hero"><div><span class="eyebrow">V6 · MARKET STORM WATCH</span><h1>股災氣象球</h1><p>追蹤風險形成、增強與減弱。只有你在對話中要求「更新 V6」時，才會重新查核市場數據與新聞並保存一份預報。</p></div><div class="hero-state"><small>最近一次人工研究</small><strong>{{data?.history[0]?.prepared_at?.slice(0,16).replace('T',' ')||'尚未建立'}}</strong></div></header>
   <nav class="section-tabs" aria-label="V6檢視"><button :aria-pressed="section==='monitor'" @click="chooseSection('monitor')">預警與已存預報</button><button :aria-pressed="section==='research'" @click="chooseSection('research')">條件預報研究<span>包5–7</span></button></nav>
   <V6EveningForecast/>
+  <V6Allocation/>
   <details v-remember-disclosure="'v6.legacy-0830.archive.v1'" class="legacy-forecast-archive"><summary>舊08:30制度、盤後研究與歷史紀錄（已停止更新）</summary><V6ConditionalStatus/><V6ProbabilityHistory/></details>
   <V6ConditionalResearch v-if="section==='research'"/>
   <template v-else>

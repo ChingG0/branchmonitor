@@ -70,6 +70,7 @@ class Ledger(unittest.TestCase):
   sessions=list(self.p.index)+['2026-11-09','2026-11-10','2026-11-11']
   with tempfile.TemporaryDirectory() as tmp,patch.object(E,'backtest',return_value=self.study):
    store=Path(tmp);a=E.publish(self.p,sessions,store=store,at=at('18:01:00'));first={p.name:p.read_bytes() for p in store.glob('event-*')}
+   self.assertEqual(a['allocation']['forecastId'],a['id']);self.assertEqual(a['allocation']['savedAt'],a['savedAt']);self.assertEqual(a['allocation']['informationCutoff'],a['informationCutoff']);self.assertEqual(a['allocation']['anchorClose'],a['anchorClose'])
    b=E.publish(self.p,sessions,store=store,at=at('22:01:00'));c=E.publish(self.p,sessions,store=store,at=at('23:01:00'))
    self.assertEqual([a['role'],b['role'],c['role']],['18_formal','22_revision','unqualified']);self.assertEqual([t['up'] for t in a['targets']],[t['up'] for t in c['targets']]);self.assertEqual(first,{p.name:p.read_bytes() for p in store.glob('event-*') if p.name in first})
    before={p.name:p.read_bytes() for p in store.glob('*')};x=E.report(store=store);self.assertEqual(x['progress'][0]['saved'],1);self.assertTrue(all(h['n']==0 for h in x['progress'][0]['horizons']));self.assertEqual(before,{p.name:p.read_bytes() for p in store.glob('*')})

@@ -14,7 +14,7 @@ class HomeRefreshIntegration(unittest.TestCase):
   db.DATA=self.original;self.tmp.cleanup()
  def tick(self,hour=18,minute=0,day=9):return datetime(2026,11,day,hour,minute,tzinfo=TZ)
  def test_all_nonmanual_pages_in_registry(self):
-  expected={'追蹤分點','全市場主力','券商關注','個股 RS','每日跟單','ETF RS','Alpha／Beta 排行','主動 ETF 動向','內部人持股異動','殖利率排行','市場觀測','族群流向','每日鉅額交易','權證分析','券商風雲榜','V9 台指期','ETF 滾動配置','月份漲跌統計','融資維持率統計'}
+  expected={'追蹤分點','全市場主力','券商關注','個股 RS','每日跟單','ETF RS','Alpha／Beta 排行','主動 ETF 動向','內部人持股異動','殖利率排行','市場觀測','族群流向','每日鉅額交易','權證分析','券商風雲榜','V9 台指期','月份漲跌統計','融資維持率統計'}
   self.assertEqual(set(full_update.NAMES),expected);self.assertEqual(len(full_update.NAMES),len(expected))
   for version in ('V3','V6','V10','V11'):self.assertFalse(any(version in name for name in full_update.NAMES))
  def test_scheduler_runs_once_daily_and_persists_attempt_even_when_partial(self):

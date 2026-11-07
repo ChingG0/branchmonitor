@@ -65,7 +65,7 @@ class StrategiesTest(unittest.TestCase):
   with research.store() as c:c.execute('INSERT INTO strategy_snapshots VALUES (?,?,?,?)',('saved',target,payload['created_at'],json.dumps(payload)))
   context={'date':target,'candidates':[],'warnings':[]}
   with patch.object(research,'context',return_value=context),patch.object(s,'catalog_snapshot',return_value=(target,{})),patch.object(s,'refresh_market_risk_inputs') as live:
-   first=s.refresh(target,wait=True);second=s.refresh(target,wait=True)
+   first=s._archived_refresh(target,wait=True);second=s._archived_refresh(target,wait=True)
   self.assertTrue(first['cached']);self.assertTrue(second['cached']);self.assertEqual(first['snapshot_id'],'saved');live.assert_not_called()
   with research.store() as c:self.assertEqual(c.execute('SELECT count(*) FROM strategy_snapshots').fetchone()[0],1)
  def test_rotation_plan_marks_profitable_high_position_and_next_etf(self):
@@ -124,7 +124,7 @@ class StrategiesTest(unittest.TestCase):
   plan={'count':0,'symbols':[],'deployable':20000,'estimated_used':0,'leftover':20000,'method':'測試'}
   metric={'as_of':target,'start':'2025-12-31','sample':2,'ytd_total':1,'price_return':1,'excess_0050':0,'drawdown':0,'volatility':1,'position_pct':50,'position_label':'中位','market_price':100,'support_1':95,'support_2':90,'resistance_1':105,'resistance_2':110,'distance_support_pct':5,'distance_resistance_pct':5,'swing_action':'觀察','nav':None,'nav_as_of':None,'premium_pct':None,'nav_note':'待補','dividends':[],'curve':[],'source':'test','stale':False,'limitations':'測試'}
   with patch.object(research,'context',return_value=context) as research_context,patch.object(s,'catalog_snapshot',return_value=(target,universe)),patch.object(s,'refresh_market_risk_inputs',return_value=[]),patch.object(s,'refresh_index_bars'),patch.object(s,'fetch_chart',return_value=self.sample()),patch.object(s,'etf_metrics',return_value=metric),patch.object(s,'fetch_nav',side_effect=ValueError('待補')),patch.object(s,'risk_dashboard',return_value=risk),patch.object(s,'rolling_plan',return_value=plan):
-   result=s.refresh(target,wait=True,force=True)
+   result=s._archived_refresh(target,wait=True,force=True)
   self.assertIn(result['status'],('complete','partial'));research_context.assert_called_once_with(target,include_stocks=False)
   with research.store() as c:
    self.assertEqual([r[0] for r in c.execute('SELECT symbol FROM strategy_quotes ORDER BY symbol')],sorted(s.DEFAULTS['etfs']))
