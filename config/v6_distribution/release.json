@@ -1,0 +1,27 @@
+{
+  "status": "ready",
+  "method_version": "v6-distribution-protocol-1.0.0",
+  "activated_at": "2026-11-04T16:43:21.535508+08:00",
+  "selected": {
+    "terminal": "T1",
+    "event": "E1"
+  },
+  "base_file": "official-base.csv",
+  "base_sha256": "f3102b92a7d658726a7c34081a19907afcba62dcb1483f692ae40756a6709e5e",
+  "research_decision_sha256": "052b8db104945e447e7f41c4059ae163dd3326505e5e2d7200ffc941607a9661",
+  "note": "新增分數未達完整採用規則；共同分布保留歷史基準，不宣稱已校準或真正前瞻有效。",
+  "validation": {
+    "data_through": "2026-11-03",
+    "calibration_n": 111,
+    "test_n": 318,
+    "event_n": 95,
+    "RPS": 0.2384961466437325,
+    "coverage95_pct": 88.9937106918239,
+    "holm_local_p": 0.0383961603839616,
+    "minimum_relative_gain_pct": 1,
+    "local_gain_pct": 0.113666,
+    "increment_adopted": false,
+    "claim": "回溯診斷，非真正前瞻成績"
+  },
+  "protocol_sha256": "4bcf0fe75a5ecd55716d6c5a8716b3bcd2f4b0977bb8c3a9674fdfa661dd7326"
+}

@@ -1,0 +1,106 @@
+{
+  "version": "v6-evening-protocol-1.0.0",
+  "sealed_at": "2026-11-06T23:05:17.997790+08:00",
+  "scope": "new 18/22 flow; preserve sealed 08:30 runtime and old observations as archive; no reuse of 05:00 night-close features",
+  "windows": {
+    "18": [
+      "18:00:00",
+      "18:30:00"
+    ],
+    "22": [
+      "22:00:00",
+      "22:30:00"
+    ]
+  },
+  "window_rule": "both actual information cutoff and actual saved time in the same window, inclusive exact endpoints; publish after window is unqualified; no backdating",
+  "clock_alignment": "minute bars completed by actual cutoff; exact HH:MM historical alignment per model artifact; 18 and22 trained/calibrated separately; nonmatching clock uses M0; NY timezone DST/EST recorded every time",
+  "roles": [
+    "18_formal",
+    "22_revision",
+    "22_supplement",
+    "same_window_revision",
+    "unqualified"
+  ],
+  "roles_rule": "first qualified18 is formal; first qualified22 revises qualified18, otherwise supplement; all additional updates retained separately; unqualified does not consume formal slot",
+  "anchor": "latest completed official cash T close; T+1..3 from saved official exchange calendar; same anchor for all horizons; never add T+2 change to T+1 forecast",
+  "target": "strict positive close return is up, negative down; exact-flat outcomes separately recorded and excluded from binary direction/Brier",
+  "direction_thresholds": [
+    0.6,
+    0.65,
+    0.7
+  ],
+  "display_threshold": 0.65,
+  "exact50": "no direction; below confidence threshold excluded only from direction hit rate; all nonflat outcomes remain in Brier/log loss",
+  "baseline": {
+    "name": "M0 mature history proportion + volatility-scaled empirical distribution",
+    "history_mature_outcomes": 1260,
+    "min_samples": 252,
+    "ewma_lambda": 0.94,
+    "ewma_max_returns": 60,
+    "sigma_floor": 1e-06,
+    "volatility": "max(trailing20 sample standard deviation, trailing60 EWMA root-mean-square log return); computed from prefix only",
+    "distribution": "historical h-session log returns divided by each origin sigma*sqrt(h), rescale at current sigma; up/down probability and q10/q50/q90 from one empirical distribution",
+    "features_used": [
+      "completed cash OHLC",
+      "current cash volatility"
+    ],
+    "does_not_use": [
+      "partial-night quotes",
+      "future overseas quotes",
+      "latest all-years seasonal table"
+    ]
+  },
+  "validation": {
+    "walk_forward": true,
+    "test_tail_sessions": 504,
+    "min_train_rows": 504,
+    "calibration_rows": 126,
+    "refit_every_sessions": 20,
+    "labels_must_mature_before_cutoff": true,
+    "same_dates_for_M0": true,
+    "minimum_new_feature_relative_brier_improvement": 0.01,
+    "base_model_requires_brier_below_M0": true,
+    "calibration": "positive-slope sigmoid fitted only on past disjoint calibration set, per slot/minute/horizon; DST recorded and subgroup metrics shown",
+    "no_pristine_holdout_claim": "existing history was opened in prior research; sealed temporal out-of-sample replay is not pristine unseen human data; any new feature needs genuinely unopened/prospective evidence before promotion"
+  },
+  "quantiles": {
+    "q": [
+      0.1,
+      0.5,
+      0.9
+    ],
+    "central_coverage_target": 0.8,
+    "score": "pinball loss in index points; also normalized by anchor",
+    "coherence": "one CDF for direction and price quantiles; reject crossing or contradictory median/interval",
+    "intranight": "use matched-time residual uncertainty, never complete-night05:00 residuals; M0 keeps full future horizon uncertainty without shrinking based on elapsed night",
+    "one_sided_band": "requires >=90% same-distribution tail confidence and historical matched-time calibration support; otherwise fall back to M0"
+  },
+  "features_policy": "all tabs may supply candidates; event available_at<=cutoff and historical vintage proof required; no latest payload backfill; absent value is absent, not zero; seasonal statistics recomputed from dates strictly before origin, no current partial-month final return",
+  "candidate_features": [
+    "night_return_same_contract",
+    "night_range_so_far",
+    "known_overseas_returns",
+    "foreign_TX_open_interest",
+    "put_call",
+    "taiwan_vix",
+    "ADR_premium",
+    "SOX",
+    "margin_and_maintenance",
+    "breadth",
+    "drawdown",
+    "below60MA",
+    "seasonal_month",
+    "month_phase",
+    "settlement_week",
+    "sector_and_broker_candidates"
+  ],
+  "release_policy": {
+    "auto_deploy_authorized": true,
+    "fallback": "display M0 probability/quantiles when matching slot model unavailable or ineligible; explicitly label and do not imply night data influenced M0",
+    "rolling60": "score stored shadow candidate and M0 on same matured qualified cohort; disable when candidate Brier>M0, automatically restore when same-date latest60 improves; formal/supplement/revision scores separate",
+    "recovery": "candidate must remain historically eligible; all source/time/model integrity gates must still pass"
+  },
+  "forward": "18 formal and22 supplement each counted separately per horizon;22 revisions separately scored, never added as extra formal sample; no unqualified sample in formal60; no accuracy fabricated before maturity",
+  "non_overlap": "per horizon test origins chronological, predeclared phase0 earliest eligible, next origin>=previous target; same day set for candidate and M0; state n and coverage",
+  "refresh": "chat publication only; frontend reads saved static JSON; no fetch/train/grade on GET or refresh"
+}

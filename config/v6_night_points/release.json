@@ -1,0 +1,8 @@
+{
+  "version": "v6-night-points-research-1.0.0",
+  "role": "research_only",
+  "assets": {
+    "protocol.json": "a0c97effa8a29a41c9a7ed9e875d47454bef8e6f7f0562c96158fbbb0d1753c5",
+    "models.json": "8ec2c5ace13106819b17297fc5206c1524dc66771875220ec69e6594d232e7c1"
+  }
+}

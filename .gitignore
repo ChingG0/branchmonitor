@@ -1,0 +1,38 @@
+# Local datasets, research archives and generated exports
+/data/
+/research/
+**/raw/
+*.sqlite*
+*.db
+*.db-wal
+*.db-shm
+/prototype/board.html
+/prototype/update.lock
+/frontend/public/v6-research/evening-forecast.json
+/frontend/public/v6-research/daily-probability-history.json
+/frontend/public/v6-research/forecast-presentation.json
+/frontend/public/v6-research/prospective-status.json
+
+# Reinstallable dependencies and build output
+node_modules/
+.venv/
+dist/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+
+# Machine-specific settings, logs and secrets
+.claude/
+.DS_Store
+*.log
+*.pid
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+credentials.json
+service-account*.json
+service_account*.json

@@ -1,0 +1,18 @@
+{
+  "method_version": "v6-daily-deadline-baseline-1.0.0",
+  "horizons": [
+    1,
+    2,
+    3
+  ],
+  "warmup": 252,
+  "minimum_matured_pool": 1260,
+  "classes": "original anchor +/-0.5%, cumulative to individual deadline; inclusive boundaries flat",
+  "estimator": "current close times all matured equal-weight historical remaining-session returns, inverse empirical CDF intervals; no score/volatility/direction adjustment",
+  "calendar": "retain initial scheduled date and calendar vintage; notice-based corrections require saved calendar before information cutoff, record shifted dates; no inferred closure from absent price",
+  "publish": "chat CLI only, actual issue time and shared-source gate; data cutoff<=next-session08:30, no publication after next08:45; no retroactive forecast migration",
+  "scoring": "unique origin and horizon, first08:30-qualified root, first qualifying revision per elapsed stage; RPS and Brier from saved probabilities; horizons overlap and revisions see more information",
+  "forward_policy": "no refit or tuning during first month of actual manual records; missing manual days not filled; at least one month before reviewing cumulative forecast quality, no forecast or trading-alpha adoption claim from October replay",
+  "compatibility": "old shared3-day and remaining2/1 records untouched; only new daily method rows eligible for new timeline",
+  "research_sha256": "a35f861ec29da9b18cca69e58aed1680df46c95d9e9763ffdfe33f0d18c6327e"
+}

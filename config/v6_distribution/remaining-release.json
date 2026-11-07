@@ -1,0 +1,7 @@
+{
+  "status": "ready",
+  "method_version": "v6-remaining-baseline-1.0.0",
+  "activated_at": "2026-11-04T17:11:21.647772+08:00",
+  "protocol_sha256": "14b47150bacb1be537933d41d95115f745950cdc3f3115cbb413ab47fec3fcb7",
+  "note": "獨立的剩餘期間歷史基準，沒有增加方向訊號；等待真正前瞻結果。"
+}

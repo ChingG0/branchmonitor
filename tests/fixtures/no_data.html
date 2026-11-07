@@ -1,0 +1,287 @@
+<!DOCTYPE>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=big5">
+<script language="JavaScript"><!--
+document.writeln('<script language="JavaScript" src="/z/js/jquery.djjs"></script>\n');
+// --></script>
+<script language="JavaScript" src="/z/js/jsFunction.djjs"></script>
+<script language="JavaScript" src="/z/js/isSpecialKind.djjs"></script>
+<script language="JavaScript" src="/z/js/mdj.js"></script>
+<script type="text/javascript" src="/z/js/Applet2Canvas.djjs"></script>
+<script type="text/javascript" src="/z/js/DJWebGraph.djjs"></script>
+<script type="text/javascript" src="/z/js/xml2jsonJS.djjs"></script>
+<script type="text/javascript" src="/z/js/json2xmlJS.djjs"></script>
+<script type="text/javascript" src="/z/js/json2.djjs"></script>
+<script type="text/javascript" src="/z/js/GenUpDownJS.djjs"></script>
+<link rel=stylesheet href="/z/js/mdj.css" type="text/css">
+<title>個股主力券商-00664R</title>
+</head>
+<script language="JavaScript"><!--
+CheckMenu(4, '00664R');
+function chkSetUpMenu(){ 
+	if (typeof(SetUpMenu) == 'function'){
+		SetUpMenu(4,'00664R');
+}
+	else
+		setTimeout(function(){chkSetUpMenu();},5000);
+}
+// --></script>
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<div id="SysJustIFRAMEDIV">
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td colspan="3" valign="top" align="left">
+<script language="javascript" src="/z/js/disableselectionjs.djjs"></script>
+<script language="javascript" src="/z/js/SU.js"></script>
+<script language="javascript"><!--
+ chkSetUpMenu();
+//--></script>
+</td></tr>
+<tr><td valign="top" align="left">
+<script language="javascript" src="/z/js/SL.js"></script>
+<script language="javascript"><!--
+ SetLeftMenu(4,'00664R')
+//--></script>
+</td><td valign="top" width="99%">
+<script language="javascript"><!--
+if(typeof(ContentCenterBegin) == 'function'){ 	ContentCenterBegin();
+ } 
+//--></script>
+
+<script language="javascript" src="/z/js/zbrokerjs.djjs"></script>
+<form name="F" onSubmit="return false;">
+<table border="0"><tr><td class="t0">
+<table border="0" class="t01"  cellspacing="1" cellpadding="1">
+<tr><td class="t10">華南永昌-竹北 對 國泰臺灣加權反1(00664R)個股 單一券商歷史明細</td></tr>
+<tr><td class="t2" style="line-height:200%">
+	<input type=radio name=radio1 onclick="javascript:window.open('/z/zc/zco/zco.djhtm?a=00664R','_self')">總表
+	<input type=radio name=radio1 checked>單一<SCRIPT LANGUAGE=javascript><!--
+ var sObj = eval('document.' + 'F'); 
+	iID = '9339';
+	GenFundCorpCombo('9300','9339','F');
+	for (i=0;i<sObj.sel_Broker.options.length;i++)
+	{
+		var tmpID1 = sObj.sel_Broker.options[i].value.toUpperCase();
+		if (tmpID1 == '9300') 
+		{
+			sObj.sel_Broker.selectedIndex = i;
+			break;
+		}
+	}
+	for (i=0;i<sObj.sel_BrokerBranch.options.length;i++)
+	{
+		var tmpID2 = sObj.sel_BrokerBranch.options[i].value.toUpperCase();
+		if (iID != '')
+		{
+			if (tmpID2 == iID )
+			{
+				sObj.sel_BrokerBranch.selectedIndex = i;
+				break;
+			}
+		}
+		else
+			sObj.sel_BrokerBranch.selectedIndex = 0;
+	}
+//--></SCRIPT>
+
+</td></tr>
+<tr><td class="t3n0" width="100%">
+<div id="SysJustWebGraphDIV"></div>
+</td>
+</tr>
+<tr><td class="t3n0">&nbsp;</td></tr>
+<tr><td class="t2" colspan="2">
+<select name="D" onChange="goA();">
+<option value="0" selected>請選擇</option>
+<option value="1">近20日</option>
+<option value="2">近40日</option>
+<option value="3">近60日</option>
+</select>
+　自設區間：
+<script language="JavaScript" src="/z/js/month.djjs"></script>
+從　<SELECT name="Y2" onChange="javascript:SetMonthDate(document.F.Y2,document.F.M2,document.F.D2);">
+	<OPTION value="91"></OPTION>
+</SELECT>年 
+<SELECT name="M2" onChange="javascript:SetMonthDate(document.F.Y2,document.F.M2,document.F.D2);">
+	<OPTION value="-1"></OPTION>
+</SELECT>月 
+<SELECT name="D2">
+	<OPTION value="-1"></OPTION>
+</SELECT>日 
+ ～ 
+<SELECT name="Y1" onChange="javascript:SetMonthDate(document.F.Y1,document.F.M1,document.F.D1);">
+	<OPTION value="91"></OPTION>
+</SELECT>年 
+<SELECT name="M1" onChange="javascript:SetMonthDate(document.F.Y1,document.F.M1,document.F.D1);">
+	<OPTION value="-1"></OPTION>
+</SELECT>月 
+<SELECT name="D1">
+	<OPTION value="-1"></OPTION>
+</SELECT>日 
+<input type='hidden' name='bDate'>
+<input type='hidden' name='eDate'>
+<SCRIPT LANGUAGE=javascript><!--
+	var toDay ='2026/9/8'
+	var getYMD1 = '2026/08/03';
+	var getYMD2 = '2026/08/03';
+	PageInit(document.F);
+	function PageInit(obj)
+	{	//在 BODY onLoad 時候的初始化
+		ShowYear(obj.Y1,'2026/9/8',1,'N');
+		ShowYear(obj.Y2,'2026/9/8',1,'N');
+		SetOptionValue(obj.M1,1,12);
+		SetOptionValue(obj.M2,1,12);
+		//設定初始值
+		var YMDary1,Hary1;
+		if (getYMD1.indexOf(' ') > -1 ) {
+			YMDary1 = getYMD1.split(' ')[0].split('/');
+		}else {
+			YMDary1 = getYMD1.split('/');
+		}
+		SetFocus(obj.Y1,YMDary1[0]);
+		SetFocus(obj.M1,YMDary1[1]);
+		var YMDary2,Hary2;
+		if (getYMD2.indexOf(' ') > -1 ) {
+			YMDary2 = getYMD2.split(' ')[0].split('/');
+		}else {
+			YMDary2 = getYMD2.split('/');
+		}
+		SetFocus(obj.Y2,YMDary2[0]);
+		SetFocus(obj.M2,YMDary2[1]);
+		SetMonthDate(obj.Y1,obj.M1,obj.D1);
+		SetMonthDate(obj.Y2,obj.M2,obj.D2);
+		SetFocus(obj.D2,YMDary2[2]);
+		SetFocus(obj.D1,YMDary1[2]);
+		removeToday(obj.Y1,obj.M1,obj.D1,toDay);
+		removeToday(obj.Y2,obj.M2,obj.D2,toDay);
+	}
+	function CheckDate()
+	{
+		var Frm = document.F;
+		var y1 = parseInt(Frm.Y1.options[Frm.Y1.selectedIndex].value);
+		var m1 = parseInt(Frm.M1.options[Frm.M1.selectedIndex].value);
+		var d1 = parseInt(Frm.D1.options[Frm.D1.selectedIndex].value);
+		var y2 = parseInt(Frm.Y2.options[Frm.Y2.selectedIndex].value);
+		var m2 = parseInt(Frm.M2.options[Frm.M2.selectedIndex].value);
+		var d2 = parseInt(Frm.D2.options[Frm.D2.selectedIndex].value);
+		var sEDate = y1 + '-' + m1 + '-' + d1;
+		var sBDate = y2 + '-' + m2 + '-' + d2;
+		Frm.bDate.value = sBDate;
+		Frm.eDate.value = sEDate;
+		return checkBEdate(sBDate,sEDate);
+	}
+	function checkBEdate(sBDate,sEDate)
+	{
+		var aymd1 = sBDate.split(' ')[0].split('-');
+		var aymd2 = sEDate.split(' ')[0].split('-');
+		if (aymd1.length < 3 || aymd2.length < 3 ) {
+			alert ('日期選擇錯誤!!');
+			return false;
+		}
+		var nbdate = parseInt(aymd1[0])*1000000 + parseInt(aymd1[1])*10000 + parseInt(aymd1[2])*100;
+		var nedate = parseInt(aymd2[0])*1000000 + parseInt(aymd2[1])*10000 + parseInt(aymd2[2])*100;
+		if (nbdate > nedate) {
+			alert('您所輸入的起始日期大於結束日期');
+			return false;
+		}
+		return true;
+	}
+//--></SCRIPT>
+ <INPUT type="button" name="BB" value="查詢" onclick="javascript:goB();">
+</td></tr>
+<tr><td class="t3n0" colspan="2">查無(國泰臺灣加權反100664R)主力券商(華南永昌-竹北)資料</td></tr>
+</table>
+</td></tr></table>
+</form>
+<script language="javascript"><!--
+function goA()
+{
+var i = document.F.D.selectedIndex;
+i = document.F.D.options[i].value;
+if (i > 0) {
+self.location = '/z/zc/zco/zco0/zco0.djhtm?a=00664R&BHID=9300&b=9339&C='+i;
+}
+}
+function goB()
+{
+	if (CheckDate()){ 	
+	var bDate = document.F.bDate.value;		//起始日期 
+	var eDate = document.F.eDate.value;	    //結束日期 
+	}
+self.location = '/z/zc/zco/zco0/zco0.djhtm?A=00664R&BHID=9300&b=9339&C=0&D=' + bDate + '&E=' + eDate + '&ver=V3';
+}
+//--></script>
+
+<script language="JavaScript"><!--
+    var $DJWebGraph1;
+    var sRenderTo = 'SysJustWebGraphDIV';
+    
+    $(document).ready(function () {
+        if (!!$DJWebGraph) {
+			$DJWebGraph1 = new $DJWebGraph();
+        		
+            $DJWebGraph1.CreateGraphObject({
+                'CanvasClass': 'canvas', //表示為複合式圖形
+                'ID': 'ZCO',
+                'Width': '490',
+                'Height': [['120'], ['140']],
+                'RenderTo': sRenderTo,
+                'Type': [['Trend:R'], ['Histogram']],
+                'Title': [['國泰臺灣加權反1' + '股價'], ['買賣超']],
+                'Unit': [['元'], ['張']],
+                'LineColor': [['ea6977'], ['2882D5']],
+                'BgColor': 'FFFFFF',
+                'Mark': 'none',
+                'Volumn': '無資料'
+            })
+        }
+
+		GetBcdData('無資料');
+        
+    });
+
+    function GetBcdData(data) {
+		if (data == '無資料'){
+			$DJWebGraph1.SetPoster("無資料");
+		}else{
+			if (!!data.length) {
+				var arrData = data.split(' ');
+				var X = arrData[0];
+				var ArrY = [
+				[arrData[1]], [arrData[2]]
+				];
+
+				$DJWebGraph1.SetGraphBcd({ 'X': X, 'Y': ArrY });
+			}
+		}
+    }
+
+    // 切選 券商公司List 
+    function GoPage() {
+    	var sUrl = '/z/zc/zco/zco0/zco0.djhtm?a=00664R';
+
+    	var sFrmObj = document.F;
+    	var sA = sFrmObj.sel_Broker.options[sFrmObj.sel_Broker.selectedIndex].value;
+    	var sB = sFrmObj.sel_BrokerBranch.options[sFrmObj.sel_BrokerBranch.selectedIndex].value;
+    	//sB = toHex_js(sB);
+
+    	sUrl = sUrl + '&BHID=' + sA + '&b=' + sB;
+    	//console.log(sUrl);
+    	document.location.href = sUrl;
+    }
+
+
+// --></script>
+<script language="javascript"><!--
+if(typeof(ContentCenterEnd) == 'function'){ 	ContentCenterEnd();
+ } 
+//--></script>
+</td><td valign="top" align="right">
+<script language="javascript" src="/z/js/SR.js"></script>
+</td></tr>
+<tr><td colspan="3" valign="top">
+<script language="javascript" src="/z/js/SD.js"></script>
+</td></tr></table>
+</div>
+</body>
+</html>

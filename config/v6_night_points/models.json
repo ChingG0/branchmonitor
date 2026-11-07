@@ -1,0 +1,233 @@
+{
+  "version": "v6-night-points-research-1.0.0",
+  "role": "research_only",
+  "protocol_sha256": "a0c97effa8a29a41c9a7ed9e875d47454bef8e6f7f0562c96158fbbb0d1753c5",
+  "input_sha256": {
+    "features": "041fd4384a51d16b29d7f7ff63dff7fc36b5b7fae7a756659477acd01185bd38",
+    "members": "3a9d9eea7547fe1fa9ca654fd5163d43e9a250337d31e6a723852481eb772717",
+    "development": "0f72a4814f045397ea2a3bf38200f6bf2877f8fced4b1b0761344e63f0697e61",
+    "test": "91702f1bc69d7734f5db6eb72893b5572ed54193bc6a02df2bff09d6735cdf12",
+    "parameters": "415327b6da5326ce8ca04e441c0fbc3a917df5c5fea19c47e93c340a43975c41"
+  },
+  "models": {
+    "1": {
+      "horizon": 1,
+      "features": [
+        "night_return_scaled",
+        "night_range_scaled",
+        "log_daily_sigma",
+        "night_age"
+      ],
+      "mean": [
+        0.04658907533366724,
+        0.8882623466189373,
+        -4.727768605456895,
+        0.36395408007159724
+      ],
+      "std": [
+        0.6219852292476113,
+        0.45999112398303665,
+        0.35822870447568955,
+        0.44972609419116183
+      ],
+      "theta": [
+        0.07949399163386908,
+        0.538001553501162,
+        -0.0,
+        -0.0,
+        0.029247846921665804
+      ],
+      "calibration_residual_quantiles": {
+        "q10": -0.7590478154040384,
+        "q50": 0.06063063315267503,
+        "q90": 0.9819744795565346
+      },
+      "fit": {
+        "success": true,
+        "solver": "scipy.linprog highs",
+        "objective": 0.3293933410819415
+      },
+      "train_through": "2023-11-03",
+      "calibrated_through": "2024-11-05",
+      "summary": {
+        "horizon": 1,
+        "train": 1579,
+        "calibration": 242,
+        "test": 485,
+        "test_first": "2024-11-06",
+        "test_last": "2026-11-05",
+        "median_mae_pct": 0.8542987536855882,
+        "central80_empirical_coverage": 0.7793814432989691,
+        "baselines": {
+          "no_change": {
+            "baseline_mae_pct": 1.168138350818481,
+            "relative_improvement": 0.2686664613938876,
+            "paired_block10_diff95_pct": [
+              -0.39759367529727874,
+              -0.24469496954558273
+            ],
+            "passed": true
+          },
+          "historical_median": {
+            "baseline_mae_pct": 1.1618749711470702,
+            "relative_improvement": 0.2647240237543158,
+            "paired_block10_diff95_pct": [
+              -0.3913742735892477,
+              -0.23890559346011997
+            ],
+            "passed": true
+          }
+        },
+        "research_display_eligible": true
+      }
+    },
+    "2": {
+      "horizon": 2,
+      "features": [
+        "night_return_scaled",
+        "night_range_scaled",
+        "log_daily_sigma",
+        "night_age"
+      ],
+      "mean": [
+        0.04614693956419735,
+        0.8882961062490836,
+        -4.727806701099427,
+        0.36409845390286916
+      ],
+      "std": [
+        0.6219341750526877,
+        0.4601348966897979,
+        0.3583389962208403,
+        0.4498319889191475
+      ],
+      "theta": [
+        0.11294650807805252,
+        0.4998818169354112,
+        -0.0,
+        -0.0,
+        0.022791127930958343
+      ],
+      "calibration_residual_quantiles": {
+        "q10": -1.0249031260243653,
+        "q50": 0.09387354934352249,
+        "q90": 1.085403940792584
+      },
+      "fit": {
+        "success": true,
+        "solver": "scipy.linprog highs",
+        "objective": 0.37145028971446464
+      },
+      "train_through": "2023-11-02",
+      "calibrated_through": "2024-11-04",
+      "summary": {
+        "horizon": 2,
+        "train": 1578,
+        "calibration": 241,
+        "test": 484,
+        "test_first": "2024-11-06",
+        "test_last": "2026-11-04",
+        "median_mae_pct": 1.408773055899936,
+        "central80_empirical_coverage": 0.7892561983471075,
+        "baselines": {
+          "no_change": {
+            "baseline_mae_pct": 1.7256999324742652,
+            "relative_improvement": 0.18365120761170073,
+            "paired_block10_diff95_pct": [
+              -0.44420358600435317,
+              -0.20390388325475134
+            ],
+            "passed": true
+          },
+          "historical_median": {
+            "baseline_mae_pct": 1.700221793834368,
+            "relative_improvement": 0.1714180696843981,
+            "paired_block10_diff95_pct": [
+              -0.4117450523483864,
+              -0.18425797966064678
+            ],
+            "passed": true
+          }
+        },
+        "research_display_eligible": true
+      }
+    },
+    "3": {
+      "horizon": 3,
+      "features": [
+        "night_return_scaled",
+        "night_range_scaled",
+        "log_daily_sigma",
+        "night_age"
+      ],
+      "mean": [
+        0.045402489250032416,
+        0.8879359790802065,
+        -4.727733215110037,
+        0.3642430108334832
+      ],
+      "std": [
+        0.6214280793360714,
+        0.46005839560969736,
+        0.3584407056476689,
+        0.44993794656178615
+      ],
+      "theta": [
+        0.13425367338026511,
+        0.3915177875845845,
+        0.005586281392296592,
+        -0.0,
+        0.016206011154394146
+      ],
+      "calibration_residual_quantiles": {
+        "q10": -1.0340512076178319,
+        "q50": 0.07884384170636916,
+        "q90": 1.1212096893549106
+      },
+      "fit": {
+        "success": true,
+        "solver": "scipy.linprog highs",
+        "objective": 0.3890612302976108
+      },
+      "train_through": "2023-11-01",
+      "calibrated_through": "2024-11-01",
+      "summary": {
+        "horizon": 3,
+        "train": 1577,
+        "calibration": 240,
+        "test": 483,
+        "test_first": "2024-11-06",
+        "test_last": "2026-11-03",
+        "median_mae_pct": 1.8771903965004424,
+        "central80_empirical_coverage": 0.7743271221532091,
+        "baselines": {
+          "no_change": {
+            "baseline_mae_pct": 2.113530433793446,
+            "relative_improvement": 0.11182239607915712,
+            "paired_block10_diff95_pct": [
+              -0.3467702260284179,
+              -0.1308406903860436
+            ],
+            "passed": true
+          },
+          "historical_median": {
+            "baseline_mae_pct": 2.0879536247724224,
+            "relative_improvement": 0.1009424853940194,
+            "paired_block10_diff95_pct": [
+              -0.3062343517663399,
+              -0.1224561660503855
+            ],
+            "passed": true
+          }
+        },
+        "research_display_eligible": true
+      }
+    }
+  },
+  "limitations": [
+    "The historical test was previously opened for other research, not a pristine holdout.",
+    "No validation of applying completed-night model to partial-night what-if.",
+    "Intervals are empirical reference ranges, not guaranteed coverage or extrema.",
+    "New point estimates for old scenarios are late-added calculations, never original issue-time forecasts."
+  ]
+}

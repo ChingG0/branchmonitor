@@ -1,0 +1,640 @@
+<!DOCTYPE>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=big5">
+<script language="JavaScript"><!--
+document.writeln('<script language="JavaScript" src="/z/js/jquery.djjs"></script>\n');
+// --></script>
+<script language="JavaScript" src="/z/js/jsFunction.djjs"></script>
+<script language="JavaScript" src="/z/js/isSpecialKind.djjs"></script>
+<script language="JavaScript" src="/z/js/mdj.js"></script>
+<script type="text/javascript" src="/z/js/Applet2Canvas.djjs"></script>
+<script type="text/javascript" src="/z/js/DJWebGraph.djjs"></script>
+<script type="text/javascript" src="/z/js/xml2jsonJS.djjs"></script>
+<script type="text/javascript" src="/z/js/json2xmlJS.djjs"></script>
+<script type="text/javascript" src="/z/js/json2.djjs"></script>
+<script type="text/javascript" src="/z/js/GenUpDownJS.djjs"></script>
+<link rel=stylesheet href="/z/js/mdj.css" type="text/css">
+<title>主力賣超排行</title>
+</head>
+<script language="JavaScript"><!--
+CheckMenu(8, '');
+function chkSetUpMenu(){ 
+	if (typeof(SetUpMenu) == 'function'){
+		SetUpMenu(8,'');
+}
+	else
+		setTimeout(function(){chkSetUpMenu();},5000);
+}
+// --></script>
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<div id="SysJustIFRAMEDIV">
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td colspan="3" valign="top" align="left">
+<script language="javascript" src="/z/js/disableselectionjs.djjs"></script>
+<script language="javascript" src="/z/js/SU.js"></script>
+<script language="javascript"><!--
+ chkSetUpMenu();
+//--></script>
+</td></tr>
+<tr><td valign="top" align="left">
+<script language="javascript" src="/z/js/SL.js"></script>
+<script language="javascript"><!--
+ SetLeftMenu(8,'')
+//--></script>
+</td><td valign="top" width="99%">
+<script language="javascript"><!--
+if(typeof(ContentCenterBegin) == 'function'){ 	ContentCenterBegin();
+ } 
+//--></script>
+<form name=otcchk onSubmit="return false;">
+<table border="0">
+<tr><td class="t0" valign="top">
+<table id="oMainTable" class="t01" border="0" cellspacing="1" cellpadding="1">
+<tr id="oScrollHead">
+<td id="oHeadTitle" class="t10" colspan="8">
+<select onChange="MarketChange('FA');" name="M">
+<option value="0-1">上市主力賣超1週以來排行</option>
+<option value="001" selected>上市主力賣超1日排行</option>
+<option value="002">上市主力賣超2日排行</option>
+<option value="003">上市主力賣超3日排行</option>
+<option value="004">上市主力賣超4日排行</option>
+<option value="005">上市主力賣超5日排行</option>
+<option value="010">上市主力賣超10日排行</option>
+<option value="020">上市主力賣超20日排行</option>
+<option value="030">上市主力賣超30日排行</option>
+<option value="1-1">上櫃主力賣超1週以來排行</option>
+<option value="101">上櫃主力賣超1日排行</option>
+<option value="102">上櫃主力賣超2日排行</option>
+<option value="103">上櫃主力賣超3日排行</option>
+<option value="104">上櫃主力賣超4日排行</option>
+<option value="105">上櫃主力賣超5日排行</option>
+<option value="110">上櫃主力賣超10日排行</option>
+<option value="120">上櫃主力賣超20日排行</option>
+<option value="130">上櫃主力賣超30日排行</option>
+</select>&nbsp;
+<script language="JavaScript"><!--
+function MarketChange(Iname)
+{
+document.location = '/z/zg/zg_' + Iname + '_' + parseInt(document.otcchk.M.options[document.otcchk.M.selectedIndex].value.substring(0,1)) + '_' + parseInt(document.otcchk.M.options[document.otcchk.M.selectedIndex].value.substring(1,3)) + '.djhtm';
+}
+// --></script>
+<script language="JavaScript"><!--
+for(i=0;i<document.otcchk.M.length;i++) {
+if(document.otcchk.M.options[i].value == '101') {
+document.otcchk.M.selectedIndex = i;
+}
+}
+// --></script>
+<div class="t11">日期：09/10</div>
+</td>
+</tr>
+<tr id="oScrollMenu">
+<td class="t2" id="oFieldsName">名次</td>
+<td class="t2">股票名稱</td>
+<td class="t2">收盤價</td>
+<td class="t2">漲跌</td>
+<td class="t2">漲跌幅</td>
+<td class="t2">買進張數</td>
+<td class="t2">賣出張數</td>
+<td class="t2">買賣超張數</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">1</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('6147')">6147  頎邦</a></td>
+<td class="t3n1">&nbsp;190.50</td>
+<td class="t3g1">&nbsp;-7.50</td>
+<td class="t3g1">&nbsp;-3.79%</td>
+<td class="t3n1">&nbsp;4,214</td>
+<td class="t3n1">&nbsp;17,212</td>
+<td class="t3n1">&nbsp;-12,998</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">2</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('6547')">6547  高端疫苗</a></td>
+<td class="t3n1">&nbsp;61.40</td>
+<td class="t3g1">&nbsp;-6.70</td>
+<td class="t3g1">&nbsp;-9.84%</td>
+<td class="t3n1">&nbsp;2,004</td>
+<td class="t3n1">&nbsp;6,684</td>
+<td class="t3n1">&nbsp;-4,680</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">3</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('4939')">4939  亞電</a></td>
+<td class="t3n1">&nbsp;82.40</td>
+<td class="t3g1">&nbsp;-8.30</td>
+<td class="t3g1">&nbsp;-9.15%</td>
+<td class="t3n1">&nbsp;1,096</td>
+<td class="t3n1">&nbsp;5,022</td>
+<td class="t3n1">&nbsp;-3,925</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">4</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('00998A')">00998A主動復華金融股息</a></td>
+<td class="t3n1">&nbsp;17.79</td>
+<td class="t3g1">&nbsp;-0.11</td>
+<td class="t3g1">&nbsp;-0.61%</td>
+<td class="t3n1">&nbsp;1,440</td>
+<td class="t3n1">&nbsp;4,740</td>
+<td class="t3n1">&nbsp;-3,300</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">5</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('6488')">6488  環球晶</a></td>
+<td class="t3n1">&nbsp;917.00</td>
+<td class="t3g1">&nbsp;-38.00</td>
+<td class="t3g1">&nbsp;-3.98%</td>
+<td class="t3n1">&nbsp;652</td>
+<td class="t3n1">&nbsp;2,980</td>
+<td class="t3n1">&nbsp;-2,327</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">6</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('6127')">6127  九豪</a></td>
+<td class="t3n1">&nbsp;49.00</td>
+<td class="t3g1">&nbsp;-2.80</td>
+<td class="t3g1">&nbsp;-5.41%</td>
+<td class="t3n1">&nbsp;535</td>
+<td class="t3n1">&nbsp;2,641</td>
+<td class="t3n1">&nbsp;-2,106</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">7</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('00981B')">00981B第一金優選非投債</a></td>
+<td class="t3n1">&nbsp;9.06</td>
+<td class="t3g1">&nbsp;-0.01</td>
+<td class="t3g1">&nbsp;-0.11%</td>
+<td class="t3n1">&nbsp;3,773</td>
+<td class="t3n1">&nbsp;5,846</td>
+<td class="t3n1">&nbsp;-2,072</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">8</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('8064')">8064  東捷</a></td>
+<td class="t3n1">&nbsp;126.50</td>
+<td class="t3g1">&nbsp;-7.50</td>
+<td class="t3g1">&nbsp;-5.60%</td>
+<td class="t3n1">&nbsp;1,040</td>
+<td class="t3n1">&nbsp;2,936</td>
+<td class="t3n1">&nbsp;-1,896</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">9</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('4979')">4979  華星光</a></td>
+<td class="t3n1">&nbsp;571.00</td>
+<td class="t3g1">&nbsp;-39.00</td>
+<td class="t3g1">&nbsp;-6.39%</td>
+<td class="t3n1">&nbsp;980</td>
+<td class="t3n1">&nbsp;2,740</td>
+<td class="t3n1">&nbsp;-1,760</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">10</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('1785')">1785  光洋科</a></td>
+<td class="t3n1">&nbsp;98.30</td>
+<td class="t3g1">&nbsp;-3.20</td>
+<td class="t3g1">&nbsp;-3.15%</td>
+<td class="t3n1">&nbsp;912</td>
+<td class="t3n1">&nbsp;2,420</td>
+<td class="t3n1">&nbsp;-1,507</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">11</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('3718')">3718  中光電投控</a></td>
+<td class="t3n1">&nbsp;65.60</td>
+<td class="t3g1">&nbsp;-2.50</td>
+<td class="t3g1">&nbsp;-3.67%</td>
+<td class="t3n1">&nbsp;954</td>
+<td class="t3n1">&nbsp;2,402</td>
+<td class="t3n1">&nbsp;-1,447</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">12</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('8086')">8086  宏捷科</a></td>
+<td class="t3n1">&nbsp;109.50</td>
+<td class="t3g1">&nbsp;-4.00</td>
+<td class="t3g1">&nbsp;-3.52%</td>
+<td class="t3n1">&nbsp;521</td>
+<td class="t3n1">&nbsp;1,817</td>
+<td class="t3n1">&nbsp;-1,296</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">13</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('8069')">8069  元太</a></td>
+<td class="t3n1">&nbsp;147.00</td>
+<td class="t3g1">&nbsp;-2.50</td>
+<td class="t3g1">&nbsp;-1.67%</td>
+<td class="t3n1">&nbsp;1,543</td>
+<td class="t3n1">&nbsp;2,807</td>
+<td class="t3n1">&nbsp;-1,264</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">14</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('00751B')">00751B元大AAA至A公司債</a></td>
+<td class="t3n1">&nbsp;29.98</td>
+<td class="t3g1">&nbsp;-0.08</td>
+<td class="t3g1">&nbsp;-0.27%</td>
+<td class="t3n1">&nbsp;2,126</td>
+<td class="t3n1">&nbsp;3,324</td>
+<td class="t3n1">&nbsp;-1,198</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">15</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('3260')">3260  威剛</a></td>
+<td class="t3n1">&nbsp;407.00</td>
+<td class="t3g1">&nbsp;-7.50</td>
+<td class="t3g1">&nbsp;-1.81%</td>
+<td class="t3n1">&nbsp;1,191</td>
+<td class="t3n1">&nbsp;2,384</td>
+<td class="t3n1">&nbsp;-1,192</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">16</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('4931')">4931  新盛力</a></td>
+<td class="t3n1">&nbsp;244.00</td>
+<td class="t3g1">&nbsp;-8.50</td>
+<td class="t3g1">&nbsp;-3.37%</td>
+<td class="t3n1">&nbsp;342</td>
+<td class="t3n1">&nbsp;1,532</td>
+<td class="t3n1">&nbsp;-1,190</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">17</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('5475')">5475  德宏</a></td>
+<td class="t3n1">&nbsp;184.50</td>
+<td class="t3g1">&nbsp;-8.50</td>
+<td class="t3g1">&nbsp;-4.40%</td>
+<td class="t3n1">&nbsp;329</td>
+<td class="t3n1">&nbsp;1,452</td>
+<td class="t3n1">&nbsp;-1,122</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">18</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('1815')">1815  富喬</a></td>
+<td class="t3n1">&nbsp;126.00</td>
+<td class="t3n1">&nbsp;0.00</td>
+</td>
+<td class="t3n1">&nbsp;0.00%</td>
+<td class="t3n1">&nbsp;13,993</td>
+<td class="t3n1">&nbsp;15,041</td>
+<td class="t3n1">&nbsp;-1,048</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">19</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('5904')">5904  寶雅*</a></td>
+<td class="t3n1">&nbsp;71.50</td>
+<td class="t3g1">&nbsp;-1.40</td>
+<td class="t3g1">&nbsp;-1.92%</td>
+<td class="t3n1">&nbsp;1,049</td>
+<td class="t3n1">&nbsp;2,042</td>
+<td class="t3n1">&nbsp;-993</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">20</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('5351')">5351  鈺創</a></td>
+<td class="t3n1">&nbsp;115.50</td>
+<td class="t3g1">&nbsp;-2.50</td>
+<td class="t3g1">&nbsp;-2.12%</td>
+<td class="t3n1">&nbsp;1,063</td>
+<td class="t3n1">&nbsp;1,987</td>
+<td class="t3n1">&nbsp;-924</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">21</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('3680')">3680  家登</a></td>
+<td class="t3n1">&nbsp;535.00</td>
+<td class="t3g1">&nbsp;-31.00</td>
+<td class="t3g1">&nbsp;-5.48%</td>
+<td class="t3n1">&nbsp;347</td>
+<td class="t3n1">&nbsp;1,164</td>
+<td class="t3n1">&nbsp;-816</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">22</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('2641')">2641  正德</a></td>
+<td class="t3n1">&nbsp;17.85</td>
+<td class="t3g1">&nbsp;-0.40</td>
+<td class="t3g1">&nbsp;-2.19%</td>
+<td class="t3n1">&nbsp;542</td>
+<td class="t3n1">&nbsp;1,312</td>
+<td class="t3n1">&nbsp;-770</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">23</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('6190')">6190  萬泰科</a></td>
+<td class="t3n1">&nbsp;68.10</td>
+<td class="t3g1">&nbsp;-0.90</td>
+<td class="t3g1">&nbsp;-1.30%</td>
+<td class="t3n1">&nbsp;295</td>
+<td class="t3n1">&nbsp;997</td>
+<td class="t3n1">&nbsp;-701</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">24</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('8383')">8383  千附</a></td>
+<td class="t3n1">&nbsp;65.80</td>
+<td class="t3g1">&nbsp;-2.30</td>
+<td class="t3g1">&nbsp;-3.38%</td>
+<td class="t3n1">&nbsp;251</td>
+<td class="t3n1">&nbsp;948</td>
+<td class="t3n1">&nbsp;-697</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">25</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('5483')">5483  中美晶</a></td>
+<td class="t3n1">&nbsp;179.00</td>
+<td class="t3g1">&nbsp;-2.00</td>
+<td class="t3g1">&nbsp;-1.10%</td>
+<td class="t3n1">&nbsp;1,208</td>
+<td class="t3n1">&nbsp;1,872</td>
+<td class="t3n1">&nbsp;-664</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">26</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('6829')">6829  千附精密</a></td>
+<td class="t3n1">&nbsp;239.50</td>
+<td class="t3g1">&nbsp;-14.50</td>
+<td class="t3g1">&nbsp;-5.71%</td>
+<td class="t3n1">&nbsp;332</td>
+<td class="t3n1">&nbsp;985</td>
+<td class="t3n1">&nbsp;-653</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">27</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('5340')">5340  建榮</a></td>
+<td class="t3n1">&nbsp;85.70</td>
+<td class="t3r1">+&nbsp;0.90</td>
+<td class="t3r1">&nbsp;+1.06%</td>
+<td class="t3n1">&nbsp;358</td>
+<td class="t3n1">&nbsp;1,003</td>
+<td class="t3n1">&nbsp;-644</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">28</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('6016')">6016  康和證</a></td>
+<td class="t3n1">&nbsp;22.55</td>
+<td class="t3g1">&nbsp;-0.35</td>
+<td class="t3g1">&nbsp;-1.53%</td>
+<td class="t3n1">&nbsp;1,461</td>
+<td class="t3n1">&nbsp;2,044</td>
+<td class="t3n1">&nbsp;-583</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">29</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('8390')">8390  金益鼎</a></td>
+<td class="t3n1">&nbsp;92.40</td>
+<td class="t3g1">&nbsp;-5.40</td>
+<td class="t3g1">&nbsp;-5.52%</td>
+<td class="t3n1">&nbsp;255</td>
+<td class="t3n1">&nbsp;825</td>
+<td class="t3n1">&nbsp;-570</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">30</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('3105')">3105  穩懋</a></td>
+<td class="t3n1">&nbsp;461.50</td>
+<td class="t3g1">&nbsp;-2.50</td>
+<td class="t3g1">&nbsp;-0.54%</td>
+<td class="t3n1">&nbsp;2,515</td>
+<td class="t3n1">&nbsp;3,021</td>
+<td class="t3n1">&nbsp;-506</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">31</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('00989B')">00989B台新美國非投等債</a></td>
+<td class="t3n1">&nbsp;9.97</td>
+<td class="t3n1">&nbsp;0.00</td>
+</td>
+<td class="t3n1">&nbsp;0.00%</td>
+<td class="t3n1">&nbsp;669</td>
+<td class="t3n1">&nbsp;1,150</td>
+<td class="t3n1">&nbsp;-481</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">32</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('5425')">5425  台半</a></td>
+<td class="t3n1">&nbsp;89.30</td>
+<td class="t3g1">&nbsp;-0.70</td>
+<td class="t3g1">&nbsp;-0.78%</td>
+<td class="t3n1">&nbsp;589</td>
+<td class="t3n1">&nbsp;1,067</td>
+<td class="t3n1">&nbsp;-477</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">33</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('6872')">6872  浩宇生醫</a></td>
+<td class="t3n1">&nbsp;26.75</td>
+<td class="t3r1">+&nbsp;2.15</td>
+<td class="t3r1">&nbsp;+8.74%</td>
+<td class="t3n1">&nbsp;546</td>
+<td class="t3n1">&nbsp;1,020</td>
+<td class="t3n1">&nbsp;-474</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">34</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('3141')">3141  晶宏</a></td>
+<td class="t3n1">&nbsp;92.10</td>
+<td class="t3g1">&nbsp;-1.80</td>
+<td class="t3g1">&nbsp;-1.92%</td>
+<td class="t3n1">&nbsp;463</td>
+<td class="t3n1">&nbsp;929</td>
+<td class="t3n1">&nbsp;-465</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">35</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('6217')">6217  中探針</a></td>
+<td class="t3n1">&nbsp;172.00</td>
+<td class="t3g1">&nbsp;-8.00</td>
+<td class="t3g1">&nbsp;-4.44%</td>
+<td class="t3n1">&nbsp;359</td>
+<td class="t3n1">&nbsp;786</td>
+<td class="t3n1">&nbsp;-427</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">36</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('5289')">5289  宜鼎</a></td>
+<td class="t3n1">&nbsp;1,290.00</td>
+<td class="t3g1">&nbsp;-65.00</td>
+<td class="t3g1">&nbsp;-4.80%</td>
+<td class="t3n1">&nbsp;271</td>
+<td class="t3n1">&nbsp;690</td>
+<td class="t3n1">&nbsp;-419</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">37</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('4714')">4714  永捷</a></td>
+<td class="t3n1">&nbsp;11.00</td>
+<td class="t3g1">&nbsp;-0.20</td>
+<td class="t3g1">&nbsp;-1.79%</td>
+<td class="t3n1">&nbsp;577</td>
+<td class="t3n1">&nbsp;961</td>
+<td class="t3n1">&nbsp;-384</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">38</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('5439')">5439  高技</a></td>
+<td class="t3n1">&nbsp;258.00</td>
+<td class="t3g1">&nbsp;-6.50</td>
+<td class="t3g1">&nbsp;-2.46%</td>
+<td class="t3n1">&nbsp;446</td>
+<td class="t3n1">&nbsp;822</td>
+<td class="t3n1">&nbsp;-376</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">39</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('3162')">3162  精確</a></td>
+<td class="t3n1">&nbsp;70.80</td>
+<td class="t3g1">&nbsp;-2.80</td>
+<td class="t3g1">&nbsp;-3.80%</td>
+<td class="t3n1">&nbsp;288</td>
+<td class="t3n1">&nbsp;655</td>
+<td class="t3n1">&nbsp;-366</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">40</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('8358')">8358  金居</a></td>
+<td class="t3n1">&nbsp;521.00</td>
+<td class="t3g1">&nbsp;-5.00</td>
+<td class="t3g1">&nbsp;-0.95%</td>
+<td class="t3n1">&nbsp;640</td>
+<td class="t3n1">&nbsp;1,000</td>
+<td class="t3n1">&nbsp;-359</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">41</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('8043')">8043  蜜望實</a></td>
+<td class="t3n1">&nbsp;141.50</td>
+<td class="t3r1">+&nbsp;1.50</td>
+<td class="t3r1">&nbsp;+1.07%</td>
+<td class="t3n1">&nbsp;197</td>
+<td class="t3n1">&nbsp;540</td>
+<td class="t3n1">&nbsp;-343</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">42</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('8027')">8027  鈦昇</a></td>
+<td class="t3n1">&nbsp;174.00</td>
+<td class="t3g1">&nbsp;-4.00</td>
+<td class="t3g1">&nbsp;-2.25%</td>
+<td class="t3n1">&nbsp;335</td>
+<td class="t3n1">&nbsp;667</td>
+<td class="t3n1">&nbsp;-332</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">43</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('6903')">6903  巨漢</a></td>
+<td class="t3n1">&nbsp;300.50</td>
+<td class="t3g1">&nbsp;-15.50</td>
+<td class="t3g1">&nbsp;-4.91%</td>
+<td class="t3n1">&nbsp;109</td>
+<td class="t3n1">&nbsp;439</td>
+<td class="t3n1">&nbsp;-329</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">44</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('3303')">3303  岱稜</a></td>
+<td class="t3n1">&nbsp;49.00</td>
+<td class="t3g1">&nbsp;-3.00</td>
+<td class="t3g1">&nbsp;-5.77%</td>
+<td class="t3n1">&nbsp;577</td>
+<td class="t3n1">&nbsp;903</td>
+<td class="t3n1">&nbsp;-325</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">45</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('3491')">3491  昇達科</a></td>
+<td class="t3n1">&nbsp;1,355.00</td>
+<td class="t3g1">&nbsp;-100.00</td>
+<td class="t3g1">&nbsp;-6.87%</td>
+<td class="t3n1">&nbsp;183</td>
+<td class="t3n1">&nbsp;503</td>
+<td class="t3n1">&nbsp;-319</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">46</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('4416')">4416  三圓</a></td>
+<td class="t3n1">&nbsp;11.30</td>
+<td class="t3g1">&nbsp;-0.60</td>
+<td class="t3g1">&nbsp;-5.04%</td>
+<td class="t3n1">&nbsp;421</td>
+<td class="t3n1">&nbsp;723</td>
+<td class="t3n1">&nbsp;-302</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">47</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('8096')">8096  擎亞</a></td>
+<td class="t3n1">&nbsp;91.80</td>
+<td class="t3g1">&nbsp;-8.10</td>
+<td class="t3g1">&nbsp;-8.11%</td>
+<td class="t3n1">&nbsp;1,785</td>
+<td class="t3n1">&nbsp;2,086</td>
+<td class="t3n1">&nbsp;-300</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">48</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('009823')">009823群益S＆P500</a></td>
+<td class="t3n1">&nbsp;10.32</td>
+<td class="t3g1">&nbsp;-0.02</td>
+<td class="t3g1">&nbsp;-0.19%</td>
+<td class="t3n1">&nbsp;1,434</td>
+<td class="t3n1">&nbsp;1,731</td>
+<td class="t3n1">&nbsp;-296</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">49</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('00981D')">00981D主動中信非投等債</a></td>
+<td class="t3n1">&nbsp;10.20</td>
+<td class="t3g1">&nbsp;-0.02</td>
+<td class="t3g1">&nbsp;-0.20%</td>
+<td class="t3n1">&nbsp;1,511</td>
+<td class="t3n1">&nbsp;1,806</td>
+<td class="t3n1">&nbsp;-294</td>
+</tr>
+<tr>
+<td class="t3n0" id="oAddCheckbox">50</td>
+<td class="t3t1">&nbsp;<a href="javascript:Link2Stk('6265')">6265  方土昶</a></td>
+<td class="t3n1">&nbsp;54.00</td>
+<td class="t3r1">+&nbsp;0.90</td>
+<td class="t3r1">&nbsp;+1.69%</td>
+<td class="t3n1">&nbsp;447</td>
+<td class="t3n1">&nbsp;723</td>
+<td class="t3n1">&nbsp;-276</td>
+</tr>
+</table>
+</td></tr></table>
+</form>
+<script language="JavaScript"><!--
+try {
+ 	if ( typeof(parent.sWhoAmI) !== 'undefined' && typeof(parent.sWhoAmI) !== null) { 
+			if (parent.sWhoAmI == 'SWCF'){
+				parent.sStklistAll='6147,6547,4939,AP00998A,6488,6127,AP00981B,8064,4979,1785,3718,8086,8069,AP00751B,3260,4931,5475,1815,5904,5351,3680,2641,6190,8383,5483,6829,5340,6016,8390,3105,AP00989B,5425,6872,3141,6217,5289,4714,5439,3162,8358,8043,8027,6903,3303,3491,4416,8096,AP009823,AP00981D,6265,';
+			}
+		}
+}
+catch (e) {}
+function GoLinktoStk(a) {
+	aStklist = parent.sStklistAll.split(','); 
+	BackUrl = window.location.href ;
+	BackUrl = BackUrl.substring(BackUrl.indexOf('/z/zg/'),BackUrl.indexOf('.djhtm'));
+	window.location.href = '/z/zk/zkf/zkstkinfo.asp?B=' + arrayIndex(aStklist,a) + '&C='+ BackUrl;
+}
+function arrayIndex(ary,Val) {
+	for (k=0;k<ary.length;k++)
+		if (ary[k] == Val) return k;
+			return -1;
+}
+// --></script>
+<script language="javascript"><!--
+if(typeof(ContentCenterEnd) == 'function'){ 	ContentCenterEnd();
+ } 
+//--></script>
+</td><td valign="top" align="right">
+<script language="javascript" src="/z/js/SR.js"></script>
+</td></tr>
+<tr><td colspan="3" valign="top">
+<script language="javascript" src="/z/js/SD.js"></script>
+</td></tr></table>
+</div>
+</body>
+</html>

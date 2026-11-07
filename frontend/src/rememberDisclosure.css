@@ -1,0 +1,20 @@
+details[data-v6-disclosure]>summary{
+ position:relative;
+ cursor:pointer;
+ list-style:none;
+ padding-right:48px!important;
+}
+details[data-v6-disclosure]>summary::-webkit-details-marker{display:none}
+details[data-v6-disclosure]>summary::after{
+ content:'›';
+ position:absolute;
+ right:18px;
+ top:50%;
+ transform:translateY(-50%);
+ color:#78917c;
+ font:24px/1 sans-serif;
+}
+details[data-v6-disclosure][open]>summary::after{transform:translateY(-50%) rotate(90deg)}
+details[data-v6-disclosure]>summary:focus-visible{outline:2px solid #668b78;outline-offset:-3px;border-radius:6px}
+details[data-v6-disclosure]:not([open])>.section-summary{border-bottom:0}
+details[data-v6-disclosure]>.section-summary{color:inherit;font-weight:400}

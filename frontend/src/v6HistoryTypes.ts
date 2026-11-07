@@ -1,0 +1,3 @@
+export type HistoricalIndicator={category:string;label:string;value:number|string;unit:string;as_of:string;source:string;url:string;reading:string;available_at?:string}
+export type HistoricalPoint={date:string;decision_at:string;market_as_of:string;score:number|null;missing_sources:string[];indicators:HistoricalIndicator[];missing_context:string[]}
+export type V6Historical={kind:'retrospective';strategy_key?:string;label?:string;context_note?:string;generated_at:string;start:string;end:string;requested_start:string;requested_end:string;model_version:string;note:string;points:HistoricalPoint[]}

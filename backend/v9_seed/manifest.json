@@ -1,0 +1,11 @@
+{
+  "source_tx": "https://www.taifex.com.tw/cht/3/futDailyMarketView",
+  "source_index": "https://finance.yahoo.com/quote/%5ETWII/history/",
+  "cutoff": "2026-10-07",
+  "tx_rows": 13722,
+  "index_rows": 2371,
+  "hashes": {
+    "tx.csv": "23a558972a8f359e50eaaa854ce6fddbbb82d7bac93fadd0b75d08a0df33b582",
+    "taiex.csv": "14c4691e28136ed9d8ba821174b6ffc0739990666feea9cf699db1a5eda8794c"
+  }
+}

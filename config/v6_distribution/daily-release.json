@@ -1,0 +1,16 @@
+{
+  "status": "ready",
+  "method_version": "v6-daily-deadline-baseline-1.0.0",
+  "activated_at": "2026-11-04T21:42:35.837350+08:00",
+  "protocol_sha256": "9d9f7058d20afc036788ef5563aeb426b627583171e87c489a87f4aba460937c",
+  "validation": {
+    "kind": "causal_price_only_replay",
+    "origin_month": "2026-10",
+    "origins": 19,
+    "initial_predictions": 57,
+    "revision_predictions": 57,
+    "not_untouched_holdout": true,
+    "direction_validated": false
+  },
+  "note": "逐日期限歷史基準與追蹤產品，不是已驗證方向模型；未以回放輸贏調參。"
+}

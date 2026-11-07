@@ -1,0 +1,56 @@
+<script setup lang="ts">
+import {ref} from 'vue'
+import BondSpreadChart from './BondSpreadChart.vue'
+import type {ValueReading} from './marketComparison'
+export type CreditRow={ticker:string;name:string;issuer?:string;currency?:string;price_only?:boolean;isin:string|null;coupon:number|null;maturity:string|null;remaining_years?:number;as_of:string|null;quote_at?:string;source_url:string;venue?:string;status:string;spread_bp:number|null;yield_pct?:number;treasury_pct?:number;treasury_date?:string;treasury_bracket?:number[];clean_price?:number;change_bp?:number|null;previous?:ValueReading|null;history:ValueReading[];price_history?:ValueReading[];history_error?:string;quote_basis?:string;pairing_note?:string;note:string;error?:string}
+export type CreditData={as_of:string|null;rows:CreditRow[];coverage:number;quote_coverage?:number;total:number;treasury_url:string;method:string;note:string;cds_reference?:{thresholds:{bp:number;probability:number}[];source_url:string}}
+defineProps<{data:CreditData}>()
+const number=(value:number|null|undefined,d=2)=>value==null?'—':value.toLocaleString('zh-TW',{minimumFractionDigits:d,maximumFractionDigits:d})
+const signed=(value:number|null|undefined,d=1)=>value==null?'—':(value>0?'+':'')+number(value,d)
+const change=(row:CreditRow)=>row.change_bp==null?'前日變化待累積':row.change_bp>0?'較前值擴大':row.change_bp<0?'較前值收斂':'較前值持平'
+const chartMode=ref<Record<string,string>>({})
+const priceMode=(row:CreditRow)=>row.price_only||chartMode.value[row.ticker]==='price'
+const levels=[{range:'低於 50 bp',label:'保障費較低',color:'#5882a0',probability:'低於 4.08%'},{range:'50–未滿 100 bp',label:'留意信用風險變化',color:'#4b8067',probability:'4.08–未滿 8.00%'},{range:'100–未滿 200 bp',label:'風險定價升高',color:'#b49a3c',probability:'8.00–未滿 15.35%'},{range:'200–未滿 500 bp',label:'信用壓力明顯',color:'#c4824e',probability:'15.35–未滿 34.08%'},{range:'500 bp 以上',label:'嚴重信用壓力',color:'#bd625c',probability:'34.08% 以上'}]
+</script>
+
+<template>
+ <section class="credit-monitor">
+  <div class="credit-intro"><p>BATMMAAN＋美光、台積電、ASML、JPMorgan · 固定代表債券</p><span>利差 {{data.coverage}}／{{data.total}} 家 · 報價 {{data.quote_coverage??data.coverage}} 家</span></div>
+  <p class="credit-context">美元債使用同日、同年期美債比較。ASML 為歐元債，僅追蹤債價。下方 CDS 分級為獨立參考，本卡尚無經核對的各公司 5 年 CDS 報價。</p>
+  <div class="credit-grid">
+   <article v-for="row in data.rows" :key="row.ticker" class="issuer" :data-issuer="row.ticker" :class="{unavailable:row.clean_price==null}">
+    <header><div><strong>{{row.ticker}}</strong><h3>{{row.name}}</h3></div><span v-if="row.spread_bp!=null">{{number(row.remaining_years,1)}} 年</span></header>
+    <div class="credit-value"><small>{{row.price_only?'歐元債價／100 面額':'G 利差估算'}}</small><b>{{row.price_only?number(row.clean_price,3):signed(row.spread_bp)}}<small v-if="row.spread_bp!=null"> bp</small><small v-else-if="row.price_only&&row.clean_price!=null"> EUR</small></b></div>
+    <template v-if="row.spread_bp!=null">
+     <div class="yield-pair"><span>公司債 YTM<strong>{{number(row.yield_pct,3)}}%</strong></span><i>−</i><span>同年期美債<strong>{{number(row.treasury_pct,3)}}%</strong></span></div>
+     <div class="credit-change" :class="{widening:(row.change_bp||0)>0,tightening:(row.change_bp||0)<0}">{{change(row)}}<b v-if="row.change_bp!=null"> {{signed(row.change_bp)}} bp</b><small v-if="row.previous">前值 {{signed(row.previous.value)}} bp · {{row.previous.date}}</small></div>
+    </template>
+    <p v-else class="credit-missing" :class="{compact:row.price_only}">{{row.error||row.note}}</p>
+    <template v-if="row.clean_price!=null">
+     <div class="chart-tabs" v-if="row.spread_bp!=null"><button :class="{active:!priceMode(row)}" @click="chartMode[row.ticker]='spread'">利差 bp</button><button :class="{active:priceMode(row)}" @click="chartMode[row.ticker]='price'">債券價格</button></div>
+     <BondSpreadChart :points="priceMode(row)?row.price_history||[]:row.history" :unit="priceMode(row)?row.currency||'USD':'bp'" :label="row.name+(priceMode(row)?'債價':'G利差')"/>
+     <p v-if="row.history_error" class="credit-warning">{{row.history_error}}</p>
+     <p v-if="row.error" class="credit-warning">{{row.status==='retained'?'保留上次資料：':''}}{{row.error}}</p>
+     <p v-if="row.pairing_note" class="credit-context">{{row.pairing_note}}</p>
+     <p class="credit-date">{{row.price_only?'債券':'債券／美債'}} {{row.as_of}}<br>{{row.venue}} {{row.quote_basis||'公開報價'}} · 非保證成交</p>
+    </template>
+    <p v-if="row.ticker==='JPM'||row.ticker==='TSM'" class="credit-security-note">{{row.note}}</p>
+    <details v-if="row.isin"><summary>代表債券與計算依據</summary><dl><dt>發行人／幣別</dt><dd>{{row.issuer}}／{{row.currency||'USD'}}</dd><dt>ISIN</dt><dd>{{row.isin}}</dd><dt>票面利率</dt><dd>{{number(row.coupon,3)}}%</dd><dt>到期日</dt><dd>{{row.maturity}}</dd><dt>報價／100面額</dt><dd>{{number(row.clean_price,3)}}</dd><dt>報價時間</dt><dd>{{row.quote_at?.replace('T',' ')||'—'}}</dd><dt v-if="!row.price_only">美債內插年期</dt><dd v-if="!row.price_only">{{row.treasury_bracket?.join('～')||'—'}} 年</dd></dl><p>{{row.note}}</p></details>
+    <a class="credit-source" :href="row.source_url" target="_blank" rel="noopener noreferrer">{{row.isin?'查看債券報價':'Tesla 官方申報'}} ↗</a>
+   </article>
+  </div>
+  <p class="credit-context history-note">走勢取最近 60 個可得來源日；歷史圖表價格按日配對當日美債曲線重算。歷史回溯不是當時已發布的預警，缺值不以 0 或合成數值補齊。移動滑鼠或以左右方向鍵查看日期及數值。</p>
+  <section class="cds-reference">
+   <div class="cds-heading"><div><small>CREDIT DEFAULT SWAP · 參考表</small><h3>5 年期 CDS 怎麼看</h3></div><span>假設回收率 40%</span></div>
+   <p>CDS 是信用保護的價格。此表供有實際 5 年期 CDS 報價時參考，不能將上方公司債 G 利差代入，也不能由此認定信用評級。</p>
+   <div class="cds-table-wrap"><table><thead><tr><th>5 年期 CDS</th><th>信用保障費用的解讀</th><th>隱含 5 年累積違約機率（近似）</th></tr></thead><tbody><tr v-for="level in levels" :key="level.range"><td><i :style="{background:level.color}"></i>{{level.range}}</td><td>{{level.label}}</td><td>{{level.probability}}</td></tr></tbody></table></div>
+   <p class="cds-assumptions">簡化公式：1 − exp[−(CDS bp ÷ 10,000) ÷ 0.6 × 5]。假設利差與違約強度固定；這是風險中性定價隱含值，包含風險溢酬等影響，不是實際違約發生率。500 bp 對應約 34.08%。<a :href="data.cds_reference?.source_url||'https://www.chicagofed.org/publications/economic-perspectives/2023/4'" target="_blank" rel="noopener noreferrer">芝加哥聯準銀行：CDS 隱含機率說明 ↗</a></p>
+  </section>
+  <details class="credit-method"><summary>利差算法與讀法</summary><p>（債券殖利率 − 同年期美債殖利率）× 10,000；若輸入值已是百分比數字，則相減後 × 100。例如 4.543% − 4.193% ＝ 35 bp。這個例子是發行定價，最新欄位使用當次報價重新估算。</p><p>{{data.method}}</p><p>代表債券的年期、順位、流動性與可贖回條款不同，優先比較各自歷史變化。微軟年期較長，JPMorgan 為短期次順位債。沒有前值時顯示待累積；不把缺值視為 0 bp，也不套用 CDS 門檻判定公司債風險。</p><a :href="data.treasury_url" target="_blank" rel="noopener noreferrer">美國財政部每日公債曲線 ↗</a></details>
+ </section>
+</template>
+
+<style scoped>
+.credit-monitor{padding:0 22px 20px;color:#3a5142}.credit-intro{display:flex;justify-content:space-between;align-items:center;gap:14px;margin:0 0 16px;font-size:12px;color:#7c8b77}.credit-intro p{margin:0}.credit-intro>span{white-space:nowrap;background:#edf3e9;border-radius:20px;padding:6px 10px;color:#526d4b}.credit-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.issuer{border:1px solid #e1e8df;border-radius:11px;padding:17px;background:#fcfdfb;display:flex;flex-direction:column;min-width:0}.issuer>header{display:flex;justify-content:space-between;align-items:start;gap:8px}.issuer>header strong{font-size:11px;letter-spacing:.08em;color:#879a80}.issuer h3{font-size:17px;margin:5px 0 0}.issuer>header>span{font-size:10px;border:1px solid #e0e7dc;border-radius:15px;padding:4px 7px;color:#8a977e;white-space:nowrap}.credit-value{margin:20px 0 16px}.credit-value>small{font-size:10px;color:#879782;display:block}.credit-value>b{font:500 31px Georgia,serif;display:block;margin-top:5px;letter-spacing:-.03em;color:#416854;font-variant-numeric:tabular-nums}.credit-value b small{font:12px sans-serif;letter-spacing:0;color:#91a08a}.yield-pair{display:flex;justify-content:space-between;align-items:center;gap:7px;border-top:1px solid #e7ece3;border-bottom:1px solid #e7ece3;padding:11px 0}.yield-pair span{font-size:10px;color:#8a9984}.yield-pair strong{display:block;font-size:14px;color:#50694c;font-weight:500;margin-top:5px}.yield-pair i{color:#adb7a5;font-style:normal}.credit-change{margin:13px 0 0;font-size:11px;color:#899781;line-height:1.6}.credit-change b{font-weight:500}.credit-change small{display:block;font-size:10px;color:#9aa590}.widening{color:#ba6b46}.tightening{color:#437986}.credit-date{font-size:10px;line-height:1.7;color:#98a18f;margin:12px 0}.credit-warning{background:#fff3de;color:#9d7435;padding:7px;font-size:11px;border-radius:5px}.credit-missing{font-size:12px;line-height:1.8;color:#8e9787;min-height:120px}.unavailable{background:#f6f8f3}.unavailable .credit-value>b{color:#a8b39f}.credit-source{font-size:10px;color:#6d8562;display:block;margin-top:auto;padding-top:14px}.issuer details{font-size:10px;line-height:1.7;color:#8c9a84;margin:3px 0 0}.issuer summary,.credit-method summary{cursor:pointer;color:#6b8060}.issuer dl{margin:10px 0;display:grid;grid-template-columns:1fr;gap:3px}.issuer dt{color:#9ca792}.issuer dd{margin:0 0 5px;overflow-wrap:anywhere;color:#657b5f}.issuer details p{margin:8px 0}.credit-method{margin-top:18px;border-top:1px solid #e7ece3;padding-top:14px;font-size:11px;line-height:1.8;color:#87957f}.credit-method p{margin:10px 0}.credit-method a{color:#5a7b4e}@media(max-width:1100px){.credit-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:650px){.credit-monitor{padding:0 15px 18px}.credit-intro{align-items:start;font-size:11px;line-height:1.6}.credit-grid{grid-template-columns:1fr}.issuer{padding:16px}.credit-missing{min-height:0}.credit-value>b{font-size:34px}}
+.credit-context{font-size:11px;line-height:1.8;color:#8b987f;margin:0 0 15px}.history-note{margin:16px 0 0}.credit-security-note{font-size:10px;line-height:1.7;color:#8f947c;padding:8px;background:#f2f3e9;border-radius:5px}.credit-missing.compact{min-height:0}.chart-tabs{display:flex;gap:5px;margin-top:13px}.chart-tabs button{border:1px solid #e1e7dc;border-radius:5px;padding:4px 8px;font-size:10px;color:#879680;background:white;cursor:pointer}.chart-tabs .active{background:#edf3e9;border-color:#c4d2be;color:#456744}.cds-reference{margin-top:22px;padding:20px;border:1px solid #dfe7dc;border-radius:10px;background:#fafbf7}.cds-heading{display:flex;justify-content:space-between;align-items:center;gap:12px}.cds-heading small{font-size:9px;letter-spacing:.1em;color:#8b9c80}.cds-heading h3{font-size:17px;margin:5px 0 0}.cds-heading>span{font-size:10px;color:#7d8b73;white-space:nowrap}.cds-reference p{font-size:11px;line-height:1.8;color:#8a967e}.cds-table-wrap{overflow-x:auto}.cds-reference table{width:100%;border-collapse:collapse;font-size:12px;min-width:480px}.cds-reference th{font-size:10px;font-weight:500;color:#86957c;text-align:left;background:#f0f3ea;padding:10px}.cds-reference td{padding:12px 10px;border-bottom:1px solid #e7ecdf;color:#637559}.cds-reference td i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:7px}.cds-reference td:last-child{font-variant-numeric:tabular-nums}.cds-reference .cds-assumptions{font-size:10px;margin-bottom:0}.cds-assumptions a{display:block;color:#647f57;margin-top:6px}@media(max-width:600px){.cds-reference{padding:14px}.cds-heading{align-items:start;flex-direction:column}}
+</style>

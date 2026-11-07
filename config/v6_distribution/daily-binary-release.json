@@ -1,0 +1,12 @@
+{
+  "status": "ready",
+  "method_version": "v6-daily-direction-baseline-2.0.0",
+  "activated_at": "2026-11-06T00:23:15.286592+08:00",
+  "protocol_sha256": "1bb2b02fa7c215b236ea695f419dcb5a626d449c64633cf78070bd912fec2bc5",
+  "validation": {
+    "kind": "target_redefinition_only",
+    "direction_validated": false,
+    "legacy_score_pooling": false
+  },
+  "note": "使用者要求二分類，未新增方向訊號，未宣稱更準；實際上線後另起前瞻成績。"
+}

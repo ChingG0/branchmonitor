@@ -1,0 +1,478 @@
+<!DOCTYPE>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=big5">
+<script language="JavaScript"><!--
+document.writeln('<script language="JavaScript" src="/z/js/jquery.djjs"></script>\n');
+// --></script>
+<script language="JavaScript" src="/z/js/jsFunction.djjs"></script>
+<script language="JavaScript" src="/z/js/isSpecialKind.djjs"></script>
+<script language="JavaScript" src="/z/js/mdj.js"></script>
+<script type="text/javascript" src="/z/js/Applet2Canvas.djjs"></script>
+<script type="text/javascript" src="/z/js/DJWebGraph.djjs"></script>
+<script type="text/javascript" src="/z/js/xml2jsonJS.djjs"></script>
+<script type="text/javascript" src="/z/js/json2xmlJS.djjs"></script>
+<script type="text/javascript" src="/z/js/json2.djjs"></script>
+<script type="text/javascript" src="/z/js/GenUpDownJS.djjs"></script>
+<link rel=stylesheet href="/z/js/mdj.css" type="text/css">
+<title>個股主力券商-2330</title>
+</head>
+<script language="JavaScript"><!--
+CheckMenu(4, '2330');
+function chkSetUpMenu(){ 
+	if (typeof(SetUpMenu) == 'function'){
+		SetUpMenu(4,'2330');
+}
+	else
+		setTimeout(function(){chkSetUpMenu();},5000);
+}
+// --></script>
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<div id="SysJustIFRAMEDIV">
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td colspan="3" valign="top" align="left">
+<script language="javascript" src="/z/js/disableselectionjs.djjs"></script>
+<script language="javascript" src="/z/js/SU.js"></script>
+<script language="javascript"><!--
+ chkSetUpMenu();
+//--></script>
+</td></tr>
+<tr><td valign="top" align="left">
+<script language="javascript" src="/z/js/SL.js"></script>
+<script language="javascript"><!--
+ SetLeftMenu(4,'2330')
+//--></script>
+</td><td valign="top" width="99%">
+<script language="javascript"><!--
+if(typeof(ContentCenterBegin) == 'function'){ 	ContentCenterBegin();
+ } 
+//--></script>
+
+<script language="javascript" src="/z/js/zbrokerjs.djjs"></script>
+<form name="F" onSubmit="return false;">
+<table border="0"><tr><td class="t0">
+<table width="612" border="0" class="t01" cellspacing="1" cellpadding="1">
+<tr><td class="t10">華南永昌-竹北 對 台積電(2330)個股 單一券商歷史明細</td></tr>
+<tr><td class="t2" style="line-height:200%">
+	<input type=radio name=radio1 onclick="javascript:window.open('/z/zc/zco/zco.djhtm?a=2330','_self')">總表
+	<input type=radio name=radio1 checked>單一<SCRIPT LANGUAGE=javascript><!--
+ var sObj = eval('document.' + 'F'); 
+	iID = '9339';
+	GenFundCorpCombo('9300','9339','F');
+	for (i=0;i<sObj.sel_Broker.options.length;i++)
+	{
+		var tmpID1 = sObj.sel_Broker.options[i].value.toUpperCase();
+		if (tmpID1 == '9300') 
+		{
+			sObj.sel_Broker.selectedIndex = i;
+			break;
+		}
+	}
+	for (i=0;i<sObj.sel_BrokerBranch.options.length;i++)
+	{
+		var tmpID2 = sObj.sel_BrokerBranch.options[i].value.toUpperCase();
+		if (iID != '')
+		{
+			if (tmpID2 == iID )
+			{
+				sObj.sel_BrokerBranch.selectedIndex = i;
+				break;
+			}
+		}
+		else
+			sObj.sel_BrokerBranch.selectedIndex = 0;
+	}
+//--></SCRIPT>
+
+</td></tr>
+<tr><td class="t3n0" width="100%">
+<div id="SysJustWebGraphDIV"></div>
+</td>
+<tr><td class="t10" colspan="2">進出明細表</td></tr>
+<tr><td class="t2" colspan="2">
+<select name="D" onChange="goA();">
+<option value="0" selected>請選擇</option>
+<option value="1">近20日</option>
+<option value="2">近40日</option>
+<option value="3">近60日</option>
+</select>
+　自設區間：
+<script language="JavaScript" src="/z/js/month.djjs"></script>
+從　<SELECT name="Y2" onChange="javascript:SetMonthDate(document.F.Y2,document.F.M2,document.F.D2);">
+	<OPTION value="91"></OPTION>
+</SELECT>年 
+<SELECT name="M2" onChange="javascript:SetMonthDate(document.F.Y2,document.F.M2,document.F.D2);">
+	<OPTION value="-1"></OPTION>
+</SELECT>月 
+<SELECT name="D2">
+	<OPTION value="-1"></OPTION>
+</SELECT>日 
+ ～ 
+<SELECT name="Y1" onChange="javascript:SetMonthDate(document.F.Y1,document.F.M1,document.F.D1);">
+	<OPTION value="91"></OPTION>
+</SELECT>年 
+<SELECT name="M1" onChange="javascript:SetMonthDate(document.F.Y1,document.F.M1,document.F.D1);">
+	<OPTION value="-1"></OPTION>
+</SELECT>月 
+<SELECT name="D1">
+	<OPTION value="-1"></OPTION>
+</SELECT>日 
+<input type='hidden' name='bDate'>
+<input type='hidden' name='eDate'>
+<SCRIPT LANGUAGE=javascript><!--
+	var toDay ='2026/9/8'
+	var getYMD1 = '2026/09/07';
+	var getYMD2 = '2026/08/01';
+	PageInit(document.F);
+	function PageInit(obj)
+	{	//在 BODY onLoad 時候的初始化
+		ShowYear(obj.Y1,'2026/9/8',1,'N');
+		ShowYear(obj.Y2,'2026/9/8',1,'N');
+		SetOptionValue(obj.M1,1,12);
+		SetOptionValue(obj.M2,1,12);
+		//設定初始值
+		var YMDary1,Hary1;
+		if (getYMD1.indexOf(' ') > -1 ) {
+			YMDary1 = getYMD1.split(' ')[0].split('/');
+		}else {
+			YMDary1 = getYMD1.split('/');
+		}
+		SetFocus(obj.Y1,YMDary1[0]);
+		SetFocus(obj.M1,YMDary1[1]);
+		var YMDary2,Hary2;
+		if (getYMD2.indexOf(' ') > -1 ) {
+			YMDary2 = getYMD2.split(' ')[0].split('/');
+		}else {
+			YMDary2 = getYMD2.split('/');
+		}
+		SetFocus(obj.Y2,YMDary2[0]);
+		SetFocus(obj.M2,YMDary2[1]);
+		SetMonthDate(obj.Y1,obj.M1,obj.D1);
+		SetMonthDate(obj.Y2,obj.M2,obj.D2);
+		SetFocus(obj.D2,YMDary2[2]);
+		SetFocus(obj.D1,YMDary1[2]);
+		removeToday(obj.Y1,obj.M1,obj.D1,toDay);
+		removeToday(obj.Y2,obj.M2,obj.D2,toDay);
+	}
+	function CheckDate()
+	{
+		var Frm = document.F;
+		var y1 = parseInt(Frm.Y1.options[Frm.Y1.selectedIndex].value);
+		var m1 = parseInt(Frm.M1.options[Frm.M1.selectedIndex].value);
+		var d1 = parseInt(Frm.D1.options[Frm.D1.selectedIndex].value);
+		var y2 = parseInt(Frm.Y2.options[Frm.Y2.selectedIndex].value);
+		var m2 = parseInt(Frm.M2.options[Frm.M2.selectedIndex].value);
+		var d2 = parseInt(Frm.D2.options[Frm.D2.selectedIndex].value);
+		var sEDate = y1 + '-' + m1 + '-' + d1;
+		var sBDate = y2 + '-' + m2 + '-' + d2;
+		Frm.bDate.value = sBDate;
+		Frm.eDate.value = sEDate;
+		return checkBEdate(sBDate,sEDate);
+	}
+	function checkBEdate(sBDate,sEDate)
+	{
+		var aymd1 = sBDate.split(' ')[0].split('-');
+		var aymd2 = sEDate.split(' ')[0].split('-');
+		if (aymd1.length < 3 || aymd2.length < 3 ) {
+			alert ('日期選擇錯誤!!');
+			return false;
+		}
+		var nbdate = parseInt(aymd1[0])*1000000 + parseInt(aymd1[1])*10000 + parseInt(aymd1[2])*100;
+		var nedate = parseInt(aymd2[0])*1000000 + parseInt(aymd2[1])*10000 + parseInt(aymd2[2])*100;
+		if (nbdate > nedate) {
+			alert('您所輸入的起始日期大於結束日期');
+			return false;
+		}
+		return true;
+	}
+//--></SCRIPT>
+ <INPUT type="button" name="BB" value="查詢" onclick="javascript:goB();">
+</td></tr>
+<TR><TD class="t3n0" colspan="2"><table id="oMainTable" class="t01" width="100%" border="0" cellspacing="1" cellpadding="1">
+<tr id="oScrollMenu">
+<td class="t2" width="20%">日期</td>
+<td class="t2" width="20%">買進(張)</td>
+<td class="t2" width="20%">賣出(張)</td>
+<td class="t2" width="20%">買賣總額(張)</td>
+<td class="t2" width="20%">買賣超(張)</td>
+</tr>
+<tr>
+<TD class="t4n0">2026/09/07</TD>
+<TD class="t3n1">5</TD>
+<TD class="t3n1">20</TD>
+<TD class="t3n1">25</TD>
+<TD class="t3r1">-15</TD>
+</tr>
+<tr>
+<TD class="t4n0">2026/09/04</TD>
+<TD class="t3n1">0</TD>
+<TD class="t3n1">1</TD>
+<TD class="t3n1">2</TD>
+<TD class="t3r1">-1</TD>
+</tr>
+<tr>
+<TD class="t4n0">2026/09/03</TD>
+<TD class="t3n1">5</TD>
+<TD class="t3n1">1</TD>
+<TD class="t3n1">6</TD>
+<TD class="t3n1">3</TD>
+</tr>
+<tr>
+<TD class="t4n0">2026/09/02</TD>
+<TD class="t3n1">22</TD>
+<TD class="t3n1">1</TD>
+<TD class="t3n1">23</TD>
+<TD class="t3n1">21</TD>
+</tr>
+<tr>
+<TD class="t4n0">2026/09/01</TD>
+<TD class="t3n1">0</TD>
+<TD class="t3n1">10</TD>
+<TD class="t3n1">10</TD>
+<TD class="t3r1">-10</TD>
+</tr>
+<tr>
+<TD class="t4n0">2026/08/31</TD>
+<TD class="t3n1">9</TD>
+<TD class="t3n1">1</TD>
+<TD class="t3n1">10</TD>
+<TD class="t3n1">8</TD>
+</tr>
+<tr>
+<TD class="t4n0">2026/08/28</TD>
+<TD class="t3n1">3</TD>
+<TD class="t3n1">13</TD>
+<TD class="t3n1">16</TD>
+<TD class="t3r1">-9</TD>
+</tr>
+<tr>
+<TD class="t4n0">2026/08/27</TD>
+<TD class="t3n1">3</TD>
+<TD class="t3n1">10</TD>
+<TD class="t3n1">13</TD>
+<TD class="t3r1">-7</TD>
+</tr>
+<tr>
+<TD class="t4n0">2026/08/26</TD>
+<TD class="t3n1">2</TD>
+<TD class="t3n1">16</TD>
+<TD class="t3n1">18</TD>
+<TD class="t3r1">-14</TD>
+</tr>
+<tr>
+<TD class="t4n0">2026/08/25</TD>
+<TD class="t3n1">1</TD>
+<TD class="t3n1">0</TD>
+<TD class="t3n1">1</TD>
+<TD class="t3n1">0</TD>
+</tr>
+<tr>
+<TD class="t4n0">2026/08/24</TD>
+<TD class="t3n1">2</TD>
+<TD class="t3n1">0</TD>
+<TD class="t3n1">2</TD>
+<TD class="t3n1">2</TD>
+</tr>
+<tr>
+<TD class="t4n0">2026/08/21</TD>
+<TD class="t3n1">1</TD>
+<TD class="t3n1">8</TD>
+<TD class="t3n1">8</TD>
+<TD class="t3r1">-7</TD>
+</tr>
+<tr>
+<TD class="t4n0">2026/08/20</TD>
+<TD class="t3n1">2</TD>
+<TD class="t3n1">0</TD>
+<TD class="t3n1">2</TD>
+<TD class="t3n1">2</TD>
+</tr>
+<tr>
+<TD class="t4n0">2026/08/19</TD>
+<TD class="t3n1">2</TD>
+<TD class="t3n1">4</TD>
+<TD class="t3n1">7</TD>
+<TD class="t3r1">-2</TD>
+</tr>
+<tr>
+<TD class="t4n0">2026/08/18</TD>
+<TD class="t3n1">5</TD>
+<TD class="t3n1">1</TD>
+<TD class="t3n1">6</TD>
+<TD class="t3n1">4</TD>
+</tr>
+<tr>
+<TD class="t4n0">2026/08/17</TD>
+<TD class="t3n1">2</TD>
+<TD class="t3n1">8</TD>
+<TD class="t3n1">10</TD>
+<TD class="t3r1">-5</TD>
+</tr>
+<tr>
+<TD class="t4n0">2026/08/14</TD>
+<TD class="t3n1">2</TD>
+<TD class="t3n1">2</TD>
+<TD class="t3n1">3</TD>
+<TD class="t3n1">0</TD>
+</tr>
+<tr>
+<TD class="t4n0">2026/08/13</TD>
+<TD class="t3n1">0</TD>
+<TD class="t3n1">11</TD>
+<TD class="t3n1">11</TD>
+<TD class="t3r1">-11</TD>
+</tr>
+<tr>
+<TD class="t4n0">2026/08/12</TD>
+<TD class="t3n1">0</TD>
+<TD class="t3n1">1</TD>
+<TD class="t3n1">1</TD>
+<TD class="t3r1">-1</TD>
+</tr>
+<tr>
+<TD class="t4n0">2026/08/11</TD>
+<TD class="t3n1">1</TD>
+<TD class="t3n1">2</TD>
+<TD class="t3n1">3</TD>
+<TD class="t3r1">-1</TD>
+</tr>
+<tr>
+<TD class="t4n0">2026/08/10</TD>
+<TD class="t3n1">1</TD>
+<TD class="t3n1">1</TD>
+<TD class="t3n1">2</TD>
+<TD class="t3r1">-0</TD>
+</tr>
+<tr>
+<TD class="t4n0">2026/08/07</TD>
+<TD class="t3n1">5</TD>
+<TD class="t3n1">1</TD>
+<TD class="t3n1">7</TD>
+<TD class="t3n1">4</TD>
+</tr>
+<tr>
+<TD class="t4n0">2026/08/06</TD>
+<TD class="t3n1">9</TD>
+<TD class="t3n1">7</TD>
+<TD class="t3n1">16</TD>
+<TD class="t3n1">2</TD>
+</tr>
+<tr>
+<TD class="t4n0">2026/08/05</TD>
+<TD class="t3n1">0</TD>
+<TD class="t3n1">9</TD>
+<TD class="t3n1">9</TD>
+<TD class="t3r1">-9</TD>
+</tr>
+<tr>
+<TD class="t4n0">2026/08/04</TD>
+<TD class="t3n1">30</TD>
+<TD class="t3n1">3</TD>
+<TD class="t3n1">33</TD>
+<TD class="t3n1">27</TD>
+</tr>
+<tr>
+<TD class="t4n0">2026/08/03</TD>
+<TD class="t3n1">30</TD>
+<TD class="t3n1">3</TD>
+<TD class="t3n1">33</TD>
+<TD class="t3n1">27</TD>
+</tr>
+</table>
+</TD></TR>
+<TR><TD valign="top" class="t3t1" colspan="2">期間累計買賣超張數： 8</font></TD></TR>
+</table>
+</td></tr></table>
+</form>
+<script language="javascript"><!--
+function goA()
+{
+var i = document.F.D.selectedIndex;
+i = document.F.D.options[i].value;
+if (i > 0) {
+self.location = '/z/zc/zco/zco0/zco0.djhtm?a=2330&BHID=9300&b=9339&C='+i;
+}
+}
+function goB()
+{
+	if (CheckDate()){ 	
+	var bDate = document.F.bDate.value;		//起始日期 
+	var eDate = document.F.eDate.value;	    //結束日期 
+	}
+self.location = '/z/zc/zco/zco0/zco0.djhtm?A=2330&BHID=9300&b=9339&C=0&D=' + bDate + '&E=' + eDate + '&ver=V3';
+}
+//--></script>
+
+<script language="JavaScript"><!--
+    var $DJWebGraph1;
+    var sRenderTo = 'SysJustWebGraphDIV';
+    
+    $(document).ready(function () {
+        if (!!$DJWebGraph) {
+			$DJWebGraph1 = new $DJWebGraph();
+        		
+            $DJWebGraph1.CreateGraphObject({
+                'CanvasClass': 'canvas', //表示為複合式圖形
+                'ID': 'ZCO',
+                'Width': '490',
+                'Height': [['120'], ['140']],
+                'RenderTo': sRenderTo,
+                'Type': [['Trend:R'], ['Histogram']],
+                'Title': [['台積電' + '股價'], ['買賣超']],
+                'Unit': [['元'], ['張']],
+                'LineColor': [['ea6977'], ['2882D5']],
+                'BgColor': 'FFFFFF',
+                'Mark': 'none',
+                'Volumn': '0707,0708,0709,0713,0714,0715,0716,0717,0720,0721,0722,0723,0724,0727,0728,0729,0730,0731,0803,0804,0805,0806,0807,0810,0811,0812,0813,0814,0817,0818,0819,0820,0821,0824,0825,0826,0827,0828,0831,0901,0902,0903,0904,0907,0908 2440,2465,2415,2440,2420,2440,2470,2290,2320,2410,2400,2405,2350,2350,2280,2200,2205,2425,2370,2320,2405,2365,2370,2380,2395,2415,2435,2395,2400,2380,2350,2375,2410,2375,2400,2415,2410,2420,2405,2440,2385,2390,2410,2460,2470 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,27,27,-9,2,4,0,-1,-1,-11,0,-5,4,-2,2,-7,2,0,-14,-7,-9,8,-10,21,3,-1,-15'
+            })
+        }
+
+		GetBcdData('0707,0708,0709,0713,0714,0715,0716,0717,0720,0721,0722,0723,0724,0727,0728,0729,0730,0731,0803,0804,0805,0806,0807,0810,0811,0812,0813,0814,0817,0818,0819,0820,0821,0824,0825,0826,0827,0828,0831,0901,0902,0903,0904,0907,0908 2440,2465,2415,2440,2420,2440,2470,2290,2320,2410,2400,2405,2350,2350,2280,2200,2205,2425,2370,2320,2405,2365,2370,2380,2395,2415,2435,2395,2400,2380,2350,2375,2410,2375,2400,2415,2410,2420,2405,2440,2385,2390,2410,2460,2470 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,27,27,-9,2,4,0,-1,-1,-11,0,-5,4,-2,2,-7,2,0,-14,-7,-9,8,-10,21,3,-1,-15');
+        
+    });
+
+    function GetBcdData(data) {
+		if (data == '無資料'){
+			$DJWebGraph1.SetPoster("無資料");
+		}else{
+			if (!!data.length) {
+				var arrData = data.split(' ');
+				var X = arrData[0];
+				var ArrY = [
+				[arrData[1]], [arrData[2]]
+				];
+
+				$DJWebGraph1.SetGraphBcd({ 'X': X, 'Y': ArrY });
+			}
+		}
+    }
+
+    // 切選 券商公司List 
+    function GoPage() {
+    	var sUrl = '/z/zc/zco/zco0/zco0.djhtm?a=2330';
+
+    	var sFrmObj = document.F;
+    	var sA = sFrmObj.sel_Broker.options[sFrmObj.sel_Broker.selectedIndex].value;
+    	var sB = sFrmObj.sel_BrokerBranch.options[sFrmObj.sel_BrokerBranch.selectedIndex].value;
+    	//sB = toHex_js(sB);
+
+    	sUrl = sUrl + '&BHID=' + sA + '&b=' + sB;
+    	//console.log(sUrl);
+    	document.location.href = sUrl;
+    }
+
+
+// --></script>
+<script language="javascript"><!--
+if(typeof(ContentCenterEnd) == 'function'){ 	ContentCenterEnd();
+ } 
+//--></script>
+</td><td valign="top" align="right">
+<script language="javascript" src="/z/js/SR.js"></script>
+</td></tr>
+<tr><td colspan="3" valign="top">
+<script language="javascript" src="/z/js/SD.js"></script>
+</td></tr></table>
+</div>
+</body>
+</html>

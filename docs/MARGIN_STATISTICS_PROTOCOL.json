@@ -1,0 +1,70 @@
+{
+  "version": "margin-statistics-quality-1",
+  "frozen_at": "2026-11-05T09:20:55.567478+00:00",
+  "scope": "preregistered before Package2 modeling; Package1 sources only",
+  "history_start": "2023-01-01",
+  "initial_history_end": "2026-11-04",
+  "official_total_relative_error_each_market_each_day_each_uncalibrated_method": [
+    -0.03,
+    0.03
+  ],
+  "drift": {
+    "window": 60,
+    "first_last_mean_days": 20,
+    "max_absolute_difference": 0.01,
+    "insufficient_window": "not_verified"
+  },
+  "methods": [
+    "average_cost_proportional_repayment",
+    "fifo"
+  ],
+  "initial_unknown_share_fraction_max": 0.1,
+  "unknown_principal_share": "report independently; do not hide cold names",
+  "distribution": {
+    "metric": "0.5 * sum(abs(bucket_amount_share_method_A - bucket_amount_share_method_B))",
+    "point": {
+      "D_max": 0.05,
+      "below130_share_difference_max": 0.01
+    },
+    "interval": {
+      "D_max": 0.1,
+      "below130_share_difference_max": 0.03
+    },
+    "otherwise": "suppress distribution and signals; strictest gate wins; propagate unknown amount"
+  },
+  "flow": {
+    "identity": "previous + buys - sells - cash_repayment = balance",
+    "same_day_offset": "confirm already included; never subtract twice",
+    "netting": "assumption only; also test same-day replacement sensitivity"
+  },
+  "vintage": "append immutable source bodies and retrieval timestamps; current retrospective history is not original publication vintage; retain next-day revised previous balances separately",
+  "warmup": "begin only after initial unknown lots <=10%; total matching does not validate per-security accuracy",
+  "early_checker": {
+    "package": "2A",
+    "count": 10,
+    "listed": 5,
+    "otc": 5,
+    "fixed_selection": "large financing, high turnover, persistent initial inventory, corporate action, ordinary control; preregister names before modeling",
+    "series": [
+      "close",
+      "average cost",
+      "FIFO cost",
+      "daily financing balance",
+      "unknown initial inventory"
+    ]
+  },
+  "event_study": {
+    "trigger_percentile": 0.9,
+    "reference_history": "prior two years only",
+    "pre_days": 20,
+    "post_days": 20,
+    "merge_adjacent_triggers": true,
+    "no_threshold_retuning": true,
+    "no_winrate_claim": true,
+    "mark_unmatured": true
+  },
+  "margin_cap": "both markets general maximum 60%; security/date reductions require evidence; not actual borrowing ratio",
+  "maintenance": "financing-only market estimate; not whole-account actual collateral ratio; 130% diagnostic reference only",
+  "ETF": "cap/dividend/leverage separate; inverse direction explicit; other products remain other; current rule labels not historical fund membership",
+  "corporate_actions": "unadjusted price for debt reference; separate adjusted diagnostic or event markers; split/rights gaps block cost continuity"
+}

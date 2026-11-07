@@ -1,0 +1,556 @@
+{
+  "method_version": "v6-conditional-0830-protocol-1.0.0",
+  "package": 2,
+  "frozen_at": "2026-11-06T12:39:10.252845+08:00",
+  "status": "design_sealed_before_feature_build_fitting_and_scoring",
+  "parent_package1_manifest_sha256": "f7ca87de8382703df1acac6094a789fd3bb181a9b6b31a4ec863eabfefbeea31",
+  "scope": {
+    "allowed": [
+      "fix source/time/feature/model/split/metric/adoption/lifecycle rules",
+      "date-only cohort membership and counts",
+      "synthetic policy tests",
+      "code/environment/data hashing"
+    ],
+    "not_run": [
+      "feature values",
+      "target returns or classes",
+      "training or calibration",
+      "historical forecasts",
+      "Brier/logloss/AUC from actual outcomes",
+      "test opening",
+      "production/manual account updates"
+    ],
+    "developer_blinding": "last2years labels not used in new design code; underlying raw quotes already exist and prior research examined recent markets, so not a pristine untouched holdout"
+  },
+  "sources": {
+    "cutoff_cash": "2026-11-05",
+    "candidate_decision_start": "2017-05-16",
+    "parent_complete_core_n": 2306,
+    "selection": "parent package1 common-core candidate dates, never broader history for M0; exact common model dates per horizon",
+    "night": "TAIFEX TX monthly positive-volume complete OHLC, nearest eligible monthly contract and same-contract prior regular close; do not splice continuous contracts; keep114 roll records",
+    "night_missing_dates": [
+      "2017-06-05",
+      "2017-10-02",
+      "2018-04-02",
+      "2018-07-11",
+      "2018-12-24"
+    ],
+    "US": "TSM,SOX,SPX from sealed Yahoo daily raw; NASDAQ descriptive only",
+    "fx": "CBC official, previous published observation only; Yahoo TWD=X excluded from predictive inputs",
+    "vix": "Cboe daily CLOSE on exact latest reference US equity session; do not infer equity trading calendar from VIX extra holiday observations; Yahoo VIX diagnostic only",
+    "stock2330": "parent Yahoo raw with7 verified TWSE overlays, for parity description and source qualification, not direct primary directional feature",
+    "corrections": "old raw and official overlays retained separately, no performance-based fill or source choice",
+    "on_new_missing_input": "all3models excluded on same date from paired research comparison; in live withhold conditional probability and show explicit reference/missing state, not zero-risk substitute"
+  },
+  "source_evidence_limit": {
+    "research_schedule_reconstruction_allowed": true,
+    "contemporaneous_vintage_verified": false,
+    "US_calendar": "sealed parent reconstructed holiday rules+known national mourning exceptions, crosschecked4price series; complete original historical notice archive unavailable",
+    "early_close": "use16:00ET as conservative latest regular close bound, do not claim exact historical early-close timestamp",
+    "US_daily_available_bound": "max(actual_regular_close_bound, source_date+1calendar day08:00Asia/Taipei); assumed delivery bound, not actual archived release time",
+    "CBC_available_bound": "source date17:00Asia/Taipei; pre2019 rule extrapolated from current2019 FAQ",
+    "night_available_bound": "actual preceding TAIFEX regular day15:00 to next calendar day05:00; daily data lacks actual last-trade timestamps; no false exact05:00transaction claim",
+    "adjustments": "use sealed vendor close, not adjclose; dividend dates retained for diagnostics, no total-return substitution for cash-price target; no split events in sealed2016+TSM/2330 feed; any new split/ratio discrepancy requires a new input version before use",
+    "promotion_limit": "historical pass permits retrospective research recommendation only; production requires later implementation seal and genuinely timestamped prospective observations"
+  },
+  "events": {
+    "horizons": [
+      1,
+      2,
+      3
+    ],
+    "decision_at": "D08:30Asia/Taipei; D is next actual TW cash session after anchor t",
+    "anchor": "fixed previous actual cash close C[t]",
+    "target_end": "h-th actual cash session starting atD; target index index(D)+h-1",
+    "up": "terminal close >= original C[t]; exact ties included",
+    "down": "terminal close < original C[t]",
+    "index": "TAIEX cash price index OHLC, not TX, not a total-return index",
+    "calendar": "use sealed observed official cash sessions including historical Saturday trading; prospective calendar notices/version required; never infer a closure from missing quote",
+    "no_rebase": "original anchor and target stay fixed during revisions; no replacing target by a new3-day date"
+  },
+  "split": {
+    "periods": [
+      {
+        "name": "train",
+        "start": "2017-05-16",
+        "end": "2023-11-05",
+        "label_cutoff": "2023-11-05"
+      },
+      {
+        "name": "calibration",
+        "start": "2023-11-06",
+        "end": "2024-11-05",
+        "label_cutoff": "2024-11-05"
+      },
+      {
+        "name": "sealed_test",
+        "start": "2024-11-06",
+        "end": "2026-11-05",
+        "label_cutoff": "2026-11-05"
+      }
+    ],
+    "basis": "decision_date not US date or prior cash anchor date",
+    "purge": "label target_end must be <= own split label_cutoff; rows crossing a boundary are excluded, never recycled into the next cohort",
+    "same_dates": "M0/M1/M2 share identical eligible decision dates within each horizon; h1/h2/h3 can differ only by label maturity and fixed gates; do not compare raw horizon scores as if targets equal",
+    "embargo": "no additional gap needed beyond maturity purge for fixed fit; every train target matures before calibration begins and every calibration target before test begins",
+    "primary_fit": "one final fit train2017-2023 and calibration2023-2024, then fixed weights/standardization/calibrator for the entire2year test",
+    "no_test_refit": "no periodic refitting, test-label learning, hyperparameter tuning or recalibration during primary sealed test; future rolling-refit study needs a new version",
+    "holdout_description": "2024-11-06..2026-11-05 sealed retrospective test, not virgin data; last dates per horizon purged for maturity",
+    "test_opening": "Only authorized package5; package4 must first seal initial AND revision implementation, dependencies, training/calibration data manifests and this parent protocol SHA. No model/test opening command exists in package2."
+  },
+  "features": {
+    "sigma": {
+      "returns": "log(C[j]/C[j-1]) from completed cash days <=t",
+      "window": 60,
+      "lambda": 0.94,
+      "formula": "sqrt(sum_{j=0..59}(lambda**j)*r[t-j]**2 / sum_{j=0..59}lambda**j)",
+      "floor": 0.001,
+      "minimum_cash_closes": 61,
+      "purpose": "scale known price moves, not mechanically assign direction"
+    },
+    "M1": [
+      {
+        "key": "night_return_scaled",
+        "formula": "log(F_night_close[D,c]/F_prior_regular_close[t,c])/sigma_t",
+        "source": "same monthly TX contract; previous actual regular session t; night attributed toD"
+      },
+      {
+        "key": "night_range_scaled",
+        "formula": "log(F_night_high[D,c]/F_night_low[D,c])/sigma_t",
+        "source": "completed official night session"
+      },
+      {
+        "key": "log_daily_sigma",
+        "formula": "log(sigma_t)",
+        "source": "prior completed cash closes only"
+      },
+      {
+        "key": "night_age",
+        "formula": "log1p((decision_at-night_session_end_bound).hours/24)",
+        "source": "scheduled completed session-end bound; not actual last-trade age, whose historical timestamp is absent"
+      }
+    ],
+    "M2_extra": [
+      {
+        "key": "adr_new_return_scaled",
+        "formula": "log(TSM_us_close[u_latest]/TSM_us_close[u_known_at_cash_anchor])/sigma_t",
+        "source": "accumulate all US sessions after prior Taiwan cash information cutoff; USD price return"
+      },
+      {
+        "key": "sox_new_return_scaled",
+        "formula": "log(SOX_close[u_latest]/SOX_close[u_known_at_cash_anchor])/sigma_t",
+        "source": "same US window"
+      },
+      {
+        "key": "spx_new_return_scaled",
+        "formula": "log(SPX_close[u_latest]/SPX_close[u_known_at_cash_anchor])/sigma_t",
+        "source": "same US window"
+      },
+      {
+        "key": "fx_new_return",
+        "formula": "log(CBC_ntd_per_usd[last_published_at_decision]/CBC_ntd_per_usd[last_published_at_cash_anchor])",
+        "source": "CBC publication bound17:00Taipei; never same-morning future daily close"
+      },
+      {
+        "key": "log_vix",
+        "formula": "log(Cboe_VIX_CLOSE[u_latest])",
+        "source": "Cboe primary; exact latest reference NYSE session; closed-market extra VIX dates not substituted"
+      },
+      {
+        "key": "us_after_night_count",
+        "formula": "count(US sessions whose regular close_bound>night_session_end_bound and availability_bound<=decision_at)",
+        "source": "known old-night age and additional overseas sessions; not target returns"
+      }
+    ],
+    "transforms": "float64; standardize each feature using training-only population mean/std(ddof0); std<=1e-12 -> fixed zero feature and record it; no winsorization/feature selection/SMOTE/class reweighting",
+    "normal_vs_reopening": "same formula accumulates multi-session US change; night age and sessions after last night remain explicit; no 4-calendar-day stale exclusion for a legitimate holiday closure",
+    "ADR_parity": "5ordinary/ADR and CBC conversion may be shown as descriptive parity with source limitation; absolute premium or current ratio backcast does not enter primary model; use new USD return to avoid treating an old premium as new bullish information",
+    "no_unregistered_inputs": [
+      "V6/V6-2 risk scores",
+      "foreign/retail models trained on later years",
+      "news sentiment",
+      "candlestick names",
+      "NASDAQ extra predictors",
+      "Yahoo FX daily bars",
+      "future opening price",
+      "same-day high/low/close"
+    ]
+  },
+  "models": {
+    "M0": {
+      "type": "constant historical frequency per horizon",
+      "data": "admitted training+calibration cohorts for same feature-qualified dates; boundary-purged rows stay excluded",
+      "formula": "p_up=(up_count+0.5)/(n+1), Jeffreys smoothing; fixed through test",
+      "calibration": "none separately; no alternative recent/full-history baseline selection"
+    },
+    "M1": {
+      "type": "L2 logistic using4night/volatility features",
+      "features": [
+        "night_return_scaled",
+        "night_range_scaled",
+        "log_daily_sigma",
+        "night_age"
+      ]
+    },
+    "M2": {
+      "type": "same L2 logistic using M1+6overseas features",
+      "features": [
+        "night_return_scaled",
+        "night_range_scaled",
+        "log_daily_sigma",
+        "night_age",
+        "adr_new_return_scaled",
+        "sox_new_return_scaled",
+        "spx_new_return_scaled",
+        "fx_new_return",
+        "log_vix",
+        "us_after_night_count"
+      ]
+    },
+    "fit": {
+      "library": "scipy.optimize.minimize, method L-BFGS-B",
+      "objective": "mean(logaddexp(0,z)-y*z) + (0.01/2)*sum(beta**2); z=intercept+X_scaled@beta; intercept not penalized",
+      "l2_lambda": 0.01,
+      "initial": "all coefficients and intercept0",
+      "float": "float64",
+      "maxiter": 10000,
+      "ftol": 1e-12,
+      "gtol": 1e-08,
+      "failure": "nonconvergence/nonfinite values -> model ineligible, no solver retry or hyperparameter patch"
+    },
+    "calibrator": {
+      "applies_to": [
+        "M1",
+        "M2"
+      ],
+      "type": "positive-slope sigmoid on raw model logits, fit only calibration cohort",
+      "formula": "p=sigmoid(a*z+b), a>=0",
+      "objective": "mean BCE +0.01*((a-1)**2+b**2)",
+      "initial": [
+        1,
+        0
+      ],
+      "library": "scipy L-BFGS-B, same tolerances as logistic; slope lower bound0",
+      "failure": "ineligible; no post-test calibration",
+      "constant_logits": "if population std(logits)<=1e-12, freeze a=1 and optimize only b under same objective"
+    },
+    "minimum_samples": {
+      "training_n": 750,
+      "training_each_class": 100,
+      "calibration_n": 200,
+      "calibration_each_class": 50,
+      "test_n": 400,
+      "test_each_class": 100,
+      "failure": "no lowered threshold; absent gate means not qualified"
+    }
+  },
+  "probabilities": {
+    "lower": 0.01,
+    "upper": 0.99,
+    "apply": "after calibration or M0 frequency; same final clip for every model",
+    "archive": [
+      "raw model logit",
+      "uncalibrated probability",
+      "calibrated_unclipped probability",
+      "final clipped full-precision p_up and p_down",
+      "method/data/implementation hashes"
+    ],
+    "scoring": "use actual full-precision clipped published probability for both Brier and logloss; raw numbers diagnostic only",
+    "display": "0.1% largest-remainder two-class rounding sum100%; never grade rounded output",
+    "outcome_not_capped": "0/1 realized event after maturity is outcome, not a clipped future prediction",
+    "price_interval_policy": "Initial logistic models predict binary direction only, not a conditional median/80%price interval. Existing unconditional price ranges must remain explicitly historical reference, not relabeled as new conditional ranges or rescaled by p."
+  },
+  "metrics": {
+    "primary": "single-event binary Brier =mean((p_up-y_up)**2), range0..1",
+    "legacy_warning": "two-class sum Brier is twice this; old3class RPS/Brier and risk/trade win-rate are not comparable",
+    "log_loss": "mean(-y*log(p)-(1-y)*log(1-p)), natural logarithm, same clipped probability",
+    "log_loss_guard": "candidate mean test logloss <= each simpler model mean logloss for an upgrade; noninferiority point guard, not a claim of statistically significant logloss gain",
+    "secondary": [
+      "ROC AUC with constant predictor AUC0.5 if both classes",
+      "50% directional accuracy descriptive only",
+      "calibration table",
+      "individual-year and reopening subgroup diagnostics"
+    ],
+    "calibration_bins": [
+      0,
+      0.2,
+      0.4,
+      0.6,
+      0.8,
+      1
+    ],
+    "minimum_bin_n": 30,
+    "small_bins": "show counts and small-sample warning; do not merge after seeing results or claim calibrated",
+    "no_secondary_override": "no promoting a failed Brier candidate by AUC, PnL, logloss or a favorable subgroup",
+    "gap_vs_intraday": "h1 only: after test unseal, decompose log(C_D/C_t)=log(O_D/C_t)+log(C_D/O_D). Report correlation and covariance of fixed full-target logit(p) with each component and their exact covariance sum; no extra predictive fit. Full-close probabilities are NOT calibrated probabilities of gap/intraday signs; no segment Brier substitution or additive Brier decomposition. Diagnostic only, no adoption override.",
+    "subgroups": [
+      "each fixed test calendar year",
+      "reopening with >1newUSsessions",
+      "ordinary <=1newUSsession",
+      "night-age and DST-transition metadata only; no selecting best subgroup"
+    ]
+  },
+  "inference": {
+    "pairs": [
+      {
+        "test_id": "H1:M1-M0",
+        "horizon": 1,
+        "candidate": "M1",
+        "simpler": "M0",
+        "loss": "single_event_binary_brier",
+        "family_size": 9
+      },
+      {
+        "test_id": "H1:M2-M0",
+        "horizon": 1,
+        "candidate": "M2",
+        "simpler": "M0",
+        "loss": "single_event_binary_brier",
+        "family_size": 9
+      },
+      {
+        "test_id": "H1:M2-M1",
+        "horizon": 1,
+        "candidate": "M2",
+        "simpler": "M1",
+        "loss": "single_event_binary_brier",
+        "family_size": 9
+      },
+      {
+        "test_id": "H2:M1-M0",
+        "horizon": 2,
+        "candidate": "M1",
+        "simpler": "M0",
+        "loss": "single_event_binary_brier",
+        "family_size": 9
+      },
+      {
+        "test_id": "H2:M2-M0",
+        "horizon": 2,
+        "candidate": "M2",
+        "simpler": "M0",
+        "loss": "single_event_binary_brier",
+        "family_size": 9
+      },
+      {
+        "test_id": "H2:M2-M1",
+        "horizon": 2,
+        "candidate": "M2",
+        "simpler": "M1",
+        "loss": "single_event_binary_brier",
+        "family_size": 9
+      },
+      {
+        "test_id": "H3:M1-M0",
+        "horizon": 3,
+        "candidate": "M1",
+        "simpler": "M0",
+        "loss": "single_event_binary_brier",
+        "family_size": 9
+      },
+      {
+        "test_id": "H3:M2-M0",
+        "horizon": 3,
+        "candidate": "M2",
+        "simpler": "M0",
+        "loss": "single_event_binary_brier",
+        "family_size": 9
+      },
+      {
+        "test_id": "H3:M2-M1",
+        "horizon": 3,
+        "candidate": "M2",
+        "simpler": "M1",
+        "loss": "single_event_binary_brier",
+        "family_size": 9
+      }
+    ],
+    "family_size": 9,
+    "family": "3 ordered model-pair comparisons times3 horizons; not old12 hypotheses",
+    "loss_difference": "candidate Brier loss minus simpler Brier loss on same dates; lower is better",
+    "master_grid": "all official test decision sessions, retain missing/ineligible dates as NaN; do not compress gaps",
+    "bootstrap": "paired stationary bootstrap (geometric restart probability1/L) on master grid; same resampled indices across all9 comparisons; average only finite paired losses",
+    "draws": 10000,
+    "seed": 20261106,
+    "primary_expected_block_sessions": 10,
+    "sensitivity_expected_blocks": [
+      5,
+      20
+    ],
+    "ci": "two-sided nominal95% percentile CI for each paired mean difference, not simultaneous coverage",
+    "p_value": "one-sided centered bootstrap p=(1+count(mean(d_star-dbar)<=dbar))/(B+1); invalid test assigned p=1",
+    "multiplicity": "Holm step-down across9initial-forecast tests at family alpha0.025; reserve alpha0.025 for9prespecified revision comparisons. Union-bound overall familywise alpha<=0.05 across the two families; no claim that each separate0.05 family yields global0.05.",
+    "DM": "supplement only, HAC Bartlett lag=h-1 on actual session grid; optional lag2/5 sensitivities prelisted, never an adoption selector",
+    "family_alpha": 0.025,
+    "global_family_alpha": 0.05,
+    "planned_comparisons_total": 18
+  },
+  "adoption": {
+    "per_horizon": true,
+    "candidate_order": [
+      "M0",
+      "M1",
+      "M2"
+    ],
+    "every_simpler_required": true,
+    "conditions": [
+      "model/source/sample gates pass",
+      "mean relative Brier reduction >=1% versus each simpler",
+      "main L10 nominal95% difference CI upper<0",
+      "Holm adjusted p<0.025 across9 initial comparisons",
+      "L5 and L20 nominal95% difference CI upper<0",
+      "mean logloss no higher than each simpler"
+    ],
+    "M2": "must pass M2-M0 and M2-M1; M1 itself need not be selected but M1 must be fit/score eligible as a comparator",
+    "M1": "must pass M1-M0",
+    "failure": "keep highest eligible simpler level; no default release of original V6 by omission",
+    "research_not_live": "historical selection is a retrospective recommendation only; no production activation in packages2-6"
+  },
+  "revisions": {
+    "scope": "package6 research, second prespecified9-test family alpha0.025, separately reported; initial9family also alpha0.025, total global FWER<=0.05",
+    "fixed_event": "same root_id+original anchor+original target date throughout",
+    "comparators": [
+      "R0 frozen prior probability without revision",
+      "R1 mechanistic: observed movement from original anchor + zero-drift residual return distribution scaled by remaining volatility",
+      "R2 R1 plus new registered overnight/overseas directional inputs fitted with pretest data"
+    ],
+    "R1_definition": "For remaining r=1 or2: train-only log remaining returns/ (sqrt(r)*prior_sigma); subtract their training mean to obtain centered empirical F0. At update P_up=1-F0(threshold^-), threshold=log(original_anchor/current_completed_cash_close)/(sqrt(r)*current_sigma); equality belongs to up. Reference samples need complete labels by training cutoff. No directional calibrator for R1; final clamp only.",
+    "R2_definition": "Same F0 and threshold, shifted by ridge prediction mu_z of standardized remaining log return from same10registered current features. Fit one ridge per r, training-only feature standardization; objective mean((z_return-intercept-Xbeta)**2)+0.01*sum(beta**2), intercept unpenalized; deterministic closed-form ridge/linear solve. P_up_raw=1-F0((threshold-mu_z)^-).",
+    "calibration": "R2 only: same positive-slope sigmoid formula as initial models, separately by original-horizon/stage on held-out pretest calibration roots. For logit use raw CDF probability clipped1e-9..1-1e-9 numerically, then final probability clip1..99. R1 remains zero-drift mechanical and R0 remains initial saved value.",
+    "phase6_adoption": "3pairs(R1-R0,R2-R0,R2-R1) x3cases(H2remaining1,H3remaining2,H3remaining1)=9; same1%/block CI/logloss rules, Holm across9at alpha0.025. R2 must beat BOTH comparators. Fit/source/root qualification required. Failing initialM2 eligibility blocks conditional revision deployment, not descriptive tracking.",
+    "manual_selection_bias": "primary evaluation uses fixed08:30stages on full paired historical grid; manual irregular request days reported separately, never pretend random sample",
+    "diagnostics": [
+      "mean delta_p with paired block interval",
+      "correlation consecutive revisions on same H3root, same target and anchor",
+      "differences versus mechanical R1 not just versus frozen R0"
+    ],
+    "martingale_note": "ideal coherent conditional probabilities at fixed information times have zero-mean, orthogonal increments; estimates/manual selection/overlapping targets can deviate. Diagnostic confidence intervals, not a hard zero-pass requirement",
+    "one_month": "2026-10-06..2026-11-05 decision dates, only mature target endpoints; a descriptive subset of already sealed test, opened only after full primary test code frozen, never used for tuning",
+    "path": "no27-path probability multiplication or invented candle-shape match",
+    "R0_definition": "original M2 initial probability for the same root, horizon, anchor and target, frozen unchanged; not a favorable test-selected initial model",
+    "deployment_root_gate": "formal revision rollout limited to new initial-M2 roots for horizons where M2 itself qualifies for initial deployment; do not silently apply evidence to old M0/M1/three-class roots",
+    "dedup_mean_fit": "deduplicate conditional-mean/distribution fitting rows by(current_decision_date,remaining_r,target_end), not repeat a one-day target just because multiple original roots share it; assessment still retains distinct fixed events byroot/stage",
+    "code_before_test": "implementation for both initial and revision studies must be sealed in package4 before opening any shared sealed-test labels in package5; package6 may execute/diagnose frozen revision design but cannot invent a fresh untouched test after initial scores were seen.",
+    "paired_stage_grid": "use original root-decision official session grid, not compressed manual update dates; each stage requires both initial and current08:30core-source qualification plus target maturity; preserve missing grid dates for bootstrap",
+    "revision_pairs": [
+      {
+        "test_id": "H2remaining1:R1-R0",
+        "case": "H2remaining1",
+        "candidate": "R1",
+        "simpler": "R0",
+        "family": "revision",
+        "family_size": 9,
+        "family_alpha": 0.025
+      },
+      {
+        "test_id": "H2remaining1:R2-R0",
+        "case": "H2remaining1",
+        "candidate": "R2",
+        "simpler": "R0",
+        "family": "revision",
+        "family_size": 9,
+        "family_alpha": 0.025
+      },
+      {
+        "test_id": "H2remaining1:R2-R1",
+        "case": "H2remaining1",
+        "candidate": "R2",
+        "simpler": "R1",
+        "family": "revision",
+        "family_size": 9,
+        "family_alpha": 0.025
+      },
+      {
+        "test_id": "H3remaining2:R1-R0",
+        "case": "H3remaining2",
+        "candidate": "R1",
+        "simpler": "R0",
+        "family": "revision",
+        "family_size": 9,
+        "family_alpha": 0.025
+      },
+      {
+        "test_id": "H3remaining2:R2-R0",
+        "case": "H3remaining2",
+        "candidate": "R2",
+        "simpler": "R0",
+        "family": "revision",
+        "family_size": 9,
+        "family_alpha": 0.025
+      },
+      {
+        "test_id": "H3remaining2:R2-R1",
+        "case": "H3remaining2",
+        "candidate": "R2",
+        "simpler": "R1",
+        "family": "revision",
+        "family_size": 9,
+        "family_alpha": 0.025
+      },
+      {
+        "test_id": "H3remaining1:R1-R0",
+        "case": "H3remaining1",
+        "candidate": "R1",
+        "simpler": "R0",
+        "family": "revision",
+        "family_size": 9,
+        "family_alpha": 0.025
+      },
+      {
+        "test_id": "H3remaining1:R2-R0",
+        "case": "H3remaining1",
+        "candidate": "R2",
+        "simpler": "R0",
+        "family": "revision",
+        "family_size": 9,
+        "family_alpha": 0.025
+      },
+      {
+        "test_id": "H3remaining1:R2-R1",
+        "case": "H3remaining1",
+        "candidate": "R2",
+        "simpler": "R1",
+        "family": "revision",
+        "family_size": 9,
+        "family_alpha": 0.025
+      }
+    ],
+    "diagnostics_definition": "On paired complete H3roots: delta1=p_R2_rem2-p_M2_initial; delta2=p_R2_rem1-p_R2_rem2. Report each mean and Pearson corr(delta1,delta2) across roots; root-date paired stationary block intervals, minimum30roots for correlation. Do not call corr across unrelated root updates consecutive-revision orthogonality."
+  },
+  "prospective_and_rollback": {
+    "activation": "later authorized package8 only, after historical recommendation and package4 implementation seal; no endpoint or HTTP auto-publish",
+    "cutoff": "inputs available<=D08:30; qualified issue time D08:30..08:44:59Taipei; actual saved_at never backdated; earlier captures/context after08:45 shown separately and not counted as08:30 prospective predictions",
+    "manual_only": "only human chat instruction creates snapshots; GET, refresh, schedule do not make or revise decisions",
+    "parallel_models": [
+      "M0",
+      "M1",
+      "M2"
+    ],
+    "unique_key": "one first eligible prediction per version/decision-date/horizon; later same-cutoff duplicates not extra samples; root revisions separately counted",
+    "minimum_parallel_elapsed_tw_sessions": 60,
+    "minimum_matured_paired_predictions_per_horizon": 60,
+    "minimum_realized_each_class": 20,
+    "forward_condition": "after minimums, candidate point Brier must improve >=1% and mean logloss must not exceed each eligible simpler on same qualified observations; retrospective adoption gates remain necessary; minimum60 is not a proof of statistical skill",
+    "monitor": "on each chat update after new outcomes are mature, review last60qualified paired initial forecasts per active horizon; no mutation on page read",
+    "rollback_performance": "if active model rolling60Brier > same-date M0 rolling60Brier, suspend that horizon model; this is an operating safeguard not a new significance claim",
+    "fallback": "highest historically+prospectively qualified simpler whose same60point Brier and logloss do not exceed M0; otherwise show M0 explicitly as historical reference",
+    "source_or_integrity_failure": "withhold conditional probability immediately, preserve last dated forecast; do not assume missing=safe",
+    "restoration": "at least60new mature qualified paired predictions since suspension and same forward/old historical requirements; no next-day automatic return, no test-driven retraining",
+    "trading": "forecast research does not modify V6/V6-2 score65,8% limit,0/2day cooldowns or orders"
+  },
+  "reproducibility": {
+    "seed": 20261106,
+    "data_parent_seal": "input-references.json + package1 manifest, no new market downloads in this package",
+    "current_code_seal": "this package design/count/policy test code and actual environment, all hashed",
+    "future_model_implementation": "Not written/fitted here; package4 must seal both initial and revision implementation with dependencies+training data+parent protocol SHA before ANY package5test opening; adding/revising a model later requires new version and cannot claim shared test untouched.",
+    "new_version_for": [
+      "change dates/source/calendar qualification",
+      "new features/transform/regularization/calibration",
+      "change cap/metric/inference/sample threshold",
+      "change reopening or tie definition",
+      "change forward/rollback policy"
+    ],
+    "test_open_count": 0
+  },
+  "draft_created_at": "2026-11-06T12:26:34.488253+08:00"
+}

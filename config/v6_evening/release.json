@@ -1,0 +1,13 @@
+{
+  "version": "v6-evening-forecast-1.0.0",
+  "frozenAt": "2026-11-06T23:48:22.945249+08:00",
+  "assets": {
+    "backend/v6_evening_model.py": "397ec1460374b5855f13b781e95456232ea25333db06baf5f5b9c505831e5e76",
+    "backend/v6_evening_inputs.py": "bb34db9297ff2aeff22ef1ed6d0b9d7bf05f0e380e97d3a6b66c176f3e437816",
+    "backend/v6_evening_forecast.py": "9ed3afed4df67f0506359890f2c33d5b75771bacc759aaf8ae3384088303e498",
+    "backend/v6_evening_candidates.py": "15715fb6767389360f1728c22c2a39dc537a549907f2312a5f71744f07062f4e",
+    "config/v6_evening/protocol.json": "c3dc4e743faecb07c869d4a7924d83f71bbeacfb2860bc18019d23a018ce3fc3"
+  },
+  "old0830Preserved": true,
+  "sameClockNightModelsTrained": false
+}

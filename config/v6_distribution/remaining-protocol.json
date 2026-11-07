@@ -1,0 +1,23 @@
+{
+  "classes": {
+    "down": "C_update*(1+R_m)<C_origin*.995",
+    "flat": "C_origin*.995 <= C_update*(1+R_m) <= C_origin*1.005",
+    "up": "C_update*(1+R_m)>C_origin*1.005"
+  },
+  "deadline": "unchanged original third actual cash session",
+  "event": "already observed low <=origin*.98 => observed, otherwise empirical future m-day minimum low shifted from update close with (hits+.5)/(n+1)",
+  "fitting": "none; equal weights, inverse empirical CDF; no direction or path conditioning",
+  "kind": "descriptive_remaining_horizon_baseline",
+  "m": [
+    2,
+    1
+  ],
+  "matured_pool": "official origins at index >=252 with next m sessions completed by update close",
+  "method_version": "v6-remaining-baseline-1.0.0",
+  "minimum_pool": 1260,
+  "origin": "unchanged original official close",
+  "publishing": "chat only, actual saved time, same source gate as current shared forecast; no intraday or retroactive historical forecast",
+  "scoring": "Count distinct (origin session,deadline); use first timing-qualified original per origin, preserve all snapshots and revisions.",
+  "storage": "embedded in new atomic manual comparison snapshot; old snapshots immutable",
+  "validation_claim": "new descriptive product, not validated by package6; differences from original forecast also reflect elapsed information"
+}

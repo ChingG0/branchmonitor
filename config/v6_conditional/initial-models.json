@@ -1,0 +1,836 @@
+{
+  "H1:M0": {
+    "model": "M0",
+    "horizon": 1,
+    "method_version": "v6-conditional-0830-protocol-1.0.0",
+    "implementation_version": "v6-conditional-models-1.0.0",
+    "protocol_sha256": "296e48399a5e67f591b441b839634366513f443271eacede3f9bc5dd3210d010",
+    "data_parent_manifest_sha256": "fc0b47488677f1d41f010dfb4f7daf8010f05b0959184977776027452bca4149",
+    "implementation_sha256": "a4f2caec086c9148b4b99506f1df9f4312c6390d54b82d93af8647b1a63a57dd",
+    "pretest_fit_eligible": true,
+    "sample_gates": {
+      "train": {
+        "n": 1579,
+        "up": 862,
+        "down": 717,
+        "required_n": 750,
+        "required_each_class": 100,
+        "eligible": true
+      },
+      "calibration": {
+        "n": 242,
+        "up": 146,
+        "down": 96,
+        "required_n": 200,
+        "required_each_class": 50,
+        "eligible": true
+      }
+    },
+    "features": [],
+    "trained_through": "2023-11-05",
+    "calibrated_through": "2024-11-05",
+    "test_class_gate": "not_opened",
+    "historical_adoption": "not_evaluated",
+    "production_activated": false,
+    "frequency": {
+      "up": 1008,
+      "n": 1821,
+      "p_unclipped": 0.5535126234906695,
+      "p_up": 0.5535126234906695,
+      "raw_model_logit": 0.21487343073517373
+    },
+    "parameter_sha256": "1e443e93c7b6ccccafb7e09e1c934003ce3b6ce81beae6859081b7b3d28c8ba4"
+  },
+  "H1:M1": {
+    "model": "M1",
+    "horizon": 1,
+    "method_version": "v6-conditional-0830-protocol-1.0.0",
+    "implementation_version": "v6-conditional-models-1.0.0",
+    "protocol_sha256": "296e48399a5e67f591b441b839634366513f443271eacede3f9bc5dd3210d010",
+    "data_parent_manifest_sha256": "fc0b47488677f1d41f010dfb4f7daf8010f05b0959184977776027452bca4149",
+    "implementation_sha256": "a4f2caec086c9148b4b99506f1df9f4312c6390d54b82d93af8647b1a63a57dd",
+    "pretest_fit_eligible": true,
+    "sample_gates": {
+      "train": {
+        "n": 1579,
+        "up": 862,
+        "down": 717,
+        "required_n": 750,
+        "required_each_class": 100,
+        "eligible": true
+      },
+      "calibration": {
+        "n": 242,
+        "up": 146,
+        "down": 96,
+        "required_n": 200,
+        "required_each_class": 50,
+        "eligible": true
+      }
+    },
+    "features": [
+      "night_return_scaled",
+      "night_range_scaled",
+      "log_daily_sigma",
+      "night_age"
+    ],
+    "trained_through": "2023-11-05",
+    "calibrated_through": "2024-11-05",
+    "test_class_gate": "not_opened",
+    "historical_adoption": "not_evaluated",
+    "production_activated": false,
+    "scaler": {
+      "mean": [
+        0.04658907533366724,
+        0.8882623466189373,
+        -4.727768605456895,
+        0.36395408007159724,
+        0.08899531430566175,
+        0.08301755398007925,
+        0.044035673433332215,
+        4.333828750334806e-05,
+        2.912246582459776,
+        0.06333122229259025
+      ],
+      "std_ddof0": [
+        0.6219852292476113,
+        0.45999112398303665,
+        0.35822870447568955,
+        0.44972609419116183,
+        2.2879277369308073,
+        2.2356348990199932,
+        1.1729388384540294,
+        0.0020447566795889333,
+        0.36269436426013274,
+        0.4785896512876806
+      ],
+      "n": 1579,
+      "first_date": "2017-05-16",
+      "last_date": "2023-11-03",
+      "features": [
+        "night_return_scaled",
+        "night_range_scaled",
+        "log_daily_sigma",
+        "night_age",
+        "adr_new_return_scaled",
+        "sox_new_return_scaled",
+        "spx_new_return_scaled",
+        "fx_new_return",
+        "log_vix",
+        "us_after_night_count"
+      ],
+      "constant_indices": []
+    },
+    "regression": {
+      "intercept": 0.17157988825050632,
+      "beta": [
+        1.1640439593994791,
+        -0.0804669370413795,
+        -0.014215671368895393,
+        0.09905630664673613
+      ],
+      "fit": {
+        "success": true,
+        "iterations": 9,
+        "evaluations": 10,
+        "status": 0,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "penalized_fit_objective": 0.5740809775473048
+      }
+    },
+    "calibrator": {
+      "a": 1.2226907857683291,
+      "b": 0.2718955120753796,
+      "constant_logits_a_fixed_to_1": false,
+      "fit": {
+        "success": true,
+        "iterations": 7,
+        "evaluations": 8,
+        "status": 0,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "penalized_fit_objective": 0.5116325830657713
+      }
+    },
+    "parameter_sha256": "6424053bbb5b5be5de1534c5cf1fd537177b42018b5c4ab7b40b0f9530b97681"
+  },
+  "H1:M2": {
+    "model": "M2",
+    "horizon": 1,
+    "method_version": "v6-conditional-0830-protocol-1.0.0",
+    "implementation_version": "v6-conditional-models-1.0.0",
+    "protocol_sha256": "296e48399a5e67f591b441b839634366513f443271eacede3f9bc5dd3210d010",
+    "data_parent_manifest_sha256": "fc0b47488677f1d41f010dfb4f7daf8010f05b0959184977776027452bca4149",
+    "implementation_sha256": "a4f2caec086c9148b4b99506f1df9f4312c6390d54b82d93af8647b1a63a57dd",
+    "pretest_fit_eligible": true,
+    "sample_gates": {
+      "train": {
+        "n": 1579,
+        "up": 862,
+        "down": 717,
+        "required_n": 750,
+        "required_each_class": 100,
+        "eligible": true
+      },
+      "calibration": {
+        "n": 242,
+        "up": 146,
+        "down": 96,
+        "required_n": 200,
+        "required_each_class": 50,
+        "eligible": true
+      }
+    },
+    "features": [
+      "night_return_scaled",
+      "night_range_scaled",
+      "log_daily_sigma",
+      "night_age",
+      "adr_new_return_scaled",
+      "sox_new_return_scaled",
+      "spx_new_return_scaled",
+      "fx_new_return",
+      "log_vix",
+      "us_after_night_count"
+    ],
+    "trained_through": "2023-11-05",
+    "calibrated_through": "2024-11-05",
+    "test_class_gate": "not_opened",
+    "historical_adoption": "not_evaluated",
+    "production_activated": false,
+    "scaler": {
+      "mean": [
+        0.04658907533366724,
+        0.8882623466189373,
+        -4.727768605456895,
+        0.36395408007159724,
+        0.08899531430566175,
+        0.08301755398007925,
+        0.044035673433332215,
+        4.333828750334806e-05,
+        2.912246582459776,
+        0.06333122229259025
+      ],
+      "std_ddof0": [
+        0.6219852292476113,
+        0.45999112398303665,
+        0.35822870447568955,
+        0.44972609419116183,
+        2.2879277369308073,
+        2.2356348990199932,
+        1.1729388384540294,
+        0.0020447566795889333,
+        0.36269436426013274,
+        0.4785896512876806
+      ],
+      "n": 1579,
+      "first_date": "2017-05-16",
+      "last_date": "2023-11-03",
+      "features": [
+        "night_return_scaled",
+        "night_range_scaled",
+        "log_daily_sigma",
+        "night_age",
+        "adr_new_return_scaled",
+        "sox_new_return_scaled",
+        "spx_new_return_scaled",
+        "fx_new_return",
+        "log_vix",
+        "us_after_night_count"
+      ],
+      "constant_indices": []
+    },
+    "regression": {
+      "intercept": 0.17356572401209072,
+      "beta": [
+        1.095651988121489,
+        -0.06685765484727996,
+        -0.005364015402565986,
+        0.07920446045413468,
+        -0.11104374228838008,
+        0.3018409215014555,
+        -0.09988066853670075,
+        -0.04747137676136941,
+        -0.015026383715672387,
+        0.047335714503775286
+      ],
+      "fit": {
+        "success": true,
+        "iterations": 20,
+        "evaluations": 22,
+        "status": 0,
+        "message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "penalized_fit_objective": 0.5710698950893627
+      }
+    },
+    "calibrator": {
+      "a": 1.2269080861745518,
+      "b": 0.2571595231117158,
+      "constant_logits_a_fixed_to_1": false,
+      "fit": {
+        "success": true,
+        "iterations": 7,
+        "evaluations": 8,
+        "status": 0,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "penalized_fit_objective": 0.508150658002353
+      }
+    },
+    "parameter_sha256": "e7b0ce9e80e3a1c741c180fe27d8aaf6eba3003a2aa2faf84574383138766b0d"
+  },
+  "H2:M0": {
+    "model": "M0",
+    "horizon": 2,
+    "method_version": "v6-conditional-0830-protocol-1.0.0",
+    "implementation_version": "v6-conditional-models-1.0.0",
+    "protocol_sha256": "296e48399a5e67f591b441b839634366513f443271eacede3f9bc5dd3210d010",
+    "data_parent_manifest_sha256": "fc0b47488677f1d41f010dfb4f7daf8010f05b0959184977776027452bca4149",
+    "implementation_sha256": "a4f2caec086c9148b4b99506f1df9f4312c6390d54b82d93af8647b1a63a57dd",
+    "pretest_fit_eligible": true,
+    "sample_gates": {
+      "train": {
+        "n": 1578,
+        "up": 862,
+        "down": 716,
+        "required_n": 750,
+        "required_each_class": 100,
+        "eligible": true
+      },
+      "calibration": {
+        "n": 241,
+        "up": 158,
+        "down": 83,
+        "required_n": 200,
+        "required_each_class": 50,
+        "eligible": true
+      }
+    },
+    "features": [],
+    "trained_through": "2023-11-05",
+    "calibrated_through": "2024-11-05",
+    "test_class_gate": "not_opened",
+    "historical_adoption": "not_evaluated",
+    "production_activated": false,
+    "frequency": {
+      "up": 1020,
+      "n": 1819,
+      "p_unclipped": 0.5607142857142857,
+      "p_up": 0.5607142857142857,
+      "raw_model_logit": 0.24406144997589052
+    },
+    "parameter_sha256": "e2d1f4b91435838407c78320b1f974dbf71c38afd46dfd8ad4e7fad491125d0f"
+  },
+  "H2:M1": {
+    "model": "M1",
+    "horizon": 2,
+    "method_version": "v6-conditional-0830-protocol-1.0.0",
+    "implementation_version": "v6-conditional-models-1.0.0",
+    "protocol_sha256": "296e48399a5e67f591b441b839634366513f443271eacede3f9bc5dd3210d010",
+    "data_parent_manifest_sha256": "fc0b47488677f1d41f010dfb4f7daf8010f05b0959184977776027452bca4149",
+    "implementation_sha256": "a4f2caec086c9148b4b99506f1df9f4312c6390d54b82d93af8647b1a63a57dd",
+    "pretest_fit_eligible": true,
+    "sample_gates": {
+      "train": {
+        "n": 1578,
+        "up": 862,
+        "down": 716,
+        "required_n": 750,
+        "required_each_class": 100,
+        "eligible": true
+      },
+      "calibration": {
+        "n": 241,
+        "up": 158,
+        "down": 83,
+        "required_n": 200,
+        "required_each_class": 50,
+        "eligible": true
+      }
+    },
+    "features": [
+      "night_return_scaled",
+      "night_range_scaled",
+      "log_daily_sigma",
+      "night_age"
+    ],
+    "trained_through": "2023-11-05",
+    "calibrated_through": "2024-11-05",
+    "test_class_gate": "not_opened",
+    "historical_adoption": "not_evaluated",
+    "production_activated": false,
+    "scaler": {
+      "mean": [
+        0.04614693956419735,
+        0.8882961062490836,
+        -4.727806701099427,
+        0.36409845390286916,
+        0.08702344937996108,
+        0.08149819366844721,
+        0.04280327799597519,
+        4.576984938311116e-05,
+        2.9123486970934245,
+        0.06337135614702155
+      ],
+      "std_ddof0": [
+        0.6219341750526877,
+        0.4601348966897979,
+        0.3583389962208403,
+        0.4498319889191475,
+        2.2873108722020925,
+        2.2355280563292603,
+        1.1722880148842092,
+        0.0020431210505829356,
+        0.36278657672214965,
+        0.4787386153645051
+      ],
+      "n": 1578,
+      "first_date": "2017-05-16",
+      "last_date": "2023-11-02",
+      "features": [
+        "night_return_scaled",
+        "night_range_scaled",
+        "log_daily_sigma",
+        "night_age",
+        "adr_new_return_scaled",
+        "sox_new_return_scaled",
+        "spx_new_return_scaled",
+        "fx_new_return",
+        "log_vix",
+        "us_after_night_count"
+      ],
+      "constant_indices": []
+    },
+    "regression": {
+      "intercept": 0.18296392907425763,
+      "beta": [
+        0.8471821144519213,
+        -0.06041388078810977,
+        0.024107773462380664,
+        0.08191517473343869
+      ],
+      "fit": {
+        "success": true,
+        "iterations": 8,
+        "evaluations": 9,
+        "status": 0,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "penalized_fit_objective": 0.6171156296022744
+      }
+    },
+    "calibrator": {
+      "a": 1.100275633920842,
+      "b": 0.4634912206645276,
+      "constant_logits_a_fixed_to_1": false,
+      "fit": {
+        "success": true,
+        "iterations": 6,
+        "evaluations": 7,
+        "status": 0,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "penalized_fit_objective": 0.5561192324146906
+      }
+    },
+    "parameter_sha256": "8ebc262c9c2b3f73db85a6a9434bfc624554f31ce7e25e2ebd099e7ad38dc462"
+  },
+  "H2:M2": {
+    "model": "M2",
+    "horizon": 2,
+    "method_version": "v6-conditional-0830-protocol-1.0.0",
+    "implementation_version": "v6-conditional-models-1.0.0",
+    "protocol_sha256": "296e48399a5e67f591b441b839634366513f443271eacede3f9bc5dd3210d010",
+    "data_parent_manifest_sha256": "fc0b47488677f1d41f010dfb4f7daf8010f05b0959184977776027452bca4149",
+    "implementation_sha256": "a4f2caec086c9148b4b99506f1df9f4312c6390d54b82d93af8647b1a63a57dd",
+    "pretest_fit_eligible": true,
+    "sample_gates": {
+      "train": {
+        "n": 1578,
+        "up": 862,
+        "down": 716,
+        "required_n": 750,
+        "required_each_class": 100,
+        "eligible": true
+      },
+      "calibration": {
+        "n": 241,
+        "up": 158,
+        "down": 83,
+        "required_n": 200,
+        "required_each_class": 50,
+        "eligible": true
+      }
+    },
+    "features": [
+      "night_return_scaled",
+      "night_range_scaled",
+      "log_daily_sigma",
+      "night_age",
+      "adr_new_return_scaled",
+      "sox_new_return_scaled",
+      "spx_new_return_scaled",
+      "fx_new_return",
+      "log_vix",
+      "us_after_night_count"
+    ],
+    "trained_through": "2023-11-05",
+    "calibrated_through": "2024-11-05",
+    "test_class_gate": "not_opened",
+    "historical_adoption": "not_evaluated",
+    "production_activated": false,
+    "scaler": {
+      "mean": [
+        0.04614693956419735,
+        0.8882961062490836,
+        -4.727806701099427,
+        0.36409845390286916,
+        0.08702344937996108,
+        0.08149819366844721,
+        0.04280327799597519,
+        4.576984938311116e-05,
+        2.9123486970934245,
+        0.06337135614702155
+      ],
+      "std_ddof0": [
+        0.6219341750526877,
+        0.4601348966897979,
+        0.3583389962208403,
+        0.4498319889191475,
+        2.2873108722020925,
+        2.2355280563292603,
+        1.1722880148842092,
+        0.0020431210505829356,
+        0.36278657672214965,
+        0.4787386153645051
+      ],
+      "n": 1578,
+      "first_date": "2017-05-16",
+      "last_date": "2023-11-02",
+      "features": [
+        "night_return_scaled",
+        "night_range_scaled",
+        "log_daily_sigma",
+        "night_age",
+        "adr_new_return_scaled",
+        "sox_new_return_scaled",
+        "spx_new_return_scaled",
+        "fx_new_return",
+        "log_vix",
+        "us_after_night_count"
+      ],
+      "constant_indices": []
+    },
+    "regression": {
+      "intercept": 0.18412521954069433,
+      "beta": [
+        0.8192690919162401,
+        -0.06686755323621589,
+        -0.015934061267472308,
+        0.061933698734278855,
+        -0.04263419315669045,
+        0.17329242470275338,
+        -0.08650925352809266,
+        -0.0808554317104724,
+        0.05692311006976524,
+        0.05316138102215634
+      ],
+      "fit": {
+        "success": true,
+        "iterations": 20,
+        "evaluations": 22,
+        "status": 0,
+        "message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "penalized_fit_objective": 0.6150833374377567
+      }
+    },
+    "calibrator": {
+      "a": 1.0707227365804726,
+      "b": 0.5218221296202314,
+      "constant_logits_a_fixed_to_1": false,
+      "fit": {
+        "success": true,
+        "iterations": 7,
+        "evaluations": 8,
+        "status": 0,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "penalized_fit_objective": 0.5564867590144236
+      }
+    },
+    "parameter_sha256": "4128c8da3fa2b1b1943bbe6689158b189cd3a608521cfa1fea5d66e58f5b769c"
+  },
+  "H3:M0": {
+    "model": "M0",
+    "horizon": 3,
+    "method_version": "v6-conditional-0830-protocol-1.0.0",
+    "implementation_version": "v6-conditional-models-1.0.0",
+    "protocol_sha256": "296e48399a5e67f591b441b839634366513f443271eacede3f9bc5dd3210d010",
+    "data_parent_manifest_sha256": "fc0b47488677f1d41f010dfb4f7daf8010f05b0959184977776027452bca4149",
+    "implementation_sha256": "a4f2caec086c9148b4b99506f1df9f4312c6390d54b82d93af8647b1a63a57dd",
+    "pretest_fit_eligible": true,
+    "sample_gates": {
+      "train": {
+        "n": 1577,
+        "up": 890,
+        "down": 687,
+        "required_n": 750,
+        "required_each_class": 100,
+        "eligible": true
+      },
+      "calibration": {
+        "n": 240,
+        "up": 157,
+        "down": 83,
+        "required_n": 200,
+        "required_each_class": 50,
+        "eligible": true
+      }
+    },
+    "features": [],
+    "trained_through": "2023-11-05",
+    "calibrated_through": "2024-11-05",
+    "test_class_gate": "not_opened",
+    "historical_adoption": "not_evaluated",
+    "production_activated": false,
+    "frequency": {
+      "up": 1047,
+      "n": 1817,
+      "p_unclipped": 0.5761826182618262,
+      "p_up": 0.5761826182618262,
+      "raw_model_logit": 0.3071219970361222
+    },
+    "parameter_sha256": "85a627015c9ab60e1b601e2e61b0cd1235b39f4f37c0d02d20316ab962355169"
+  },
+  "H3:M1": {
+    "model": "M1",
+    "horizon": 3,
+    "method_version": "v6-conditional-0830-protocol-1.0.0",
+    "implementation_version": "v6-conditional-models-1.0.0",
+    "protocol_sha256": "296e48399a5e67f591b441b839634366513f443271eacede3f9bc5dd3210d010",
+    "data_parent_manifest_sha256": "fc0b47488677f1d41f010dfb4f7daf8010f05b0959184977776027452bca4149",
+    "implementation_sha256": "a4f2caec086c9148b4b99506f1df9f4312c6390d54b82d93af8647b1a63a57dd",
+    "pretest_fit_eligible": true,
+    "sample_gates": {
+      "train": {
+        "n": 1577,
+        "up": 890,
+        "down": 687,
+        "required_n": 750,
+        "required_each_class": 100,
+        "eligible": true
+      },
+      "calibration": {
+        "n": 240,
+        "up": 157,
+        "down": 83,
+        "required_n": 200,
+        "required_each_class": 50,
+        "eligible": true
+      }
+    },
+    "features": [
+      "night_return_scaled",
+      "night_range_scaled",
+      "log_daily_sigma",
+      "night_age"
+    ],
+    "trained_through": "2023-11-05",
+    "calibrated_through": "2024-11-05",
+    "test_class_gate": "not_opened",
+    "historical_adoption": "not_evaluated",
+    "production_activated": false,
+    "scaler": {
+      "mean": [
+        0.045402489250032416,
+        0.8879359790802065,
+        -4.727733215110037,
+        0.3642430108334832,
+        0.08570090684433726,
+        0.07969272725339605,
+        0.04198917253391287,
+        4.452874608806777e-05,
+        2.912403745793828,
+        0.06341154090044387
+      ],
+      "std_ddof0": [
+        0.6214280793360714,
+        0.46005839560969736,
+        0.3584407056476689,
+        0.44993794656178615,
+        2.287432726005131,
+        2.2350863330004973,
+        1.1722136244445807,
+        0.0020431739990886453,
+        0.3628949942774466,
+        0.47888771856695833
+      ],
+      "n": 1577,
+      "first_date": "2017-05-16",
+      "last_date": "2023-11-01",
+      "features": [
+        "night_return_scaled",
+        "night_range_scaled",
+        "log_daily_sigma",
+        "night_age",
+        "adr_new_return_scaled",
+        "sox_new_return_scaled",
+        "spx_new_return_scaled",
+        "fx_new_return",
+        "log_vix",
+        "us_after_night_count"
+      ],
+      "constant_indices": []
+    },
+    "regression": {
+      "intercept": 0.27295567378252744,
+      "beta": [
+        0.6913935349299933,
+        0.013147158848996962,
+        0.02226268999784599,
+        0.07290353029536767
+      ],
+      "fit": {
+        "success": true,
+        "iterations": 8,
+        "evaluations": 9,
+        "status": 0,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "penalized_fit_objective": 0.6345752889326515
+      }
+    },
+    "calibrator": {
+      "a": 1.1418691599358952,
+      "b": 0.339746913141207,
+      "constant_logits_a_fixed_to_1": false,
+      "fit": {
+        "success": true,
+        "iterations": 7,
+        "evaluations": 8,
+        "status": 0,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "penalized_fit_objective": 0.5774578814227419
+      }
+    },
+    "parameter_sha256": "5b5d9bbb290955ca685fa5de7e2385b1cad987819a34b5bff433dae1dc691cdf"
+  },
+  "H3:M2": {
+    "model": "M2",
+    "horizon": 3,
+    "method_version": "v6-conditional-0830-protocol-1.0.0",
+    "implementation_version": "v6-conditional-models-1.0.0",
+    "protocol_sha256": "296e48399a5e67f591b441b839634366513f443271eacede3f9bc5dd3210d010",
+    "data_parent_manifest_sha256": "fc0b47488677f1d41f010dfb4f7daf8010f05b0959184977776027452bca4149",
+    "implementation_sha256": "a4f2caec086c9148b4b99506f1df9f4312c6390d54b82d93af8647b1a63a57dd",
+    "pretest_fit_eligible": true,
+    "sample_gates": {
+      "train": {
+        "n": 1577,
+        "up": 890,
+        "down": 687,
+        "required_n": 750,
+        "required_each_class": 100,
+        "eligible": true
+      },
+      "calibration": {
+        "n": 240,
+        "up": 157,
+        "down": 83,
+        "required_n": 200,
+        "required_each_class": 50,
+        "eligible": true
+      }
+    },
+    "features": [
+      "night_return_scaled",
+      "night_range_scaled",
+      "log_daily_sigma",
+      "night_age",
+      "adr_new_return_scaled",
+      "sox_new_return_scaled",
+      "spx_new_return_scaled",
+      "fx_new_return",
+      "log_vix",
+      "us_after_night_count"
+    ],
+    "trained_through": "2023-11-05",
+    "calibrated_through": "2024-11-05",
+    "test_class_gate": "not_opened",
+    "historical_adoption": "not_evaluated",
+    "production_activated": false,
+    "scaler": {
+      "mean": [
+        0.045402489250032416,
+        0.8879359790802065,
+        -4.727733215110037,
+        0.3642430108334832,
+        0.08570090684433726,
+        0.07969272725339605,
+        0.04198917253391287,
+        4.452874608806777e-05,
+        2.912403745793828,
+        0.06341154090044387
+      ],
+      "std_ddof0": [
+        0.6214280793360714,
+        0.46005839560969736,
+        0.3584407056476689,
+        0.44993794656178615,
+        2.287432726005131,
+        2.2350863330004973,
+        1.1722136244445807,
+        0.0020431739990886453,
+        0.3628949942774466,
+        0.47888771856695833
+      ],
+      "n": 1577,
+      "first_date": "2017-05-16",
+      "last_date": "2023-11-01",
+      "features": [
+        "night_return_scaled",
+        "night_range_scaled",
+        "log_daily_sigma",
+        "night_age",
+        "adr_new_return_scaled",
+        "sox_new_return_scaled",
+        "spx_new_return_scaled",
+        "fx_new_return",
+        "log_vix",
+        "us_after_night_count"
+      ],
+      "constant_indices": []
+    },
+    "regression": {
+      "intercept": 0.2745677358475405,
+      "beta": [
+        0.6198809858540429,
+        0.008052160999868156,
+        -0.0017864814274678857,
+        0.04253211344267406,
+        -0.036747642010633685,
+        0.1561906958204106,
+        -0.019206317446055523,
+        -0.026192375129707936,
+        0.034672265773451075,
+        0.07604425860438319
+      ],
+      "fit": {
+        "success": true,
+        "iterations": 17,
+        "evaluations": 22,
+        "status": 0,
+        "message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "penalized_fit_objective": 0.6330063130903667
+      }
+    },
+    "calibrator": {
+      "a": 1.1405806981653417,
+      "b": 0.3701497762684608,
+      "constant_logits_a_fixed_to_1": false,
+      "fit": {
+        "success": true,
+        "iterations": 7,
+        "evaluations": 8,
+        "status": 0,
+        "message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+        "penalized_fit_objective": 0.5781345664691482
+      }
+    },
+    "parameter_sha256": "86e829b704e89906f453eaf91a3936be7a8aacf84ce07beb45e0ae8a774a0c6b"
+  }
+}

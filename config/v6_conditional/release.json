@@ -1,0 +1,26 @@
+{
+  "version": "v6-conditional-prospective-1.0.0",
+  "runtime_sha256": "2726c8382b7549ac5b80516ced08c23352d81cea3dba17ad9f037c44aba04a6f",
+  "assets": {
+    "dataset.py": "11535948f47b4ea774dd9935e29a13b1882a1d325398220f8d1c756646f52dc0",
+    "initial-models.json": "415327b6da5326ce8ca04e441c0fbc3a917df5c5fea19c47e93c340a43975c41",
+    "models.py": "8b5d2edc163e5750e33e589ede32199522e7c17ec8c24b0c8585651bdbf20c16",
+    "protocol.json": "296e48399a5e67f591b441b839634366513f443271eacede3f9bc5dd3210d010"
+  },
+  "parents": {
+    "package1": "f7ca87de8382703df1acac6094a789fd3bb181a9b6b31a4ec863eabfefbeea31",
+    "package2": "c9e34586586a6edd2e2a0bf039e6af18603f7c7277a84e4fa0c269df7959a0db",
+    "package3": "fc0b47488677f1d41f010dfb4f7daf8010f05b0959184977776027452bca4149",
+    "package4": "57517a1b3bcd4cd088fef9fb8714d748a22f96d29e418273a17903047f3d2501",
+    "package5": "636b9233cde1722b2602f22cdbc6a793efb9f56342223ab48175cb3010d77d51",
+    "package6": "377470967fc39b9863239b62b4dcaa1add11a215480ece577a4d4a0e4be26447",
+    "package7": "c9019a1d61421c7e68b6c5b9113e4bc0d49622b2559c1214967aa40a63bf9660"
+  },
+  "historical_initial_choice": {
+    "1": "M1",
+    "2": "M1",
+    "3": "M1"
+  },
+  "revision_eligible": false,
+  "production_activation_requires_prospective": true
+}

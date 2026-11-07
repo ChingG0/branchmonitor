@@ -1,0 +1,19 @@
+{
+  "method_version": "v6-daily-direction-baseline-2.0.0",
+  "horizons": [
+    1,
+    2,
+    3
+  ],
+  "warmup": 252,
+  "minimum_matured_pool": 1260,
+  "classes": "up: terminal close >= fixed original anchor (exact ties included); down: terminal close < anchor; retain all historical endpoints, no renormalization excluding near-flat returns",
+  "estimator": "current close times all matured equal-weight historical remaining-session returns, inverse empirical CDF intervals; no score/volatility/direction adjustment",
+  "calendar": "retain initial scheduled date and calendar vintage; notice-based corrections require saved calendar before information cutoff, record shifted dates; no inferred closure from absent price",
+  "publish": "chat CLI only, actual issue time and shared-source gate; data cutoff<=next-session08:30, no publication after next08:45; no retroactive forecast migration",
+  "scoring": "separate binary RPS = squared error of down probability and outcome; two-class Brier is twice binary RPS; never pool legacy three-class scores",
+  "forward_policy": "no refit or tuning during first month of actual manual records; missing manual days not filled; at least one month before reviewing cumulative forecast quality, no forecast or trading-alpha adoption claim from October replay",
+  "compatibility": "immutable legacy three-class roots remain maintained and graded by legacy method; display in separate folded archive; new binary roots only after activation; no retroactive reclassification or predictive backfill",
+  "research_sha256": "a35f861ec29da9b18cca69e58aed1680df46c95d9e9763ffdfe33f0d18c6327e",
+  "validation": "target presentation change only, no claim of improved direction skill; prefix invariance, small-return/tie tests, same endpoint support and intervals, legacy compatibility and no-write GET"
+}

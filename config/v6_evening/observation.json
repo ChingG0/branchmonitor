@@ -1,0 +1,8 @@
+{
+  "version": "v6-observation-1.0.0",
+  "primary": true,
+  "authorized": "User requested untrained observation instead of M0; seasonal and year analog context required",
+  "trained": false,
+  "calibrated": false,
+  "formalSamplePolicy": "separate observation scoring; no old model accuracy inheritance"
+}

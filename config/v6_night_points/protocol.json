@@ -1,0 +1,39 @@
+{
+  "version": "v6-night-points-research-1.0.0",
+  "sealed_at": "2026-11-06T21:05:32.351385+08:00",
+  "role": "retrospective_research_only_not_formal_activation",
+  "target": "terminal log return / (sqrt(h) * known cash sigma60)",
+  "features": [
+    "night_return_scaled",
+    "night_range_scaled",
+    "log_daily_sigma",
+    "night_age"
+  ],
+  "model": "median quantile regression with L1 slope shrinkage",
+  "quantile": 0.5,
+  "slope_l1_penalty": 0.01,
+  "scaler": "training only; original per-horizon scalers",
+  "calibration": "fixed 10/50/90 percentiles of calibration residuals; no test fitting",
+  "split": "original qualified and purged package3 train/calibration/sealed_test membership; opened-test labels only for final evaluation",
+  "primary_metric": "mean absolute simple-return error",
+  "baselines": [
+    "no change",
+    "train+calibration unconditional median simple return"
+  ],
+  "research_display_gate": {
+    "train_min": 750,
+    "calibration_min": 200,
+    "test_min": 100,
+    "relative_improvement_both_min": 0.01,
+    "paired_block10_bootstrap95_upper_both_lt": 0,
+    "bootstrap_reps": 1999,
+    "seed": 1106
+  },
+  "no_tuning_after_test": true,
+  "limitations": [
+    "The historical test was previously opened for other research, not a pristine holdout.",
+    "No validation of applying completed-night model to partial-night what-if.",
+    "Intervals are empirical reference ranges, not guaranteed coverage or extrema.",
+    "New point estimates for old scenarios are late-added calculations, never original issue-time forecasts."
+  ]
+}
