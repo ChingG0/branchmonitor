@@ -25,3 +25,5 @@
 - **Drive桌面串流接入後**：正式雲端程式在`/Users/ching/Desktop/branch-monitor-cloud`，網址localhost:3001；舊本機資料仍保留。若該clone有`cloud-runtime.local.json`，後續手動更新在此clone執行，資料及帳本在其獨立工作暫存。只更新程式碼不改資料來源。讀`docs/CLOUD_RUNTIME.md`，批次發布後使用`cloud_runtime.py prepare-sync`及Drive實際讀回／confirm；不得對稀疏快取執行舊包5掃描並把未下載冷檔視為刪除。未驗證同步成功不能清工作快取。
 
 - **2026-11-07配置搬移**：ETF滾動存股規劃已退役，不列首頁／排程，也不重新生成。V6股票曝險上限只在對話發布機率時一起保存，GET只讀。舊ETF快照保留封存，舊74.6是偏多配置分數而非風險機率。規則在config/v6_allocation/policy.json；不因重複更新增加當日加碼額度，減碼不受加碼平滑限制。
+
+- **2026-11-07主版本指定**：使用者要求暫停舊版8765；後續均以`/Users/ching/Desktop/branch-monitor-cloud`與`http://localhost:3001`為主。舊目錄與資料保留，未明確要求不得自行重啟8765。
