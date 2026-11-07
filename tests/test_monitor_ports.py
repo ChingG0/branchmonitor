@@ -15,6 +15,20 @@ def module(name):
 
 
 class Ports(unittest.TestCase):
+    def setUp(self):
+        # Port tests simulate the verified launch stage; never bootstrap a real
+        # per-device cloud configuration discovered in the checkout under test.
+        guard=patch.dict('os.environ',{'BRANCH_MONITOR_CLOUD':'1'})
+        guard.start();self.addCleanup(guard.stop)
+
+    def test_cloud_checkout_redirects_through_verified_bootstrap(self):
+        m=module('launch')
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);(root/'cloud-runtime.local.json').write_text('{}')
+            with patch.object(m,'ROOT',root),patch.dict(m.os.environ,{'BRANCH_MONITOR_CLOUD':''}),patch.object(m.os,'execv',side_effect=SystemExit) as run,self.assertRaises(SystemExit):
+                m.main([])
+            self.assertEqual(run.call_args.args[1][-2:],[str(root/'scripts/cloud_runtime.py'),'launch'])
+
     def test_existing_cloud_port_opens_only_same_checkout(self):
         m=module('launch')
         with patch.object(m,'health',return_value={'app':'branch-monitor','directory':str(m.ROOT)}),patch.object(m.webbrowser,'open') as browser,contextlib.redirect_stdout(io.StringIO()):
