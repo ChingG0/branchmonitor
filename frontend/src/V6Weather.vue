@@ -53,7 +53,8 @@ onMounted(()=>load())
    <V6CrashScale v-if="data.crash_scale" :data="data.crash_scale"/>
    <V6Forecast :forecast="data.snapshot?.forecast" :audit="data.forecast_audit" :research="data.forecast_research" :scorecard="data.forecast_scorecard"/>
    <V6RiskVisual v-if="data.snapshot" :current="data.snapshot" :history="data.history" :horizons="data.snapshot.model?.outlook?.horizons||[]" :categories="data.categories" :indicators="[...data.snapshot.local_indicators,...data.snapshot.indicators]" @select="load"/>
-   <V6History v-if="data.historical?.points.length" :history="data.historical" :alternatives="data.comparison?.retrospective?[data.comparison.retrospective]:[]"/>
+   <V6History v-if="data.comparison?.retrospective?.strategy_key==='v6-2'&&data.comparison.retrospective.points.length" :history="data.comparison.retrospective"/>
+   <p v-else class="notice">V6-2 風險分數回溯尚無可用的保存資料，請在對話中要求更新 V6；原 V6 放空交易回測仍保留於下方。</p>
    <details v-if="data.snapshot" v-remember-disclosure="'v6.manual-review'" open class="forecast">
     <summary class="section-summary"><h2>本次人工研究</h2></summary>
     <div class="forecast-head"><div><span class="stage" :class="data.snapshot.stage">{{data.snapshot.stage}}</span><small>市場資料至 {{data.snapshot.market_as_of}} · 研究保存 {{data.snapshot.prepared_at.slice(0,16).replace('T',' ')}}</small></div><h2>{{formatRiskText(data.snapshot.summary)}}</h2><p>{{data.snapshot.probability_note}}</p></div>

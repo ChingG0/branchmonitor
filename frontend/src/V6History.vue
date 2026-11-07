@@ -6,13 +6,8 @@ import {vRememberDisclosure} from './rememberDisclosure'
 import {computed,ref,watch,nextTick,onMounted,onBeforeUnmount} from 'vue'
 import type {V6Historical} from './v6HistoryTypes'
 import {formatObservation,formatRiskText} from './v6Format'
-const props=defineProps<{history:V6Historical;alternatives?:V6Historical[]}>()
-const strategy=ref('original')
-const choices=computed(()=>[{key:'original',label:'V6 原版｜65分策略',data:props.history},...(props.alternatives||[]).map(h=>({key:h.strategy_key||h.model_version,label:h.label||h.model_version,data:h}))])
-const currentHistory=computed(()=>choices.value.find(c=>c.key===strategy.value)?.data||props.history)
-const isNew=computed(()=>currentHistory.value.strategy_key==='v6-2')
-watch(choices,value=>{if(!value.some(c=>c.key===strategy.value))strategy.value='original'})
-watch(strategy,value=>{try{localStorage.setItem('branch-monitor.v6-history-strategy',value)}catch{}})
+const props=defineProps<{history:V6Historical}>()
+const currentHistory=computed(()=>props.history)
 const selected=ref('')
 const scrollArea=ref<HTMLElement|null>(null)
 const points=computed(()=>currentHistory.value.points)
@@ -30,7 +25,6 @@ function revealSelected(){
 watch(index,()=>nextTick(revealSelected))
 let resize:ResizeObserver|undefined
 onMounted(()=>{
- try{const saved=localStorage.getItem('branch-monitor.v6-history-strategy');if(saved&&choices.value.some(c=>c.key===saved))strategy.value=saved}catch{}
  revealSelected()
  if(scrollArea.value){resize=new ResizeObserver(revealSelected);resize.observe(scrollArea.value)}
 })
@@ -38,7 +32,7 @@ onBeforeUnmount(()=>resize?.disconnect())
 const y=(score:number)=>220-score*1.8
 const color=(score:number|null)=>score===null?'#a0aaa3':score>=70?'#b85c55':score>=65?'#b68a38':'#728f91'
 const radius=(score:number|null)=>score===null?6:Math.sqrt(Math.max(0,Math.min(100,score)))*1.8
-const status=(score:number|null)=>score===null?'資料不足':score>=70&&!isNew.value?'達 70 分觀察線':score>=65?'達 65 分觀察線':'未達 65 分觀察線'
+const status=(score:number|null)=>score===null?'資料不足':score>=65?'達 65 分觀察線':'未達 65 分觀察線'
 const validUrl=(url:string)=>/^https?:\/\//i.test(url)?url:'#'
 const lines=computed(()=>points.value.slice(1).flatMap((p,i)=>{
  const before=points.value[i]
@@ -47,8 +41,8 @@ const lines=computed(()=>points.value.slice(1).flatMap((p,i)=>{
 </script>
 <template>
  <details v-remember-disclosure="'v6.history'" open class="historical-weather" v-if="points.length">
-  <summary class="section-summary"><div><span class="badge">歷史重算 · 非當時預報</span><h2>{{currentHistory.start.slice(5).replace('-','/')}} 起風險分數回溯</h2><p>{{currentHistory.start}} ～ {{currentHistory.end}} · {{points.length}} 個交易日 · 日期為台灣盤前 08:30</p></div><div class="history-controls" @click.stop @keydown.stop><label>策略<select v-model="strategy" aria-label="風險回溯策略"><option v-for="choice in choices" :key="choice.key" :value="choice.key">{{choice.label}}</option></select></label><label>查看日期<select v-model="selectedDate" aria-label="回溯觀測日期"><option v-for="point in points" :key="point.date" :value="point.date">{{point.date}}</option></select></label></div></summary>
-  <div class="history-explainer">目前：{{isNew?'V6-2｜價格＋外資＋跨資產':'V6 原版｜65分策略'}}。泡泡面積與所選模型分數成比例，越大代表模型分數越高。兩模型的分數口徑不同，只比較各自變化與是否達線。分數不是下跌機率，也不同於上方人工新聞研究的警戒等級；低於門檻不表示安全。</div>
+  <summary class="section-summary"><div><span class="badge">V6-2 · 歷史重算 · 非當時預報</span><h2>{{currentHistory.start.slice(5).replace('-','/')}} 起風險分數回溯</h2><p>{{currentHistory.start}} ～ {{currentHistory.end}} · {{points.length}} 個交易日 · 日期為台灣盤前 08:30</p></div><div class="history-controls" @click.stop @keydown.stop><label>查看日期<select v-model="selectedDate" aria-label="回溯觀測日期"><option v-for="point in points" :key="point.date" :value="point.date">{{point.date}}</option></select></label></div></summary>
+  <div class="history-explainer">目前只追蹤 V6-2｜價格＋外資＋跨資產。泡泡面積與 V6-2 分數成比例，越大代表模型分數越高；觀察逐日變化與是否達線。原 V6 放空交易回測仍保留於下方「原V6歷史模擬」。分數不是下跌機率，也不同於上方人工新聞研究的警戒等級；低於門檻不表示安全。</div>
   <div ref="scrollArea" class="history-scroll" tabindex="0" aria-label="歷史風險分數圖，可左右捲動">
    <svg :viewBox="`0 0 ${width} 275`" :style="{width:width+'px'}" height="275" role="group" aria-label="逐日歷史重算分數">
     <g v-for="mark in [0,50,65,70,100]" :key="mark"><line x1="44" :x2="width-22" :y1="y(mark)" :y2="y(mark)" :stroke="mark===65?'#c6a76b':mark===70?'#d39d94':'#e5ebe5'" stroke-dasharray="4 5"/><text x="6" :y="y(mark)+4" class="axis">{{mark}}</text></g>
@@ -63,7 +57,7 @@ const lines=computed(()=>points.value.slice(1).flatMap((p,i)=>{
     </g>
    </svg>
   </div>
-  <div class="threshold-legend"><span>65 分：所選策略觀察線</span><span>{{isNew?'70 分：分數刻度，非另一套進場規則':'70 分：原版較高門檻'}}</span><span>灰色 ?：缺資料，不是零分</span></div>
+  <div class="threshold-legend"><span>65 分：V6-2 觀察線</span><span>70 分：分數刻度，非另一套進場規則</span><span>灰色 ?：缺資料，不是零分</span></div>
   <div v-if="current" class="historical-details">
    <div class="day-summary"><div><small>回溯盤前 {{current.date}} 08:30</small><h3>{{current.score==null?'—':current.score.toFixed(2)}} <small>分／100</small></h3><p>{{status(current.score)}}</p></div><div><small>相較前個交易日</small><strong>{{change==null?'無可比較分數':(change>0?'+':'')+change.toFixed(2)+' 分'}}</strong><p>{{change==null?'':change>0?'模型分數上升':change<0?'模型分數下降':'模型分數持平'}}</p></div><div><small>台股收盤資料</small><strong>{{current.market_as_of}}</strong><p>不使用 {{current.date}} 的收盤結果</p></div></div>
    <V6RiskPosition :score="current.score" :prior-score="prior?.score??null" :date="current.date" :prior-date="prior?.date"/>
@@ -71,7 +65,7 @@ const lines=computed(()=>points.value.slice(1).flatMap((p,i)=>{
    <p class="chart-reading">顏色依各指標的特性分級，並非下跌機率。價格、匯率與外資淨空使用近期相對位置；乖離、VIX、維持率與情緒使用自訂觀察區間。點「依據」可查看規則；沿用資料保留原狀態，不當成當日新訊號。灰色表示待判讀，不代表低風險。</p>
    <p v-if="current.missing_sources.length" class="missing">缺少評分來源：{{current.missing_sources.join('、')}}，未計分。</p>
    <details v-remember-disclosure="'v6.history.observations'" open><summary>{{current.date}} 觀測資料 · {{current.indicators.length}} 項</summary><div class="observed-grid"><article v-for="item in current.indicators" :key="item.category+item.label"><span>{{item.label}}</span><b :title="`${item.value} ${item.unit}`">{{formatObservation(item.value,item.unit,item.label)}}</b><small>{{item.as_of}} · <a :href="validUrl(item.url)" target="_blank" rel="noopener noreferrer">{{item.source}}</a></small><p>{{formatRiskText(item.reading)}}</p><V6ObservationTrend :item="item" :points="points" :current="current"/></article></div></details>
-   <p class="missing">尚未回補：{{current.missing_context.join('、')}}。{{currentHistory.context_note||'DIX／GEX、融資為補充觀測，未納入原模型分數。'}}</p>
+   <p class="missing">尚未回補：{{current.missing_context.join('、')}}。{{currentHistory.context_note||'DIX／GEX、融資為補充觀測，未納入V6-2固定模型分數。'}}</p>
   </div>
   <details v-remember-disclosure="'v6.history.method'" class="method"><summary>回溯方法與限制 · 建立於 {{currentHistory.generated_at.slice(0,16).replace('T',' ')}}</summary><p>{{currentHistory.note}}</p></details>
  </details>
