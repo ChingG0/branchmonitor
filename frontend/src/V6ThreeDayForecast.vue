@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {vRememberDisclosure} from './rememberDisclosure'
 import V6EveningForecast from './V6EveningForecast.vue'
+import V6Allocation from './V6Allocation.vue'
 import V6ConditionalStatus from './V6ConditionalStatus.vue'
 import V6ProbabilityHistory from './V6ProbabilityHistory.vue'
 import V6ConditionalResearch from './V6ConditionalResearch.vue'
@@ -11,6 +12,7 @@ const emit=defineEmits<{weather:[]}>()
  <div class="three-day-page">
   <header class="three-day-heading"><div><small>V6 · THREE-DAY FORECAST</small><h1>3日模型預測</h1><p>T+1／T+2／T+3的漲跌機率、預估收盤點數、修訂走勢與到期核對集中在這裡。T為預報使用的現貨收盤日，後續依台股交易日計算。</p><p>仍由你在對話要求「更新V6」時一併更新；開啟分頁只讀取已保存資料。</p></div><button @click="emit('weather')">查看股災氣象球</button></header>
   <V6EveningForecast/>
+  <V6Allocation/>
   <details v-remember-disclosure="'v6.legacy-0830.archive.v1'" class="forecast-archive"><summary>舊08:30制度、盤後研究與歷史紀錄（已停止更新）</summary><V6ConditionalStatus/><V6ProbabilityHistory/><details v-remember-disclosure="'v6.three-day.conditional-research'" class="forecast-archive"><summary>條件預報研究與歷史驗證</summary><V6ConditionalResearch/></details></details>
  </div>
 </template>

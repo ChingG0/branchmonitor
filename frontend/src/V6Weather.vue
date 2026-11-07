@@ -4,7 +4,6 @@ import {computed,onMounted,ref} from 'vue'
 import {localFetch,readJson} from './http'
 import V6Panel from './V6Panel.vue'
 import V6Comparison from './V6Comparison.vue'
-import V6Allocation from './V6Allocation.vue'
 import type {ComparisonReport} from './v6ComparisonTypes'
 import type {LiveContext} from './v6LiveTypes'
 import V6Forecast from './V6Forecast.vue'
@@ -46,7 +45,6 @@ onMounted(()=>load())
  <div class="weather-page">
   <header class="hero"><div><span class="eyebrow">V6 · MARKET STORM WATCH</span><h1>股災氣象球</h1><p>追蹤風險形成、增強與減弱。只有你在對話中要求「更新 V6」時，才會重新查核市場數據與新聞並保存一份預報。</p></div><div class="hero-state"><small>最近一次人工研究</small><strong>{{data?.history[0]?.prepared_at?.slice(0,16).replace('T',' ')||'尚未建立'}}</strong></div></header>
   <div class="forecast-location"><span>T+1／T+2／T+3預報已移到獨立分頁。</span><button @click="emit('forecast')">前往3日模型預測</button></div>
-  <V6Allocation/>
   <p v-if="error" class="notice error">{{error}}</p>
   <p v-if="loading" class="notice">正在讀取已保存的 V6 預報…</p>
   <template v-if="data&&!loading">
