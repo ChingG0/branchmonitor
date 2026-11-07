@@ -21,9 +21,9 @@ onMounted(async()=>{if(!props.standalone)return;try{const r=await localFetch('/a
 </script>
 <template>
  <section class="dual-v6" aria-label="V6雙策略風險監控">
-  <header><div><small>V6 · TWO RISK STRATEGIES</small><h2>雙策略風險監控</h2><p>風險分數、事件目標與是否開倉分開閱讀；漲跌觀察請看上方最新保存；未校準觀察版與策略分數分開閱讀。</p></div><span class="manual">對話手動更新</span></header>
+  <header><div><small>V6 · TWO RISK STRATEGIES</small><h2>雙策略風險監控</h2><p>風險分數、事件目標與是否開倉分開閱讀；漲跌觀察請看「3日模型預測」分頁的最新保存；未校準觀察版與策略分數分開閱讀。</p></div><span class="manual">對話手動更新</span></header>
   <p v-if="error" class="notice">{{error}}</p>
-  <details v-if="live" v-remember-disclosure="'v6.strategy-source.archive.v1'"><summary>策略更新時保存的夜盤與海外來源（原值；最新觀察取價見上方）</summary><V6LiveAssessment :value="live"/></details><p v-if="props.researchNotice" class="notice">{{props.researchNotice}}</p>
+  <details v-if="live" v-remember-disclosure="'v6.strategy-source.archive.v1'"><summary>策略更新時保存的夜盤與海外來源（原值；最新觀察取價見「3日模型預測」）</summary><V6LiveAssessment :value="live"/></details><p v-if="props.researchNotice" class="notice">{{props.researchNotice}}</p>
   <p v-if="!snap" class="notice">這個保存時間尚無雙策略紀錄。頁面及市場資料更新不會自行產生預報。</p>
   <template v-else>
    <div class="basis"><b>策略資料 {{snap.market_as_of}} · 加權收盤 {{fmt(snap.anchor,2)}}</b><span>實際保存 {{snap.prepared_at.slice(0,16).replace('T',' ')}}</span></div>
