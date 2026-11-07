@@ -8,12 +8,12 @@ import time
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
-from . import alpha_beta, active_etf, block_trades, broker_focus, daily_follow, db, dividend_yields, etf_rs, insider_changes, leaders, major, market_monitor, rs, sector_flow, service, v9_tx, warrants, monthly_statistics, margin_refresh
+from . import business_cycle, alpha_beta, active_etf, block_trades, broker_focus, daily_follow, db, dividend_yields, etf_rs, insider_changes, leaders, major, market_monitor, rs, sector_flow, service, v9_tx, warrants, monthly_statistics, margin_refresh
 
 TZ = ZoneInfo('Asia/Taipei')
 _lock = threading.Lock()
 _state_lock = threading.Lock()
-NAMES = ['追蹤分點', '全市場主力', '券商關注', '個股 RS', '每日跟單', 'ETF RS', 'Alpha／Beta 排行', '主動 ETF 動向', '內部人持股異動', '殖利率排行', '市場觀測', '族群流向', '每日鉅額交易', '權證分析', '券商風雲榜', 'V9 台指期', '月份漲跌統計', '融資維持率統計']
+NAMES = ['追蹤分點', '全市場主力', '券商關注', '個股 RS', '每日跟單', 'ETF RS', 'Alpha／Beta 排行', '主動 ETF 動向', '內部人持股異動', '殖利率排行', '市場觀測', '族群流向', '每日鉅額交易', '權證分析', '券商風雲榜', 'V9 台指期', '月份漲跌統計', '融資維持率統計', '景氣循環分析']
 _job = {
     'status': 'idle',
     'message': '尚未執行全部更新',
@@ -138,7 +138,8 @@ def _local_status():
     except Exception:
         pass
 
-    rows = [_module_row(name, dates.get(name), target) for name in NAMES if name not in {'市場觀測', '內部人持股異動'}]
+    rows = [_module_row(name, dates.get(name), target) for name in NAMES if name not in {'市場觀測', '內部人持股異動', '景氣循環分析'}]
+    rows.append(business_cycle.home_status())
     insider = insider_changes.report()
     saved_months = sum(item['available'] for item in insider['coverage'])
     expected_months = len(insider['coverage'])
@@ -252,6 +253,7 @@ def _run_one(name):
             _module(name, 'partial', f'個股 RS 已至 {rs_latest}，本機分點榜單仍至 {branch_latest}；等待新榜單發布後，請手動更新')
             return 'partial'
         return result
+    if name == '景氣循環分析':return _wait(name, business_cycle.refresh, business_cycle.job_status, lambda x: x.get('status') == 'running', timeout=240)
     if name == '月份漲跌統計':return _wait(name, monthly_statistics.refresh, lambda: monthly_statistics.report().get('job', {}), lambda x: x.get('status') == 'running', timeout=900)
     if name == '融資維持率統計':return _wait(name, margin_refresh.refresh, margin_refresh.status, lambda x: x.get('status') == 'running', timeout=1800)
     if name == '全市場主力':return _wait(name, major.start_refresh, major.refresh_status, lambda x: x.get('status') == 'running')

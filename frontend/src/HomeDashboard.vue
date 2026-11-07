@@ -74,7 +74,7 @@ onMounted(()=>{void load();void loadRepair()});onUnmounted(()=>{alive=false;clea
 
 <template>
  <section class="home-page">
-  <header class="home-hero panel"><div><div class="eyebrow">DAILY CONTROL CENTER</div><h1>今日市場資料中心</h1><p>更新所有一般資料分頁，含融資維持率與月份統計；V3／V6／V10／V11維持在對話中手動更新。</p></div><button class="primary update-all" :disabled="running" @click="updateAll"><Icon name="refresh" :size="20" :class="{spinning:running}"/>{{running?'全部資料更新中':'更新全部資料'}}</button></header>
+  <header class="home-hero panel"><div><div class="eyebrow">DAILY CONTROL CENTER</div><h1>今日市場資料中心</h1><p>更新所有一般資料分頁，含景氣循環、融資維持率與月份統計；V3／V6／V10／V11維持在對話中手動更新。</p></div><button class="primary update-all" :disabled="running" @click="updateAll"><Icon name="refresh" :size="20" :class="{spinning:running}"/>{{running?'全部資料更新中':'更新全部資料'}}</button></header>
   <div v-if="error" class="error-banner" role="alert">{{error}}<button @click="load">重新讀取</button></div>
   <p class="muted">{{job?.schedule?.enabled?`自動更新：週一至週五 ${job.schedule.time}（台北時間）`:'自動更新已關閉，可按「更新全部資料」'}} · 每天自動執行一次，來源未齊請手動更新。需程式開啟、電腦喚醒與網路可用。</p>
   <p v-if="!running&&(job?.status==='partial'||job?.status==='failed')" class="manual-update-notice panel" role="status">部分來源尚未齊全，本次不會自動重試。請在資料公布後，按「補齊此區」或「更新全部資料」手動更新。</p>

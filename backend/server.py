@@ -11,7 +11,7 @@ import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlparse
 
-from . import margin_observations, margin_dashboard, margin_events, margin_analytics, margin_checker, margin_statistics, monthly_statistics, v6_comparison, alpha_beta, pe_river, db, service, sources, major, turnover, rs, leaders, etf_rs, market_monitor, broker_focus, sector_flow, strategies, full_update, block_trades, sync_audit, history_repair, daily_follow, active_etf, insider_changes, dividend_yields, warrants, v9_tx, v6_tx, v6_weather, v2, v1, v3, v10, v11
+from . import business_cycle, margin_observations, margin_dashboard, margin_events, margin_analytics, margin_checker, margin_statistics, monthly_statistics, v6_comparison, alpha_beta, pe_river, db, service, sources, major, turnover, rs, leaders, etf_rs, market_monitor, broker_focus, sector_flow, strategies, full_update, block_trades, sync_audit, history_repair, daily_follow, active_etf, insider_changes, dividend_yields, warrants, v9_tx, v6_tx, v6_weather, v2, v1, v3, v10, v11
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -58,6 +58,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self.send(margin_checker.report(query.get('symbol'),query.get('date')))
             if parsed.path == '/api/margin-statistics':
                 return self.send(margin_statistics.report(query.get('market','TWSE'),query.get('date'),query.get('search',''),int(query.get('page','1'))))
+            if parsed.path == '/api/business-cycle':
+                return self.send(business_cycle.report())
             if parsed.path == '/api/monthly-statistics':
                 return self.send(monthly_statistics.report())
             if parsed.path == '/api/alpha-beta/detail':
@@ -226,6 +228,8 @@ class Handler(BaseHTTPRequestHandler):
                 raise ValueError('族群已統一使用族群流向字典，不再另存自訂標籤')
             if self.path=='/api/sector-flow/refresh':
                 return self.send(sector_flow.refresh(values.get('force',False)),202)
+            if self.path=='/api/business-cycle/refresh':
+                return self.send(business_cycle.refresh(),202)
             if self.path=='/api/monthly-statistics/refresh':
                 return self.send(monthly_statistics.refresh(),202)
             if self.path=='/api/market-monitor/refresh':
