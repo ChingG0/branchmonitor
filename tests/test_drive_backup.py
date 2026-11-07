@@ -107,7 +107,7 @@ class BackupTests(unittest.TestCase):
         self.assertNotIn('data/.env',b.inventory(self.source))
         (self.source/'data/link').symlink_to(self.source/'data/a.json')
         with self.assertRaises(ValueError): b.inventory(self.source)
-        for path in ('../a', '/a', 'a/../b'): 
+        for path in ('../a', '/a', 'a/../b'):
             with self.assertRaises(ValueError): b.safe(path)
 
     def test_sqlite_consistent_capture(self):
