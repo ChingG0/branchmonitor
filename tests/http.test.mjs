@@ -15,3 +15,12 @@ test('failed fetch identifies stopped service and never retries a write',async(t
  await assert.rejects(localFetch('/api/research/generate',{method:'POST'}), /8765.*已停止/)
  assert.equal(calls,1)
 })
+
+test('cloud runtime errors use port3001 rather than8765',async(t)=>{
+ const oldWindow=globalThis.window;const oldFetch=globalThis.fetch
+ t.after(()=>{if(oldWindow===undefined)delete globalThis.window;else globalThis.window=oldWindow;globalThis.fetch=oldFetch})
+ globalThis.window={location:{port:'3001'}}
+ globalThis.fetch=async()=>{throw new TypeError('fetch failed')}
+ await assert.rejects(localFetch('/api/health'), /3001.*已停止/)
+ await assert.rejects(readJson(new Response('')), /啟動 3001/)
+})
