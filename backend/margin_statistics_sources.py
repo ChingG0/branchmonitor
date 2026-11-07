@@ -101,13 +101,16 @@ def clear(market,kind,day):
 def fetch_task(task):
  market,kind,day,url=task
  return fetch(url,lambda v:validate(v,market,kind,day))
-def run(start=m.START,end='2026-11-04',workers=6,retry=False):
+def run(start=m.START,end='2026-11-04',workers=6,retry=False,post_close=False):
  start=date.fromisoformat(start).isoformat();end=date.fromisoformat(end).isoformat()
- if start>end or end>=datetime.now(m.TZ).date().isoformat():raise ValueError('只回補已完成的歷史交易日')
+ current=datetime.now(m.TZ)
+ if start>end or end>current.date().isoformat() or (end==current.date().isoformat() and (not post_close or current.strftime('%H:%M')<'14:00')):raise ValueError('只更新已收盤交易日')
+ _BLOCKED.clear()
  m.initialize();root=m.folder();(root/'raw').mkdir(exist_ok=True);lock=(root/'backfill.lock').open('a')
  try:fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
  except BlockingIOError:raise ValueError('已有本頁回補作業，未重複執行')
- state={'status':'running','pid':os.getpid(),'started_at':m.now(),'start':start,'end':end,'completed':0,'failed':0,'total':0,'phase':'calendar','message':'核對官方交易日曆'}
+ with m.connect() as c:history_start=c.execute('SELECT MIN(day) FROM calendar').fetchone()[0]
+ state={'status':'running','pid':os.getpid(),'started_at':m.now(),'start':max(m.START,min(start,history_start or start)) if post_close else start,'collection_start':start,'end':end,'completed':0,'failed':0,'total':0,'phase':'calendar','message':'核對官方交易日曆'}
  def progress():state['updated_at']=m.now();state['blocked_sources']=dict(_BLOCKED);m.atomic(root/'job.json',state)
  progress()
  try:
@@ -115,7 +118,7 @@ def run(start=m.START,end='2026-11-04',workers=6,retry=False):
   for cur,lo,hi in months:
    month=cur.isoformat();url=f'https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date={cur:%Y%m%d}&response=json'
    try:
-    v,raw,stamp,cache,actual=fetch(url,lambda v:calendar_rows(v,month,start,end));rows=calendar_rows(v,month,start,end);identity=extra('calendar','TWSE',month,actual,{'days':rows},raw,stamp,cache)
+    v,raw,stamp,cache,actual=fetch(url,lambda v:calendar_rows(v,month,start,end),force=post_close);rows=calendar_rows(v,month,start,end);identity=extra('calendar','TWSE',month,actual,{'days':rows},raw,stamp,cache)
     with m.connect(write=True) as c:c.executemany('INSERT OR REPLACE INTO calendar VALUES(?,?)',[(d,identity) for d in rows])
     clear('TWSE','calendar',month);progress()
    except Exception as e:fail('TWSE','calendar',month,e)
@@ -123,6 +126,10 @@ def run(start=m.START,end='2026-11-04',workers=6,retry=False):
    days=[r[0] for r in c.execute('SELECT day FROM calendar WHERE day BETWEEN ? AND ? ORDER BY day',(start,end))];existing={(r[0],r[1],r[2]) for r in c.execute('SELECT market,kind,day FROM latest')}
   if not days:raise ValueError('未取得任何官方交易日，無法回補')
   ordered=list(reversed(days));tasks=[(market,kind,day,url) for day in ordered for market,kind,url in urls(day) if (market,kind,day) not in existing]
+  if retry:
+   with m.connect() as c:retry_days={r[0] for r in c.execute("SELECT DISTINCT day FROM failures WHERE day>=? AND day<=? AND kind IN ('credit','quotes','shares')",(max(m.START,(date.fromisoformat(end)-timedelta(days=45)).isoformat()),end))}
+   retry_tasks=[(market,kind,day,url) for day in sorted(retry_days,reverse=True) for market,kind,url in urls(day) if (market,kind,day) not in existing]
+   tasks=list(dict.fromkeys(tasks+retry_tasks))
   state.update(phase='daily',total=len(tasks),already_saved=len(existing),calendar_days=len(days),message='回補逐日融資、行情與發行股數');progress()
   iterator=iter(tasks)
   with ThreadPoolExecutor(max_workers=max(1,min(workers,6))) as pool:
@@ -145,9 +152,9 @@ def run(start=m.START,end='2026-11-04',workers=6,retry=False):
   state.update(phase='events',message='保存除權息、資格調整與分類來源');progress()
   for cur,lo,hi in months:
    for market in ['TWSE','TPEX']:
-    a,b=lo.isoformat(),hi.isoformat();url=f'https://wwwc.twse.com.tw/rwd/zh/exRight/TWT49U?startDate={lo:%Y%m%d}&endDate={hi:%Y%m%d}&response=json' if market=='TWSE' else f'https://www.tpex.org.tw/www/zh-tw/bulletin/exDailyQ?startDate={lo:%Y/%m/%d}&endDate={hi:%Y/%m/%d}&response=json'
+    a,b=(cur if post_close else lo).isoformat(),hi.isoformat();event_start=date.fromisoformat(a);url=f'https://wwwc.twse.com.tw/rwd/zh/exRight/TWT49U?startDate={event_start:%Y%m%d}&endDate={hi:%Y%m%d}&response=json' if market=='TWSE' else f'https://www.tpex.org.tw/www/zh-tw/bulletin/exDailyQ?startDate={event_start:%Y/%m/%d}&endDate={hi:%Y/%m/%d}&response=json'
     try:
-     v,raw,stamp,cache,actual=fetch(url,lambda v:parse_cash_events(v,market,a,b));events=parse_cash_events(v,market,a,b);extra('corporate_events',market,cur.isoformat(),actual,{'events':events,'coverage':'cash_and_rights_only','split_coverage':'not_verified'},raw,stamp,cache);clear(market,'corporate_events',cur.isoformat())
+     v,raw,stamp,cache,actual=fetch(url,lambda v:parse_cash_events(v,market,a,b),force=post_close);events=parse_cash_events(v,market,a,b);extra('corporate_events',market,cur.isoformat(),actual,{'events':events,'coverage':'cash_and_rights_only','split_coverage':'not_verified'},raw,stamp,cache);clear(market,'corporate_events',cur.isoformat())
     except Exception as e:fail(market,'corporate_events',cur.isoformat(),e)
    progress()
   # This endpoint has no trustworthy as-of response date. Save as current observation only.

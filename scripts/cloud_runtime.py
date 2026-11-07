@@ -316,7 +316,7 @@ def main():
  if a.action in ('warm','launch'):runtime.warm();runtime.link()
  if a.action=='launch':
   os.environ['BRANCH_MONITOR_CLOUD']='1';os.environ['BRANCH_MONITOR_DATA']=str(runtime.cache/'data')
-  os.execv(sys.executable,[sys.executable,str(ROOT/'scripts/launch.py'),'--port','3001','--browser-host','localhost','--no-scheduler'])
+  os.execv(sys.executable,[sys.executable,str(ROOT/'scripts/launch.py'),'--port','3001','--browser-host','localhost'])
  elif a.action=='prepare-sync':print(json.dumps(runtime.prepare_sync(),ensure_ascii=False))
  elif a.action=='confirm':
   if not a.receipt:p.error('--receipt required')

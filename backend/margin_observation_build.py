@@ -2,7 +2,7 @@
 from pathlib import Path
 from contextlib import closing
 from itertools import groupby
-import gzip,json,sqlite3,hashlib,os
+import gzip,json,sqlite3,hashlib,os,uuid
 from . import db,margin_statistics as src,margin_observation_engine as e,margin_principal_repair as strict,margin_analytics as labels
 OUT=db.ROOT/'research/margin_observations_20261105'
 INPUT=db.ROOT/'research/margin_statistics_p2_repair_20261105/inputs.sqlite3'
@@ -19,16 +19,21 @@ def stream(c,market,calendar):
   if pending and pending[0]==day:rows=[dict(r) for r in pending[1]];pending=next(groups,None)
   else:rows=None
   yield index,day,rows,totals.get(day)
-def build():
- manifest=json.loads((INPUT.parent/'manifest.json').read_text());assert sha(INPUT)==manifest['inputs_sha256'];assert sha(Path(strict.__file__))==manifest['engine_sha256']
- final=src.folder()/'observations.sqlite3';temp=final.with_suffix('.building.sqlite3')
+def build(*,live=False):
+ if not live:
+  manifest=json.loads((INPUT.parent/'manifest.json').read_text());assert sha(INPUT)==manifest['inputs_sha256'];assert sha(Path(strict.__file__))==manifest['engine_sha256']
+ else:
+  from .margin_refresh import live_input
+  manifest={}
+ final=src.folder()/'observations.sqlite3';temp=final.with_suffix('.'+uuid.uuid4().hex+'.building.sqlite3') if live else final.with_suffix('.building.sqlite3')
  if temp.exists():raise ValueError('已有未完成觀察建置，請核對暫存檔')
  c=sqlite3.connect(temp)
  try:
   c.executescript('''CREATE TABLE calendar(day TEXT PRIMARY KEY);CREATE TABLE observations(day TEXT,market TEXT,symbol TEXT,name TEXT,category TEXT,quantity REAL,close REAL,shares REAL,loan_a REAL,loan_b REAL,unknown_a REAL,unknown_b REAL,cap_a REAL,cap_b REAL,unpriced_a REAL,unpriced_b REAL,filled_a INT,filled_b INT,PRIMARY KEY(day,market,symbol));CREATE INDEX observation_market_day ON observations(market,day);CREATE TABLE days(day TEXT,market TEXT,official REAL,available INT,PRIMARY KEY(day,market));CREATE TABLE rs(day TEXT PRIMARY KEY,payload BLOB,saved_at TEXT);CREATE TABLE meta(key TEXT PRIMARY KEY,value TEXT);''')
-  with closing(ro(INPUT)) as frozen:
+  with (live_input() if live else closing(ro(INPUT))) as frozen:
    calendar=[r[0] for r in frozen.execute('SELECT day FROM calendar ORDER BY day')];c.executemany('INSERT INTO calendar VALUES(?)',[(d,) for d in calendar]);periods={}
    for r in frozen.execute('SELECT * FROM events ORDER BY retrieved_at'):periods[(r['market'],r['period'])]=json.loads(r['payload'])
+   source_catalog_sha256=hashlib.sha256(json.dumps([tuple(r) for r in frozen.execute('SELECT market,kind,day,snapshot_id FROM latest ORDER BY market,kind,day')],ensure_ascii=False).encode()).hexdigest() if live else None
    counts={}
    for market in ('TWSE','TPEX'):
     events={(r['date'],r['symbol']) for (m,_),v in periods.items() if m==market for r in v['data']['events'] if r['unsafe']};count=0
@@ -48,9 +53,16 @@ def build():
     v=json.loads(r['payload'])
     if v.get('as_of')!=r['date']:raise ValueError('RS保存日期不一致')
     c.execute('INSERT INTO rs VALUES(?,?,?)',(r['date'],gzip.compress(r['payload'].encode(),mtime=0),r['fetched_at']))
-  meta={'version':'margin-observations-1','created_at':src.now(),'as_of':calendar[-1],'start':calendar[0],'input_sha256':sha(INPUT),'engine_sha256':sha(Path(e.__file__)),'policy_sha256':sha(OUT/'observational-display-policy.json'),'cost_fill_policy_sha256':sha(OUT/'cost-fill-policy.json'),'cost_version':e.VERSION,'model_ready':False,'scope':'observations_not_trading_signals','methods':['net_average','net_fifo'],'counts':counts}
+  meta={'version':'margin-observations-1','created_at':src.now(),'as_of':calendar[-1],'start':calendar[0],'input_sha256':None if live else sha(INPUT),'source_catalog_sha256':source_catalog_sha256,'input_mode':'normalized_official_snapshots' if live else 'frozen_research','engine_sha256':sha(Path(e.__file__)),'policy_sha256':None if live else sha(OUT/'observational-display-policy.json'),'cost_fill_policy_sha256':None if live else sha(OUT/'cost-fill-policy.json'),'cost_version':e.VERSION,'model_ready':False,'scope':'observations_not_trading_signals','methods':['net_average','net_fifo'],'counts':counts}
   c.execute('INSERT INTO meta VALUES(?,?)',('manifest',json.dumps(meta,ensure_ascii=False)));c.commit()
+ except Exception:
+  c.close()
+  if live:temp.unlink(missing_ok=True)
+  raise
  finally:c.close()
+ if live:
+  temp.replace(final)
+  return meta
  # Preserve the exact source-estimator readout for reproducible observation reports.
  frozen_output=OUT/'observations.sqlite3'
  if frozen_output.exists():raise ValueError('本輪觀察已封存，不覆寫')

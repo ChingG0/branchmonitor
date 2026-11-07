@@ -8,12 +8,12 @@ import time
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
-from . import alpha_beta, active_etf, block_trades, broker_focus, daily_follow, db, dividend_yields, etf_rs, insider_changes, leaders, major, market_monitor, rs, sector_flow, service, strategies, v9_tx, warrants
+from . import alpha_beta, active_etf, block_trades, broker_focus, daily_follow, db, dividend_yields, etf_rs, insider_changes, leaders, major, market_monitor, rs, sector_flow, service, strategies, v9_tx, warrants, monthly_statistics, margin_refresh
 
 TZ = ZoneInfo('Asia/Taipei')
 _lock = threading.Lock()
 _state_lock = threading.Lock()
-NAMES = ['追蹤分點', '全市場主力', '券商關注', '個股 RS', '每日跟單', 'ETF RS', 'Alpha／Beta 排行', '主動 ETF 動向', '內部人持股異動', '殖利率排行', '市場觀測', '族群流向', '每日鉅額交易', '權證分析', '券商風雲榜', 'V9 台指期', 'ETF 滾動配置']
+NAMES = ['追蹤分點', '全市場主力', '券商關注', '個股 RS', '每日跟單', 'ETF RS', 'Alpha／Beta 排行', '主動 ETF 動向', '內部人持股異動', '殖利率排行', '市場觀測', '族群流向', '每日鉅額交易', '權證分析', '券商風雲榜', 'V9 台指期', 'ETF 滾動配置', '月份漲跌統計', '融資維持率統計']
 _job = {
     'status': 'idle',
     'message': '尚未執行全部更新',
@@ -38,7 +38,10 @@ def _copy():
 
 def status():
     _restore()
-    return _copy()
+    value=_copy()
+    config=db.settings()
+    value['schedule']={'enabled':bool(config.get('schedule_enabled')), 'time':config.get('schedule_time','18:00'), 'last_attempt':config.get('home_schedule_slot'), 'timezone':'Asia/Taipei'}
+    return value
 
 
 def _valid_saved(value):
@@ -122,6 +125,8 @@ def _local_status():
         '主動 ETF 動向': _main_value('SELECT MAX(date) FROM active_etf_days'),
         '殖利率排行': _main_value('SELECT MAX(date) FROM dividend_yield_days'),
         '族群流向': None,
+        '月份漲跌統計': margin_refresh.monthly_date(),
+        '融資維持率統計': margin_refresh.latest_date(),
         '每日鉅額交易': _main_value('SELECT MAX(date) FROM block_trade_days'),
         '權證分析': _main_value('SELECT MAX(date) FROM warrant_lookup_days'),
         '券商風雲榜': _main_value('SELECT MAX(date) FROM leader_reports'),
@@ -248,6 +253,8 @@ def _run_one(name):
             _module(name, 'partial', f'個股 RS 已至 {rs_latest}，本機分點榜單仍至 {branch_latest}；等待新榜單發布後重試')
             return 'partial'
         return result
+    if name == '月份漲跌統計':return _wait(name, monthly_statistics.refresh, lambda: monthly_statistics.report().get('job', {}), lambda x: x.get('status') == 'running', timeout=900)
+    if name == '融資維持率統計':return _wait(name, margin_refresh.refresh, margin_refresh.status, lambda x: x.get('status') == 'running', timeout=1800)
     if name == '全市場主力':return _wait(name, major.start_refresh, major.refresh_status, lambda x: x.get('status') == 'running')
     if name == '券商關注':return _wait(name, broker_focus.refresh, broker_focus.job_status, lambda x: x.get('status') == 'running')
     if name == '個股 RS':return _wait(name, rs.refresh, rs.job_status, lambda x: x.get('status') == 'running')
@@ -320,6 +327,7 @@ def start():
             if failed or partial:
                 message = f'全部更新結束；{failed} 項失敗、{partial} 項仍有缺漏，成功資料已保留'
             _set(status=final, message=message, finished_at=now())
+            if final=='complete':db.update_settings({'home_full_success_date':datetime.now(TZ).date().isoformat()})
         except Exception:
             _set(status='failed', message='全部更新未完成；成功的分頁資料已保留', finished_at=now())
         finally:

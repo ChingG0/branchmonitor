@@ -6,7 +6,7 @@ import Icon from './Icon.vue'
 type Stage={label:string;done:number;total:number|null}
 type Detail={planned?:boolean;phase_label?:string;eta_seconds?:number|null;rate_per_min?:number|null;stages?:Record<string,Stage>}
 type ModuleRow={name:string;status:'queued'|'running'|'complete'|'partial'|'failed';message:string;detail?:Detail}
-type UpdateJob={status:string;message:string;started_at:string|null;finished_at:string|null;done:number;total:number;modules:ModuleRow[]}
+type UpdateJob={status:string;message:string;started_at:string|null;finished_at:string|null;done:number;total:number;modules:ModuleRow[];schedule?:{enabled:boolean;time:string;last_attempt?:string}}
 type RepairReport={job:null|{status:string;done:number;total:number;message:string};counts:Record<string,number>;retry:{due:number;waiting:number;exhausted:number;interrupted:number}}
 const job=ref<UpdateJob|null>(null),repair=ref<RepairReport|null>(null),error=ref(''),starting=ref(false),retrying=ref<string|null>(null),repairing=ref(false)
 let timer:ReturnType<typeof setTimeout>|undefined,repairTimer:ReturnType<typeof setTimeout>|undefined,alive=true
@@ -23,7 +23,7 @@ function moduleDetail(row:ModuleRow){
  const eta=row.status==='running'&&detail.planned&&Number(detail.eta_seconds)>0?` · 剩餘約 ${Math.ceil(Number(detail.eta_seconds)/60)} 分鐘`:''
  return stages+eta
 }
-async function load(){clearTimeout(timer);try{const response=await localFetch('/api/update-all');const data=await readJson<UpdateJob>(response);if(!response.ok)throw new Error((data as any).error||'無法讀取更新狀態');if(!alive)return;job.value=data;error.value='';if(data.status==='running')timer=setTimeout(load,1500);else retrying.value=null}catch(e){if(alive){error.value=(e as Error).message;retrying.value=null}}}
+async function load(){clearTimeout(timer);try{const response=await localFetch('/api/update-all');const data=await readJson<UpdateJob>(response);if(!response.ok)throw new Error((data as any).error||'無法讀取更新狀態');if(!alive)return;job.value=data;error.value='';timer=setTimeout(load,data.status==='running'?1500:15000);if(data.status!=='running')retrying.value=null}catch(e){if(alive){error.value=(e as Error).message;retrying.value=null}}}
 async function loadRepair(){
  clearTimeout(repairTimer)
  try{
@@ -74,9 +74,10 @@ onMounted(()=>{void load();void loadRepair()});onUnmounted(()=>{alive=false;clea
 
 <template>
  <section class="home-page">
-  <header class="home-hero panel"><div><div class="eyebrow">DAILY CONTROL CENTER</div><h1>今日市場資料中心</h1><p>一次更新所有本機資料分頁；已完成資料沿用，只補最新日期與缺口。</p></div><button class="primary update-all" :disabled="running" @click="updateAll"><Icon name="refresh" :size="20" :class="{spinning:running}"/>{{running?'全部資料更新中':'更新全部資料'}}</button></header>
+  <header class="home-hero panel"><div><div class="eyebrow">DAILY CONTROL CENTER</div><h1>今日市場資料中心</h1><p>更新所有一般資料分頁，含融資維持率與月份統計；V3／V6／V10／V11維持在對話中手動更新。</p></div><button class="primary update-all" :disabled="running" @click="updateAll"><Icon name="refresh" :size="20" :class="{spinning:running}"/>{{running?'全部資料更新中':'更新全部資料'}}</button></header>
   <div v-if="error" class="error-banner" role="alert">{{error}}<button @click="load">重新讀取</button></div>
-  <section class="home-status panel"><header><div><span>更新進度</span><h2>{{job?.message||'正在讀取本機資料狀態'}}</h2></div><strong>{{progress}}%</strong></header><div class="home-track"><i :style="{width:progress+'%'}"></i></div><div class="home-meta"><span>開始 {{stamp(job?.started_at)}}</span><span>完成 {{stamp(job?.finished_at)}}</span><span>{{job?.done||0}} / {{job?.total||14}} 項</span></div></section>
+  <p class="muted">{{job?.schedule?.enabled?`自動更新：週一至週五 ${job.schedule.time}（台北時間）`:'自動更新已關閉，可按「更新全部資料」'}} · 需程式開啟、電腦喚醒與網路可用。</p>
+  <section class="home-status panel"><header><div><span>更新進度</span><h2>{{job?.message||'正在讀取本機資料狀態'}}</h2></div><strong>{{progress}}%</strong></header><div class="home-track"><i :style="{width:progress+'%'}"></i></div><div class="home-meta"><span>開始 {{stamp(job?.started_at)}}</span><span>完成 {{stamp(job?.finished_at)}}</span><span>{{job?.done||0}} / {{job?.total||19}} 項</span></div></section>
   <div class="module-grid"><article v-for="row in job?.modules||[]" :key="row.name" class="module-card panel" :class="row.status"><div class="module-icon"><Icon :name="row.status==='complete'?'check':row.status==='running'?'refresh':'database'" :size="18" :class="{spinning:row.status==='running'}"/></div><div><h3>{{row.name}}</h3><p>{{row.message}}</p><small v-if="row.detail&&moduleDetail(row)">{{moduleDetail(row)}}</small><small v-if="row.name==='追蹤分點'&&repair">歷史缺口等待 {{fmt(repairWaiting)}} 組 · 已完成 {{fmt(repair.counts.complete)}} 組<span v-if="repairing"> · {{repair.job?.message||'正在建立缺口清單'}}</span></small></div><div class="module-actions"><span>{{labels[row.status]||row.status}}</span><button v-if="row.status==='partial'||row.status==='failed'" class="module-retry" :disabled="moduleRunning||(repairing&&row.name==='追蹤分點')" :aria-label="`補齊${row.name}`" @click="retryModule(row.name)"><Icon name="refresh" :size="13"/>補齊此區</button><button v-if="row.name==='追蹤分點'&&repairWaiting>0" class="module-retry repair-history" :disabled="moduleRunning||repairing" aria-label="補齊全部分點歷史缺口" @click="repairHistory"><Icon name="database" :size="13"/>{{repairing?'全部缺口回補中':'補齊全部缺口'}}</button><span v-else-if="retrying===row.name" class="module-retrying">此區更新中</span></div></article></div>
  </section>
 </template>

@@ -8,7 +8,7 @@
 - 雙擊該資料夾的`啟動雲端監控.command`，也可用一般`啟動監控.command`自動辨識雲端設定。停止使用同資料夾的`停止雲端監控.command`。
 - 每台電腦以`python3 -B scripts/cloud_runtime.py configure`偵測已登入的Drive串流；`cloud-runtime.local.json`含該機路徑，不入Git。預設工作暫存`~/Library/Caches/BranchMonitorCloud/workspace`。
 - 第一次安裝仍需Python、Node及`npm ci`；啟動器可建立venv、安裝requirements及建置前端。資料先通過雲端SHA256／SQLite檢查後才啟動，不使用空資料庫冒充成功。
-- 雲端啟動預設不執行背景排程；讀取頁面、還原、Git拉取不會發布V3/V6/V10/V11或核對其成交。
+- 雲端啟動依「每日自動更新」設定執行首頁同一流程，預設週一至週五台北時間18:00；來源有缺漏每小時重試。需要程式運行、Mac喚醒、網路及Drive桌面版可用，關機／休眠不能執行，18:00後開啟可補跑當日。首頁與排程皆不發布V3/V6/V10/V11或核對其成交。一般更新先保存在工作暫存，未完成下述雲端讀回校驗前，不代表已上雲。
 
 ## 雲端與快取
 

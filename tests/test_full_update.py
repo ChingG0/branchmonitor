@@ -60,7 +60,9 @@ class FullUpdateStatusTest(unittest.TestCase):
         alpha_beta.atomic(db.DATA/'alpha_beta'/'latest.json', {'as_of':day,'rows':[]})
         insider = {'year': 2026, 'count': 1, 'coverage': [{'available': True}]}
         with patch.object(full_update.sector_flow, 'status', return_value={'computed': day}), \
-                patch.object(full_update.insider_changes, 'report', return_value=insider):
+                patch.object(full_update.insider_changes, 'report', return_value=insider), \
+                patch.object(full_update.margin_refresh, 'latest_date', return_value=day), \
+                patch.object(full_update.margin_refresh, 'monthly_date', return_value=day):
             result = full_update._local_status()
 
         self.assertEqual(result['status'], 'complete')

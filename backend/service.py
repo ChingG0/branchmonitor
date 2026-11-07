@@ -464,31 +464,27 @@ def stock_detail(broker, branch, symbol, as_of=None):
         'source':sources.BASE+'/z/zc/zco/zco0/zco0.djhtm?'+sources.urlencode({'A':symbol,'BHID':broker,'b':branch,'C':'3'})}
 
 
+def scheduler_tick(current, config):
+    # Import locally: full_update already imports service. One shared job lock.
+    from . import full_update
+    if not config.get('schedule_enabled') or current.weekday()>=5 or current.strftime('%H:%M')<config.get('schedule_time','18:00'):
+        return False
+    day=current.date().isoformat();slot=current.strftime('%Y-%m-%d %H')
+    if config.get('home_schedule_slot')==slot:return False
+    job=full_update.status()
+    if job.get('status')=='running':return False
+    if job.get('status')=='complete' and config.get('home_full_success_date')==day:return False
+    full_update.start()
+    with db.connect() as c:c.execute('INSERT OR REPLACE INTO settings VALUES (?,?)', ('home_schedule_slot', json.dumps(slot)))
+    return True
+
+
 def scheduler():
     """Local process only. Catch missed dates on launch, retry delayed post-close feeds hourly."""
-    last_attempt = None
-    last_active_etf_attempt = None
-    last_warrant_attempt = None
     while True:
-        config = db.settings()
-        current = datetime.now(TZ)
-        slot = current.strftime('%Y-%m-%d %H')
-        major.schedule_tick(current,config)
-        broker_focus.schedule_tick(current,config)
-        if (config.get('schedule_enabled') and current.weekday()<5
-                and current.strftime('%H:%M')>=config.get('schedule_time','18:30')
-                and active_etf.latest_complete_date()!=current.date().isoformat()):
-            if slot != last_active_etf_attempt:
-                active_etf.refresh()
-                last_active_etf_attempt = slot
-        if (config.get('schedule_enabled') and current.weekday()<5
-                and current.strftime('%H:%M')>=config.get('schedule_time','18:30')
-                and warrants.latest_complete_date()!=current.date().isoformat()):
-            if slot != last_warrant_attempt:
-                warrants.refresh()
-                last_warrant_attempt = slot
-        if config.get('schedule_enabled') and current.weekday()<5 and current.strftime('%H:%M')>=config.get('schedule_time','18:30') and config.get('last_sync_date')!=current.date().isoformat():
-            if slot != last_attempt:
-                sync()
-                last_attempt = slot
+        try:scheduler_tick(datetime.now(TZ), db.settings())
+        except Exception:
+            # A transient source/storage failure must not kill future attempts.
+            import logging
+            logging.getLogger(__name__).exception('首頁排程更新失敗，下一輪重試')
         threading.Event().wait(30)

@@ -196,7 +196,7 @@ def initialize():
                 SELECT broker,branch,date,'E',symbol,name,buy,sell,net,source
                 FROM flows WHERE source LIKE '%/zgb0.djhtm%'""")
             conn.execute("INSERT INTO settings VALUES ('ranking_entries_seeded','true')")
-        defaults = {'schedule_enabled': True, 'schedule_time': '18:30', 'lookback_days': 45}
+        defaults = {'schedule_enabled': True, 'schedule_time': '18:00', 'lookback_days': 45}
         for key, value in defaults.items():
             conn.execute('INSERT OR IGNORE INTO settings VALUES (?,?)', (key, json.dumps(value)))
         conn.execute("UPDATE jobs SET status='interrupted', message='上次更新中斷；可重新同步', finished_at=datetime('now') WHERE status='running'")
