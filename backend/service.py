@@ -470,21 +470,23 @@ def scheduler_tick(current, config):
     if not config.get('schedule_enabled') or current.weekday()>=5 or current.strftime('%H:%M')<config.get('schedule_time','18:00'):
         return False
     day=current.date().isoformat();slot=current.strftime('%Y-%m-%d %H')
-    if config.get('home_schedule_slot')==slot:return False
+    if str(config.get('home_schedule_slot') or '')[:10]==day:return False
     job=full_update.status()
     if job.get('status')=='running':return False
     if job.get('status')=='complete' and config.get('home_full_success_date')==day:return False
-    full_update.start()
+    # Persist before dispatch: partial results, launch failures and process
+    # restarts must never cause another automatic source request today.
     with db.connect() as c:c.execute('INSERT OR REPLACE INTO settings VALUES (?,?)', ('home_schedule_slot', json.dumps(slot)))
+    full_update.start()
     return True
 
 
 def scheduler():
-    """Local process only. Catch missed dates on launch, retry delayed post-close feeds hourly."""
+    """Local process only. One automatic batch per weekday; incomplete sources require manual retry."""
     while True:
         try:scheduler_tick(datetime.now(TZ), db.settings())
         except Exception:
-            # A transient source/storage failure must not kill future attempts.
+            # Keep the scheduler alive for the next trading day; do not retry today.
             import logging
-            logging.getLogger(__name__).exception('首頁排程更新失敗，下一輪重試')
+            logging.getLogger(__name__).exception('首頁排程更新未完成，請在首頁手動更新')
         threading.Event().wait(30)

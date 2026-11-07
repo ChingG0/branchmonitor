@@ -17,14 +17,23 @@ class HomeRefreshIntegration(unittest.TestCase):
   expected={'追蹤分點','全市場主力','券商關注','個股 RS','每日跟單','ETF RS','Alpha／Beta 排行','主動 ETF 動向','內部人持股異動','殖利率排行','市場觀測','族群流向','每日鉅額交易','權證分析','券商風雲榜','V9 台指期','ETF 滾動配置','月份漲跌統計','融資維持率統計'}
   self.assertEqual(set(full_update.NAMES),expected);self.assertEqual(len(full_update.NAMES),len(expected))
   for version in ('V3','V6','V10','V11'):self.assertFalse(any(version in name for name in full_update.NAMES))
- def test_scheduler_matches_home_retries_hourly_and_persists_attempt(self):
+ def test_scheduler_runs_once_daily_and_persists_attempt_even_when_partial(self):
   db.update_settings({'schedule_enabled':True,'schedule_time':'18:00'})
   with patch.object(full_update,'status',return_value={'status':'partial'}),patch.object(full_update,'start') as start:
    self.assertFalse(service.scheduler_tick(self.tick(17,59),db.settings()))
    self.assertTrue(service.scheduler_tick(self.tick(),db.settings()))
    self.assertFalse(service.scheduler_tick(self.tick(18,30),db.settings()))
-   self.assertTrue(service.scheduler_tick(self.tick(19),db.settings()))
+   self.assertFalse(service.scheduler_tick(self.tick(19),db.settings()))
+   self.assertFalse(service.scheduler_tick(self.tick(23),db.settings()))
+   self.assertTrue(service.scheduler_tick(self.tick(day=10),db.settings()))
    self.assertEqual(start.call_count,2)
+ def test_dispatch_failure_is_not_automatically_retried(self):
+  db.update_settings({'schedule_enabled':True,'schedule_time':'18:00'})
+  with patch.object(full_update,'status',return_value={'status':'partial'}),patch.object(full_update,'start',side_effect=RuntimeError('dispatch failed')) as start:
+   with self.assertRaises(RuntimeError):service.scheduler_tick(self.tick(),db.settings())
+   self.assertFalse(service.scheduler_tick(self.tick(18,1),db.settings()))
+   self.assertFalse(service.scheduler_tick(self.tick(22),db.settings()))
+   start.assert_called_once()
  def test_weekend_disabled_complete_and_running_do_not_start(self):
   cfg={'schedule_enabled':True,'schedule_time':'18:00'}
   with patch.object(full_update,'status',return_value={'status':'running'}),patch.object(full_update,'start') as start:

@@ -40,7 +40,7 @@ def status():
     _restore()
     value=_copy()
     config=db.settings()
-    value['schedule']={'enabled':bool(config.get('schedule_enabled')), 'time':config.get('schedule_time','18:00'), 'last_attempt':config.get('home_schedule_slot'), 'timezone':'Asia/Taipei'}
+    value['schedule']={'enabled':bool(config.get('schedule_enabled')), 'time':config.get('schedule_time','18:00'), 'last_attempt':config.get('home_schedule_slot'), 'timezone':'Asia/Taipei','retry_policy':'manual'}
     return value
 
 
@@ -159,7 +159,7 @@ def _local_status():
     if rs_latest and branch_latest and branch_latest < rs_latest:
         for row in rows:
             if row['name'] == '追蹤分點':
-                row.update(status='partial', message=f'個股 RS 已至 {rs_latest}，本機分點榜單仍至 {branch_latest}；等待新榜單發布後重試')
+                row.update(status='partial', message=f'個股 RS 已至 {rs_latest}，本機分點榜單仍至 {branch_latest}；等待新榜單發布後，請手動更新')
             elif row['name'] == '每日跟單':
                 row.update(status='partial', message=f'每日跟單仍至 {dates.get("每日跟單") or "尚無資料"}；缺少 {rs_latest} 同日分點榜單，尚不能產生名單')
     order = {name: index for index, name in enumerate(NAMES)}
@@ -250,7 +250,7 @@ def _run_one(name):
         rs_latest = _main_value('SELECT MAX(date) FROM rs_days')
         branch_latest = _main_value("SELECT MAX(s.date) FROM snapshots s JOIN branches b USING(broker,branch) WHERE b.active=1 AND s.status='observed'")
         if result == 'complete' and rs_latest and branch_latest and branch_latest < rs_latest:
-            _module(name, 'partial', f'個股 RS 已至 {rs_latest}，本機分點榜單仍至 {branch_latest}；等待新榜單發布後重試')
+            _module(name, 'partial', f'個股 RS 已至 {rs_latest}，本機分點榜單仍至 {branch_latest}；等待新榜單發布後，請手動更新')
             return 'partial'
         return result
     if name == '月份漲跌統計':return _wait(name, monthly_statistics.refresh, lambda: monthly_statistics.report().get('job', {}), lambda x: x.get('status') == 'running', timeout=900)
@@ -269,10 +269,10 @@ def _run_one(name):
             message=(f"每日跟單已更新至 {value.get('latest') or '尚無同日資料'} · "
                      f"近期驗證 {repair['succeeded']}/{repair['planned']} 組 · "
                      f"可評分買方 {repair['buy_ready']} 檔／賣方 {repair['sell_ready']} 檔 · 新增 {created} 日")
-            if repair['failed']:message+=f"；{repair['failed']} 組來源待重試"
+            if repair['failed']:message+=f"；{repair['failed']} 組來源待手動更新"
             if waiting:
-                message+=f'；個股 RS 已至 {rs_latest}，分點榜單仍至 {branch_latest}，待新榜單發布後重試'
-                _module('追蹤分點','partial',f'個股 RS 已至 {rs_latest}，本機分點榜單仍至 {branch_latest}；等待新榜單發布後重試')
+                message+=f'；個股 RS 已至 {rs_latest}，分點榜單仍至 {branch_latest}，待新榜單發布後，請手動更新'
+                _module('追蹤分點','partial',f'個股 RS 已至 {rs_latest}，本機分點榜單仍至 {branch_latest}；等待新榜單發布後，請手動更新')
             _module(name,result,message,{'repair':repair});return result
         except Exception as error:_module(name,'failed',str(error)[:180] or '每日跟單更新失敗');return 'failed'
     if name == 'Alpha／Beta 排行':return _wait(name, alpha_beta.refresh, alpha_beta.job_status, lambda x: x.get('status') == 'running', timeout=1200)
@@ -325,7 +325,7 @@ def start():
             final = 'complete' if not failed and not partial else 'partial'
             message = '全部分頁資料已更新'
             if failed or partial:
-                message = f'全部更新結束；{failed} 項失敗、{partial} 項仍有缺漏，成功資料已保留'
+                message = f'全部更新結束；{failed} 項失敗、{partial} 項仍有缺漏，請手動更新；成功資料已保留'
             _set(status=final, message=message, finished_at=now())
             if final=='complete':db.update_settings({'home_full_success_date':datetime.now(TZ).date().isoformat()})
         except Exception:
