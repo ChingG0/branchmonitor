@@ -11,7 +11,7 @@ import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlparse
 
-from . import forward_pe_river, forward_pe_valuation, forward_pe_inventory, forward_pe_store, business_cycle, margin_observations, margin_dashboard, margin_events, margin_analytics, margin_checker, margin_statistics, monthly_statistics, v6_comparison, alpha_beta, pe_river, db, service, sources, major, turnover, rs, leaders, etf_rs, market_monitor, broker_focus, sector_flow, strategies, full_update, block_trades, sync_audit, history_repair, daily_follow, active_etf, insider_changes, dividend_yields, warrants, v9_tx, v6_tx, v6_weather, v2, v1, v3, v10, v11
+from . import forward_pe_sectors, forward_pe_river, forward_pe_valuation, forward_pe_inventory, forward_pe_store, business_cycle, margin_observations, margin_dashboard, margin_events, margin_analytics, margin_checker, margin_statistics, monthly_statistics, v6_comparison, alpha_beta, pe_river, db, service, sources, major, turnover, rs, leaders, etf_rs, market_monitor, broker_focus, sector_flow, strategies, full_update, block_trades, sync_audit, history_repair, daily_follow, active_etf, insider_changes, dividend_yields, warrants, v9_tx, v6_tx, v6_weather, v2, v1, v3, v10, v11
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -58,6 +58,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self.send(margin_checker.report(query.get('symbol'),query.get('date')))
             if parsed.path == '/api/margin-statistics':
                 return self.send(margin_statistics.report(query.get('market','TWSE'),query.get('date'),query.get('search',''),int(query.get('page','1'))))
+            if parsed.path == '/api/forward-pe/sectors':
+                return self.send(forward_pe_sectors.report(query.get('date')))
             if parsed.path == '/api/forward-pe/river':
                 return self.send(forward_pe_river.report(as_of=query.get('as_of')))
             if parsed.path == '/api/forward-pe/valuation':
