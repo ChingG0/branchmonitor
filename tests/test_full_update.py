@@ -63,6 +63,7 @@ class FullUpdateStatusTest(unittest.TestCase):
                 patch.object(full_update.insider_changes, 'report', return_value=insider), \
                 patch.object(full_update.margin_refresh, 'latest_date', return_value=day), \
                 patch.object(full_update.margin_refresh, 'monthly_date', return_value=day), \
+                patch.object(full_update.forward_pe_refresh, 'home_status', return_value={'name':'預估本益比河流圖','status':'complete','message':'來源已核對'}), \
                 patch.object(full_update.business_cycle, 'home_status', return_value={'name':'景氣循環分析','status':'complete','message':'來源已核對'}):
             result = full_update._local_status()
 

@@ -4,7 +4,7 @@ import fs from 'node:fs/promises'
 import ts from 'typescript'
 const text=await fs.readFile(new URL('../frontend/src/forwardPeExport.ts',import.meta.url),'utf8')
 const code=ts.transpileModule(text,{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText
-const {csv,stockCsv,sectorCsv,periodRows,issueLabel}=await import('data:text/javascript;base64,'+Buffer.from(code).toString('base64'))
+const {csv,stockCsv,sectorCsv,periodRows,issueLabel,selectStocks}=await import('data:text/javascript;base64,'+Buffer.from(code).toString('base64'))
 test('CSV keeps true zero and negative numbers, quotes correctly, neutralizes text formulas',()=>{
  const result=csv([[0,-2,null,'=HYPERLINK("https://bad")','+text','-text',' @SUM(1)','a,b\nnext']])
  assert.ok(result.startsWith('\uFEFF"0","-2","","\'=HYPERLINK('))
@@ -33,4 +33,13 @@ test('sector export follows the selected rows/date, with PP units and taxonomy/s
 })
 test('actual source gaps are explained in Chinese',()=>{
  for(const s of ['current_per_share_adjustment_not_verified','per_share_adjustment_date_not_aligned','provider_forecast_date_missing','basic_eps_basis_not_verified'])assert.notEqual(issueLabel(s),s)
+})
+
+test('stock sorting keeps missing forecasts last, negative EPS real and ties stable',()=>{
+ const rows=[{rank:1,symbol:'2330',name:'台積電',estimate:null,individual_pe:null},{rank:3,symbol:'1003',name:'股票',estimate:{value:-2},individual_pe:null,revision:{change:0}},{rank:2,symbol:'1002',name:'股票',estimate:{value:10},individual_pe:5,revision:{change:2}},{rank:4,symbol:'1004',name:'股票',estimate:{value:10},individual_pe:8,revision:{change:2}}]
+ assert.deepEqual(selectStocks(rows,'','eps').map(r=>r.rank),[2,4,3,1])
+ assert.deepEqual(selectStocks(rows,'','pe').map(r=>r.rank),[2,4,1,3])
+ assert.deepEqual(selectStocks(rows,'','revision').map(r=>r.rank),[2,4,3,1])
+ assert.deepEqual(selectStocks(rows,'台積','eps').map(r=>r.rank),[1])
+ assert.deepEqual(rows.map(r=>r.rank),[1,3,2,4])
 })

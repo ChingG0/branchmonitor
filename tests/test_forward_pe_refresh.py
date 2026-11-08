@@ -102,4 +102,61 @@ class DashboardTests(unittest.TestCase):
             self.assertEqual(D.report()['river']['status'],'not_saved')
             self.assertEqual(list(Path(t).iterdir()),[])
 
+
+class HomeUpdateTests(unittest.TestCase):
+    setUp=ManualFreezeTests.setUp
+    tearDown=ManualFreezeTests.tearDown
+    def run_home(self):
+        with patch.object(F,'newest_quote_day',return_value='2026-11-06'),patch.object(F.P,'local_quotes',return_value=('2026-11-06',self.quotes,self.refs)),patch.object(D,'latest_market_day',return_value='2026-11-06'):
+            return F.update_home()
+    def test_same_day_same_inputs_do_not_duplicate_reports_or_observations(self):
+        first=self.run_home();self.assertEqual(first['detail']['action'],'saved')
+        path=S.home()/'observations.sqlite3';old=path.read_bytes();report=V.read()
+        with patch.object(V,'compute',side_effect=AssertionError('unchanged must not recalculate')):
+            second=self.run_home()
+        self.assertEqual(second['detail']['action'],'unchanged');self.assertEqual(path.read_bytes(),old)
+        self.assertEqual(V.read()['id'],report['id']);self.assertEqual(report['update_context']['trigger'],'home')
+        self.assertEqual(Path(self.saved['report_path']).read_bytes(),self.original)
+    def test_new_eps_import_creates_new_version_without_overwriting_old(self):
+        self.run_home();old=V.read()
+        src=S.source('import','licensed_export','https://source.example/new-import',b'new-import')
+        newids=S.estimate_batch(src,self.estimates[1:])
+        result=self.run_home();new=V.read()
+        self.assertEqual(result['detail']['action'],'saved');self.assertNotEqual(old['id'],new['id'])
+        self.assertTrue(set(newids).issubset(new['input_estimate_ids']));self.assertEqual(V.read(old['id']),old)
+    def test_source_failure_is_one_attempt_and_keeps_latest_pointer(self):
+        self.run_home();pointer=(S.home()/'calculations/latest.json').read_bytes()
+        with patch.object(F,'prepare',side_effect=ValueError('shares missing')) as prepare,patch.object(D,'latest_market_day',return_value='2026-11-06'):
+            result=F.update_home()
+        prepare.assert_called_once();self.assertEqual(result['status'],'partial');self.assertEqual(result['detail']['action'],'retained')
+        self.assertIn('shares missing',result['message']);self.assertEqual((S.home()/'calculations/latest.json').read_bytes(),pointer)
+    def test_market_calendar_mismatch_does_not_replace_old_data(self):
+        with patch.object(F,'newest_quote_day',return_value='2026-11-06'),patch.object(F.P,'local_quotes',return_value=('2026-11-06',self.quotes,self.refs)),patch.object(D,'latest_market_day',return_value='2026-11-09'):
+            result=F.update_home()
+        self.assertEqual(result['detail']['action'],'retained');self.assertEqual(V.read()['id'],self.saved['id'])
+    def test_changed_day_rechecks_eps_expiry_even_when_inputs_unchanged(self):
+        self.run_home();old=V.read()['id']
+        with patch.object(S,'now',return_value='2026-12-22T23:00:00+08:00'):
+            result=self.run_home()
+        self.assertEqual(result['detail']['action'],'saved');self.assertNotEqual(V.read()['id'],old)
+        self.assertEqual(V.read()['periods'][0]['groups'][0]['qualified']['names'],0)
+    def test_stale_month_end_list_does_not_generate_current_top_fifty(self):
+        p=F.prepare
+        with patch.object(F,'newest_quote_day',return_value='2026-11-06'),patch.object(F.P,'local_quotes',return_value=('2026-11-06',self.quotes,self.refs)):
+            data=p()
+        data['weight_date']='2026-09-30'
+        with patch.object(F,'prepare',return_value=data),patch.object(D,'latest_market_day',return_value='2026-11-06'):
+            result=F.update_home()
+        self.assertEqual(result['detail']['action'],'retained');self.assertIn('月底權重',result['message'])
+    def test_home_get_does_not_prepare_calculate_or_publish(self):
+        old=(S.home()/'observations.sqlite3').read_bytes()
+        with patch.object(F,'prepare',side_effect=AssertionError('GET cannot prepare')),patch.object(V,'compute',side_effect=AssertionError('GET cannot compute')):
+            result=F.home_status(target='2026-11-06')
+        self.assertEqual(result['status'],'partial');self.assertIn('EPS文件 1/50',result['message'])
+        self.assertIn('不自動重試',result['message']);self.assertEqual((S.home()/'observations.sqlite3').read_bytes(),old)
+    def test_dashboard_refuses_current_gauge_with_stale_weights(self):
+        with patch.object(D.R,'report',return_value={'valuation':{'price_date':'2026-11-06','weight_date':'2026-09-30'}}),patch.object(D.C,'report',return_value={}),patch.object(D,'latest_market_day',return_value='2026-11-06'):
+            result=D.report()
+        self.assertEqual(result['freshness']['weight_status'],'stale');self.assertIn('月底權重',result['errors'][0])
+
 if __name__=='__main__':unittest.main()

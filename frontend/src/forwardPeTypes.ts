@@ -8,4 +8,4 @@ export type RiverWindow={years:number;status:string;points:RiverPoint[];observed
 export type ForwardSeries={id:string;key:Record<string,string>;windows:Record<string,RiverWindow>}
 export type ForwardRiver={status:string;version:string;as_of:string;history_month?:string;valuation:ForwardValuation|null;series:ForwardSeries[];warnings:{id:string;message:string}[];notes?:string[]}
 
-export type ForwardDashboard={version:string;read_at:string;river:ForwardRiver;sectors:import("./forwardPeSectors").SectorReport|null;freshness:{status:string;latest_verified_market_date:string|null;price_date:string|null};errors:string[];read_only:boolean}
+export type ForwardDashboard={version:string;read_at:string;river:ForwardRiver;sectors:import("./forwardPeSectors").SectorReport|null;freshness:{status:string;weight_status?:string;latest_verified_market_date:string|null;price_date:string|null};errors:string[];read_only:boolean}

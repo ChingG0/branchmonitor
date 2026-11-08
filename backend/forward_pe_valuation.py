@@ -324,8 +324,10 @@ def _artifact_path(report_id):
     return S.home() / 'calculations' / (report_id + '.json')
 
 
-def save(*, snapshot_id=None):
+def save(*, snapshot_id=None, update_context=None):
     report = compute(snapshot_id=snapshot_id)
+    if update_context is not None:
+        report['update_context'] = update_context
     report['id'] = uuid.uuid4().hex
     envelope = {'sha256': S.digest(report), 'report': report}
     path = _artifact_path(report['id'])

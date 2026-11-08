@@ -23,3 +23,8 @@ export function downloadCsv(content:string,name:string){
 export function issueLabel(s:string):string{
  return ({missing_forecast:'缺預估EPS',basic_eps_basis_not_verified:'基本EPS口徑未核對',share_basis_not_verified:'股數調整口徑未核對',current_per_share_adjustment_not_verified:'缺每股調整口徑與證據',per_share_adjustment_date_not_aligned:'股數調整日期未對齊',forecast_outside_freshness_window:'預估不在有效日期範圍',basis_evidence_missing:'缺每股調整證據',provider_forecast_date_missing:'缺來源預估日期',share_basis_date_not_aligned:'股數調整日期未對齊',forecast_stale:'預估過期',conflicting_latest_estimates:'同版本預估衝突',missing_or_invalid_price:'缺收盤價',missing_or_invalid_shares:'缺發行股數'} as Record<string,string>)[s]||s
 }
+
+export function selectStocks(rows:ForwardRow[],search:string,sort:string):ForwardRow[]{
+ const field=(r:ForwardRow)=>sort==='eps'?r.estimate?.value:sort==='pe'?r.individual_pe:sort==='revision'?r.revision?.change:r.rank
+ return rows.filter(r=>!search.trim()||`${r.symbol} ${r.name}`.includes(search.trim())).slice().sort((a,b)=>{const x=field(a),y=field(b);if(x==null&&y==null)return a.rank-b.rank;if(x==null)return 1;if(y==null)return -1;return ((sort==='eps'||sort==='revision')?y-x:x-y)||a.rank-b.rank})
+}
