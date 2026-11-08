@@ -1,0 +1,7 @@
+{
+  "provider": "licensed_export",
+  "source_url": "https://your-authorized-provider.example/export",
+  "published_at": null,
+  "file": "eps_import.csv",
+  "note": "此檔為空白範本，不含任何預估。原始報告日期放每列published_at；實際入庫時間由程式產生，不接受匯入值倒填。"
+}

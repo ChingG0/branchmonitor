@@ -1,0 +1,19 @@
+{
+  "version":"forward-pe-data.v1",
+  "scope":"packages_1_2_only_no_valuation_or_ui",
+  "basket_size":50,
+  "primary_weight_kind":"official_month_end",
+  "daily_weight_proxy":"not_an_official_TAIEX_weight",
+  "eps_statistic":"median",
+  "preferred_horizon":"NTM_from_provider_only",
+  "annual_periods":"separate_calendar_or_fiscal_year_never_alias_to_NTM",
+  "negative_eps":"preserve_do_not_drop",
+  "missing_eps":"missing_never_zero",
+  "retrieval":"manual_finite_no_get_or_scheduler_fetch",
+  "historical_read":"requires_published_at_and_known_at_not_after_cutoff",
+  "revision":"same_symbol_provider_period_statistic_currency_eps_share_basis_only",
+  "downstream_valuation_gate":{"min_names":45,"min_basket_weight_coverage_pct":95,"require_top_rank":true,"require_per_share_basis_evidence":true,"max_forecast_age_days":45},
+  "historical_band_gate":{"required_months":60,"original_point_in_time_versions_required":true,"no_backfilling_latest_estimates":true},
+  "full_market_label":"forbidden_with_top50_only",
+  "cloud_backup":"local_staging_is_not_verified_Drive_backup"
+}
