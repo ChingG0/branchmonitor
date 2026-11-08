@@ -1,0 +1,9 @@
+export type ForwardEstimate={value:number;published_at:string;known_at:string;source_url:string;forecast_as_of:string|null}
+export type ForwardRow={rank:number;symbol:string;name:string;weight_pct:number;quote:{close:number;shares:number}|null;estimate:ForwardEstimate|null;qualified:boolean;issues:string[];individual_pe?:number|null}
+export type ForwardAggregate={names:number;matched_subset_pe:number|null;adopted_subset_pe:number|null;exact_top50_pe:number|null;gate_passed:boolean;original_basket_weight_coverage_pct:number;revalued_basket_cap_coverage_pct:number|null}
+export type ForwardGroup={series:Record<string,string|null>;rows:ForwardRow[];qualified:ForwardAggregate;mechanical_preview:ForwardAggregate}
+export type ForwardValuation={id:string;method_version:string;policy_sha256:string;information_cutoff:string;computed_at:string;price_date:string;weight_date:string;quote_names:number;basket_names:number;periods:{period_kind:string;period:string|null;groups:ForwardGroup[];document_names:number}[]}
+export type RiverPoint={month:string;pe:number|null;forecast_period?:string|null;information_cutoff?:string;price_date?:string;report_id?:string;qualified_names?:number;cuts:number[]|null;reasons:string[]}
+export type RiverWindow={years:number;status:string;points:RiverPoint[];observed_months:number;reference:{required_months:number;available_months:number;missing_months:string[];mean:number|null;sd:number|null;cuts:number[]|null};position:{z:number|null;percentile:number|null;label:string|null;color:string|null}}
+export type ForwardSeries={id:string;key:Record<string,string>;windows:Record<string,RiverWindow>}
+export type ForwardRiver={status:string;version:string;as_of:string;history_month?:string;valuation:ForwardValuation|null;series:ForwardSeries[];warnings:{id:string;message:string}[];notes?:string[]}
