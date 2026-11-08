@@ -72,3 +72,23 @@ test('a saved old source cannot borrow current values from a different methodolo
  assert.ok(!html.includes('class="position-scale"'))
  assert.ok(!html.includes('5.00<a'))
 })
+test('unverified saved EPS changes stay grey and missing previous versions are not invented',async()=>{
+ const f=fixture();f.valuation.periods[0].groups[0].rows[0].revision={previous_value:4,change:1,change_pct:25,basis_comparability_verified:false}
+ const html=await renderToString(createSSRApp(Page,{initial:f}))
+ assert.ok(html.includes('文件變化 +1.00'));assert.ok(html.includes('口徑未核對'));assert.ok(html.includes('前版 4.00'))
+ assert.equal((html.match(/class="eps-revision"/g)||[]).length,1)
+})
+test('stale valuation suppresses current position but retains stock and sector observations',async()=>{
+ const f=fixture(true)
+ const initialDashboard={river:f,sectors:{date:'2026-11-06',previous_date:'2026-11-05',dates:['2026-11-06'],rows:[],classification:{groups:670,snapshot:'dict'},warnings:[],notes:[]},freshness:{status:'stale',latest_verified_market_date:'2026-11-09',price_date:'2026-11-06'},errors:['舊行情請手動保存']}
+ const html=await renderToString(createSSRApp(Page,{initialDashboard}))
+ for(const s of ['行情日期待更新','2026-11-09','670 組','舊行情請手動保存','匯出50檔 CSV','資料缺口與更新方式'])assert.ok(html.includes(s),s)
+ assert.ok(!html.includes('class="position-scale"'))
+ assert.ok(!html.includes('歷史位階 0.50 個標準差'))
+})
+test('zero EPS documents still display the full saved fifty-stock basket',async()=>{
+ const f=fixture();f.valuation.basket_rows=f.valuation.periods[0].groups[0].rows.map(r=>({...r,estimate:null,revision:null,issues:['missing_forecast']}));f.valuation.periods[0].groups=[];f.valuation.periods[0].document_names=0;f.series=[]
+ const html=await renderToString(createSSRApp(Page,{initial:f}))
+ assert.equal((html.match(/缺預估<\/span>/g)||[]).length,50)
+ assert.ok(html.includes('缺預估 50'));assert.ok(html.includes('台積電'));assert.ok(html.includes('匯出50檔 CSV'))
+})

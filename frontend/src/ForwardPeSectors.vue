@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import {computed,onMounted,onUnmounted,ref} from 'vue'
+import {computed,onMounted,onUnmounted,ref,watch} from 'vue'
 import {localFetch,readJson} from './http'
 import {vRememberDisclosure} from './rememberDisclosure'
+import {downloadCsv,sectorCsv} from './forwardPeExport'
 import {selectSectors} from './forwardPeSectors'
 import type {SectorReport} from './forwardPeSectors'
-const props=defineProps<{initial?:SectorReport;compact?:boolean}>()
+const props=defineProps<{initial?:SectorReport;compact?:boolean;managed?:boolean}>()
 const emit=defineEmits<{sector:[name:string]}>()
 const data=ref<SectorReport|null>(props.initial||null),busy=ref(false),error=ref(''),selectedDate=ref(''),sort=ref('amount'),quality=ref('standard'),parent=ref(''),search=ref('')
 const dialog=ref<HTMLDialogElement|null>(null)
@@ -22,7 +23,8 @@ async function load(){
 }
 function openGroup(name:string){dialog.value?.close();emit('sector',name)}
 function openAll(){dialog.value?.showModal()}
-onMounted(()=>{if(!props.initial)load()});onUnmounted(()=>{alive=false;epoch++})
+watch(()=>props.initial,v=>{epoch++;busy.value=false;error.value='';selectedDate.value='';data.value=v||null})
+onMounted(()=>{if(!props.initial&&!props.managed)load()});onUnmounted(()=>{alive=false;epoch++})
 defineExpose({reload:()=>{selectedDate.value='';return load()}})
 </script>
 <template>
@@ -37,7 +39,7 @@ defineExpose({reload:()=>{selectedDate.value='';return load()}})
   <dialog ref="dialog" class="sector-dialog" @click="($event.target===dialog)&&dialog?.close()">
    <div class="dialog-heading"><div><small>OUR SECTOR GROUPS · SAVED CLOSE</small><h2>自訂族群漲跌與成交集中度</h2><p>成交比重增加只代表交易集中，不等於淨買入。</p></div><button aria-label="關閉族群清單" @click="dialog?.close()">✕</button></div>
    <div class="filters"><label>收盤日期<select v-model="selectedDate" :disabled="busy" @change="load"><option value="">最新保存{{data?.dates[0]?' · '+data.dates[0]:''}}</option><option v-for="d in data?.dates" :key="d" :value="d">{{d}}</option></select></label><label>排序<select v-model="sort"><option value="amount">成交金額高到低</option><option value="rising">漲幅高到低</option><option value="falling">跌幅大到小</option></select></label><label>篩選<select v-model="quality"><option value="standard">至少3檔、價格涵蓋80%</option><option value="all">全部，含小族群及缺價</option></select></label><label>大類<select v-model="parent"><option value="">全部大類</option><option v-for="p in parents" :key="p">{{p}}</option></select></label><input v-model="search" type="search" aria-label="搜尋族群" placeholder="搜尋族群或大類"/></div>
-   <div class="dialog-summary"><span>{{data?.date||'尚無資料'}} 比較 {{data?.previous_date||'前日未核對'}} · {{rows.length}}／{{data?.classification.groups||0}} 組</span><span>四碼股票總成交 {{money(data?.market_turnover_twd)}} · {{data?.market_names||0}} 檔</span></div>
+   <div class="dialog-summary"><button :disabled="!data||busy" @click="data&&downloadCsv(sectorCsv(data,rows),`自訂族群-${data.date}.csv`)">匯出目前清單 CSV</button><span>{{data?.date||'尚無資料'}} 比較 {{data?.previous_date||'前日未核對'}} · {{rows.length}}／{{data?.classification.groups||0}} 組</span><span>四碼股票總成交 {{money(data?.market_turnover_twd)}} · {{data?.market_names||0}} 檔</span></div>
    <p v-if="error" class="warning">{{error}}</p><p v-for="w in data?.warnings" :key="w" class="warning">{{w}}</p>
    <p class="scroll-hint">左右滑動表格，可查看成交金額、前日比重與比重變化。</p>
    <div class="sector-table-scroll" tabindex="0" aria-label="自訂族群比較表，可上下左右捲動"><table><thead><tr><th>族群／大類</th><th>等權漲跌</th><th>成交金額</th><th>當日比重</th><th>前日比重</th><th>比重變化</th><th>涵蓋檔數</th></tr></thead><tbody><tr v-for="r in rows" :key="r.name"><th><button class="group-name" @click="openGroup(r.name)">{{r.name}}</button><small>{{r.parent}}</small></th><td :class="tone(r.return_pct)"><b>{{pct(r.return_pct)}}</b><small>漲{{r.advancers}}／跌{{r.decliners}}／平{{r.unchanged}}</small></td><td>{{money(r.amount_twd)}}<small v-if="!r.amount_complete" class="partial">已知部分金額</small></td><td>{{r.amount_share_pct==null?'—':fmt(r.amount_share_pct)+'%'}}</td><td>{{r.previous_amount_share_pct==null?'—':fmt(r.previous_amount_share_pct)+'%'}}</td><td>{{r.share_change_pp==null?'—':signed(r.share_change_pp)+' 百分點'}}</td><td>價格 {{r.quoted}}／{{r.members}}<small>金額 {{r.amount_names}}／{{r.members}}</small></td></tr><tr v-if="!rows.length"><td colspan="7" class="empty">沒有符合條件的族群，請調整篩選或補齊來源。</td></tr></tbody></table></div>

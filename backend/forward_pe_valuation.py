@@ -302,6 +302,7 @@ def compute(*, snapshot_id=None, cutoff=None):
         'basket_original_index_weight_pct': sum(m['weight_pct'] for m in members),
         'basket_label': '月底排名前50固定成分，以同日收盤及發行股數重估；非官方即時權重或全大盤',
         'basket_names': len(members), 'quote_names': result['quote_names'],
+        'basket_rows': [{**r,'estimate':None,'revision':None,'qualified':False,'issues':r['quote_issues']+['missing_forecast']} for r in result['quote_rows']],
         'periods': periods, 'status': 'qualified' if any(p['status'] == 'qualified' for p in periods) else 'source_gap',
         'notes': [
             '未知EPS不是0；每個子集只用相同股票的市值及預估獲利。虧損和0EPS均保留。',
