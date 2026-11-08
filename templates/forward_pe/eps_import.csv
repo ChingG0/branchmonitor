@@ -1,1 +1,1 @@
-symbol,period_kind,period,statistic,value,currency,eps_basis,share_basis,forecast_as_of,published_at,provider,estimate_type,low,high,analyst_count,basis_evidence,period_start,period_end
+symbol,period_kind,period,statistic,value,currency,eps_basis,share_basis,forecast_as_of,published_at,provider,estimate_type,low,high,analyst_count,basis_evidence,period_start,period_end,share_basis_date

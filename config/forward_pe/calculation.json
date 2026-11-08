@@ -1,0 +1,39 @@
+{
+  "version": "forward-pe-valuation.v1",
+  "scope": "package_3_saved_calculations_only",
+  "basket_size": 50,
+  "statistic": "median",
+  "periods": [
+    "calendar_year_current",
+    "calendar_year_next",
+    "NTM_explicit_only"
+  ],
+  "qualified_eps_basis": "basic",
+  "qualified_share_basis": "current_ordinary_share_adjusted",
+  "group_by": [
+    "source_provider",
+    "provider",
+    "currency",
+    "eps_basis",
+    "share_basis",
+    "period_kind",
+    "period",
+    "statistic",
+    "period_start",
+    "period_end"
+  ],
+  "gate": {
+    "min_names": 45,
+    "min_original_basket_weight_coverage_pct": 95,
+    "min_revalued_basket_cap_coverage_pct": 95,
+    "require_top_rank": true,
+    "max_forecast_age_days": 45
+  },
+  "aggregation": "sum_matched_price_times_issued_shares / sum_matched_eps_times_same_shares",
+  "nonpositive_earnings": "preserve_in_aggregate_individual_PE_undefined",
+  "missing_earnings": "exclude_both_numerator_and_denominator_disclose_coverage",
+  "partial_gate_pass_label": "qualified_covered_subset_not_exact_top50_or_full_market",
+  "publication": "manual_build_only_GET_reads_verified_saved_artifact",
+  "bands": "not_in_package_3_no_synthetic_history",
+  "require_share_adjustment_date_equal_price_date": true
+}
